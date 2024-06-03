@@ -7,7 +7,7 @@ exports.FilterPage = class FilterPage {
 
     async clearAllFilters() {
         try {
-            await this.page.locator('.MuiGrid-root > .MuiBox-root > .MuiButtonBase-root').click({ timeout: 3000}); //Looking for three dots
+            await this.page.getByTestId('MoreHorizIcon').click({ timeout: 3000}); //Looking for three dots
         } catch (error) {}
         try {
             await this.page.getByTestId('clearAllId').getByTestId('CancelIcon').click({ timeout: 10000});

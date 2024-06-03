@@ -17,12 +17,10 @@ module.exports = {
     findJobDetailsForAddNew: async function(page, partnerType, isPrimaryType) {
 
         let job;
-        let addNewButtonNumber;   
         if (isPrimaryType) {
-            addNewButtonNumber = Math.floor(Math.random() * 6) + 1;  
-            job = await page.locator('(//div[@data-id and .//p[text()="' + partnerType + '"]])[' + addNewButtonNumber + ']');
+            job = await page.locator('(//div[@data-id and .//p[text()="' + partnerType + '"]])[1]');
         } else {
-            addNewButtonNumber = Math.floor(Math.random() * 20) + 1;  
+            const addNewButtonNumber = Math.floor(Math.random() * 10) + 1;  
             job = await page.locator('(//div[@data-id and .//p[text()="ADD NEW"]])[' + addNewButtonNumber + ']');
         }
 
