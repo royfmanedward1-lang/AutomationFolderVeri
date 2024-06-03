@@ -3,12 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test --headed",
+  "test-qa": "npx playwright test --config=playwright.qa.config.js",
+  "test-stag": "npx playwright test --config=playwright.staging.config.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.44.0",
     "@types/node": "^20.12.12"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }

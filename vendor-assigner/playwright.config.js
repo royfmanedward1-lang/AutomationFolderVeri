@@ -12,10 +12,11 @@ const { defineConfig, devices } = require('@playwright/test');
  */
 module.exports = defineConfig({
   expect: {
-    timeout: 200 * 1000,
+    timeout: 30 * 1000,
   },
-  timeout: 200 * 1000,
+  timeout: 30 * 1000,
   testDir: './tests',
+  globalSetup: require.resolve("./globalSetup.js"),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,11 +26,11 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: 'list',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    baseURL: 'https://vendor-assigner-qa.vis.veritext.com/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -43,16 +44,16 @@ module.exports = defineConfig({
       viewport: {width: 1200, height: 25000} },
     },
 
-    {
-      name: 'firefox',
-      use: { //...devices['Desktop Firefox']
-        viewport: {width: 1200, height: 25000} }, 
-     },
+    // {
+    //   name: 'firefox',
+    //   use: { //...devices['Desktop Firefox']
+    //     viewport: {width: 1200, height: 25000} }, 
+    //  },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
