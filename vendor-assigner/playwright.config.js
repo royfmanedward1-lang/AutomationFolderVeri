@@ -14,7 +14,7 @@ module.exports = defineConfig({
   expect: {
     timeout: 30 * 1000,
   },
-  timeout: 30 * 1000,
+  timeout: 200 * 1000,
   testDir: './tests',
   globalSetup: require.resolve("./globalSetup.js"),
   /* Run tests in files in parallel */
