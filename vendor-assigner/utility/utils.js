@@ -3,7 +3,8 @@ module.exports = {
         
         const job = await page.locator('(//div[@data-id and .//button[text()="Assign ' + partnerType + '"]])[1]')
         const jobId = await job.getAttribute('data-id')
-       
+        console.log("Found JobId: " + jobId + " which has a " + partnerType)
+
         const button = page.locator('//div[@data-id="' + jobId + '"]//button[text()="Assign ' + partnerType + '"]')
 
         //Created a JS object so can return both jobId and the button 
@@ -23,6 +24,7 @@ module.exports = {
         }
 
         const jobId = await job.getAttribute('data-id')
+        console.log("Found JobId: " + jobId + " which has a " + partnerType)
         
         const button = page.locator('//div[@data-id="' + jobId + '"]//p[text()="ADD NEW"]')
 
@@ -39,6 +41,8 @@ module.exports = {
 
         const firstName = await page.locator('//div[@data-id="' + dataId + '"]//div[@data-field="firstName"]').textContent()
         const lastName = await page.locator('//div[@data-id="' + dataId + '"]//div[@data-field="lastName"]').textContent()
+
+        console.log("Found partner " + firstName + " " + lastName + " who is a " + partnerType)
         
         const button = await page.locator('//div[@data-id="' + dataId + '"]//button[text()="Add Partner"]')
 
