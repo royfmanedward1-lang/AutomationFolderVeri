@@ -6,59 +6,45 @@ const { test } = require('@playwright/test')
 test('Create Filter Job', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-
-  const statuses = ['Cancelled', 'Closed', 'Confirmed'];
-  
+  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-
-  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses);
+  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses)
 
 })
 //Creat a filter with coverage
 test('Create Filter job with coverage ', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-
-  const statuses = ['Cancelled', 'Closed', 'Confirmed'];
-  
+  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-
-  await filterJobPage.createFilterWithCoverage(page, filterJobPage, 'test filter', statuses);
+  await filterJobPage.createFilterWithCoverage(page, filterJobPage, 'test filter', statuses)
 
 })
 //Creat a filter without selecting filters
 test('Create Filter job without selecting filters', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-  
   await loginPage.login()
-
-  await filterJobPage.createFilterWithoutSelectingFilters(page, filterJobPage, 'test filter');
+  await filterJobPage.createFilterWithoutSelectingFilters(page, filterJobPage, 'test filter')
 
 })
 //update a filter job
 test('Update Filter Job', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-
-  const statuses = ['Cancelled', 'Closed', 'Confirmed'];
-  
+  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-
-  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses);
-  await filterJobPage.updateFilter(filterJobPage, 'filter updated');
+  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses)
+  await filterJobPage.updateFilter(filterJobPage, 'filter updated')
 
 })
 //delete a filter job
 test('Delete Filter Job', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-
-  const statuses = ['Cancelled', 'Closed', 'Confirmed'];
-  
+  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-
-  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses);
-  await filterJobPage.deleteFilter(page, filterJobPage, 'test filter');
+  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses)
+  await filterJobPage.deleteFilter(page, filterJobPage, 'test filter')
 })
 
