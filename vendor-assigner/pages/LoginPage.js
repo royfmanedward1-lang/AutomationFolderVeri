@@ -15,7 +15,7 @@ exports.LoginPage = class LoginPage {
             password = process.env.STAGING_PASSWORD
         }
 
-        await this.page.goto("/")
+        await this.page.goto("login")
         await this.page.getByPlaceholder('username').waitFor()
         await this.page.getByPlaceholder('username').fill(username)
         await this.page.getByPlaceholder('password').fill(password)
