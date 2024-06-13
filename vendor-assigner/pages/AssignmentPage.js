@@ -67,21 +67,18 @@ export class AssignmentPage {
     async addPartner(partnerType) {
         await this.page.waitForLoadState('load')
         const partnerDetails = await utils.findPartnerDetails(this.page, partnerType)
-        if (!partnerDetails.partnerName && !partnerDetails.button) {
-            throw new Error("There are no partners available for a " + partnerType)
-        } else {
-            await partnerDetails.button.click()
-            await this.applyButton.click()
     
-            console.log("Selected partner " + partnerDetails.partnerName + " as a " + partnerType)
-    
-            const viewMorePartners = await this.page.locator('//div[@data-id=' + this.jobDetails.jobId + ']/descendant::*[contains(text(), "VIEW MORE")]')
-            if (await viewMorePartners.isVisible()){
-                await viewMorePartners.click()
-            }
-            
-            await this.page.waitForLoadState('load')
-            await expect(this.page.locator('//div[@data-id="' + this.jobDetails.jobId + '" and .//p[text()="' + partnerType + '"]]//parent::p[@aria-label="' + partnerDetails.partnerName + '"]')).toBeVisible()
+        await partnerDetails.button.click()
+        await this.applyButton.click()
+
+        console.log("Selected partner " + partnerDetails.partnerName + " as a " + partnerType)
+
+        const viewMorePartners = await this.page.locator('//div[@data-id=' + this.jobDetails.jobId + ']/descendant::*[contains(text(), "VIEW MORE")]')
+        if (await viewMorePartners.isVisible()){
+            await viewMorePartners.click()
         }
+        
+        await this.page.waitForLoadState('load')
+        await expect(this.page.locator('//div[@data-id="' + this.jobDetails.jobId + '" and .//p[text()="' + partnerType + '"]]//parent::p[@aria-label="' + partnerDetails.partnerName + '"]')).toBeVisible()
     }    
 }
