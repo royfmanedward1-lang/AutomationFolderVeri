@@ -34,7 +34,7 @@ export class AssignmentPage {
     }
     
     async selectJobToAddNewPartner(partnerType, isPrimaryType) {
-        await this.page.waitForLoadState('load')
+        await utils.waitTillHTMLRendered(this.page)
         this.jobDetails = await utils.findJobDetailsForAddNew(this.page, partnerType, isPrimaryType)
         await this.jobDetails.button.click()
         
@@ -42,7 +42,7 @@ export class AssignmentPage {
     }
 
     async selectJobAndAssignPartner(partnerType) {
-        await this.page.waitForLoadState('load')
+        await utils.waitTillHTMLRendered(this.page)
         this.jobDetails = await utils.findJobDetails(this.page, partnerType)
         await this.jobDetails.button.click()
         console.log("Selected job with jobid: " + this.jobDetails.jobId + " for " + partnerType)
@@ -65,7 +65,7 @@ export class AssignmentPage {
     }
 
     async addPartner(partnerType) {
-        await this.page.waitForLoadState('load')
+        await utils.waitTillHTMLRendered(this.page)
         const partnerDetails = await utils.findPartnerDetails(this.page, partnerType)
     
         await partnerDetails.button.click()
@@ -78,7 +78,7 @@ export class AssignmentPage {
             await viewMorePartners.click()
         }
         
-        await this.page.waitForLoadState('load')
+        await utils.waitTillHTMLRendered(this.page)
         await expect(this.page.locator('//div[@data-id="' + this.jobDetails.jobId + '" and .//p[text()="' + partnerType + '"]]//parent::p[@aria-label="' + partnerDetails.partnerName + '"]')).toBeVisible()
     }    
 }

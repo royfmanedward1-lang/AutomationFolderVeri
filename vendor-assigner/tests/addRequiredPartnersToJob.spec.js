@@ -6,8 +6,6 @@ test.beforeEach('Logging in', async ({ page }) => {
   //login
   const loginPage = new LoginPage(page)
   await loginPage.login()
-  await page.waitForLoadState('load')
-
 
   //clear all filters
   const assignmentPage = new AssignmentPage(page)
