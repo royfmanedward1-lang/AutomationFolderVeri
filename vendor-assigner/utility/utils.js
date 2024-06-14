@@ -42,7 +42,7 @@ module.exports = {
         await this.waitTillHTMLRendered(page)
 
         const partner = await page.locator('//div[@data-field="availability" and .//span[text()="Available"]]' +
-                                    '/ancestor::*[@data-id and .//button[not(@disabled) and starts-with(text(),"Add")]][1]')
+                                    '/ancestor::*[@data-id and .//button[not(@disabled) and text()="Add Partner"]][1]')
         
         console.log(await partner.count() + " " + partnerType + " partners available")
 
@@ -55,7 +55,7 @@ module.exports = {
 
             console.log("Found partner " + firstName + " " + lastName + " who is a " + partnerType)
             
-            const button = await page.locator('//div[@data-id="' + dataId + '"]//button[starts-with(text(), "Add")]')
+            const button = await page.locator('//div[@data-id="' + dataId + '"]//button[text()="Add Partner"]')
 
             return {
                 partnerName : firstName + " " + lastName,

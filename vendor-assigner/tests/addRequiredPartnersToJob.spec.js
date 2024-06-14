@@ -1,5 +1,6 @@
 import { test} from '@playwright/test'
 import { LoginPage } from '../pages/LoginPage.js'
+import { FilterPage } from '../pages/FilterPage.js'
 import { AssignmentPage } from '../pages/AssignmentPage.js'
 
 test.beforeEach('Logging in', async ({ page }) => {
@@ -8,9 +9,9 @@ test.beforeEach('Logging in', async ({ page }) => {
   await loginPage.login()
 
   //clear all filters
-  const assignmentPage = new AssignmentPage(page)
-  await assignmentPage.changeFilterDate()
-  await assignmentPage.clearAllFilters()
+  const filterPage = new FilterPage(page)
+  await filterPage.changeFilterDate()
+  await filterPage.clearAllFilters()
 })
 
 const partnerTypeList = ['Steno Reporter', 'Digital Reporter','Transcriber','Interpreter','Videographer']
