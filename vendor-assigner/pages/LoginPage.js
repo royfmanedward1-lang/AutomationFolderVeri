@@ -1,5 +1,7 @@
-exports.LoginPage = class LoginPage {
-    constructor(page){
+import * as utils from '../utility/utils.js'
+
+export class LoginPage {
+    constructor(page) {
         this.page= page
     }
 
@@ -22,5 +24,7 @@ exports.LoginPage = class LoginPage {
 
         await this.page.getByRole('button', { name: 'LOGIN' }).waitFor()
         await this.page.getByRole('button', { name: 'LOGIN' }).click()
+
+        await utils.waitTillHTMLRendered(this.page)
     }
 }

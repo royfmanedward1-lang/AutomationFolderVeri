@@ -1,8 +1,8 @@
-const { start } = require("repl")
+import * as utils from '../utility/utils'
 
-exports.FilterPage = class FilterPage {
+export class FilterPage {
     constructor(page){
-        this.page= page
+        this.page = page
     }
 
     async clearAllFilters() {
@@ -12,9 +12,10 @@ exports.FilterPage = class FilterPage {
         try {
             await this.page.getByTestId('clearAllId').getByTestId('CancelIcon').click({ timeout: 10000})
         } catch (error) {}
- 
+        await utils.waitTillHTMLRendered(this.page)
     }
-//start end date para optional
+    
+    //start end date para optional
     async changeFilterDate(start, end) {
         const startDate = start || process.env.START_DATE
         const endDate = end || process.env.END_DATE
@@ -24,6 +25,7 @@ exports.FilterPage = class FilterPage {
             await filterDate.fill(startDate + " – " + endDate)
             await this.page.locator('//button[@id=":r2:"]').waitFor()
             await this.page.locator('//button[@id=":r2:"]').click()
+            await utils.waitTillHTMLRendered(this.page)
         }
     }
 }
