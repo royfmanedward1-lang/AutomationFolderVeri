@@ -25,7 +25,7 @@ for (const partnerType of partnerTypePrimaryList) {
   })
 }
 
-const partnerTypeSecondaryList = ['Proofreader', 'Mediator','Concierge-Tech','Corrector','Scopist','Process Server','Trial Tech']
+const partnerTypeSecondaryList = ['Proofreader', 'Mediator','Concierge-Tech','Corrector','Scopist','Process Server','Trial Tech', 'Other']
 for (const partnerType of partnerTypeSecondaryList) {
   test(`Add ${partnerType} to a job using ADD NEW and verify if ${partnerType} is added`, async ({ page }) => {
     let isPrimaryType = false
