@@ -11,8 +11,6 @@ To run this project, you will need to add the following environment variables to
 `QA_PASSWORD='YOUR PASSWORD'`
 `STAGING_USERNAME='YOUR USERNAME'`
 `STAGING_PASSWORD='YOUR PASSWORD'`
-`QA_URL='https://vendor-assigner-qa.vis.veritext.com/login'`
-`STAGING_URL='https://vendor-assigner-staging.vis.veritext.com/login'`
 `TEST_ENV='QA'`
 `START_DATE='05/29/2024'`
 `END_DATE='05/30/2024'`
