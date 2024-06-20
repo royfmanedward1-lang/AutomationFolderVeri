@@ -70,15 +70,16 @@ module.exports = {
         let lastHTMLSize = 0
         let checkCounts = 1
         let countStableSizeIterations = 0
-        const minStableSizeIterations = 3
+        const minStableSizeIterations = 2
         
         while(checkCounts++ <= maxChecks){
             let html = await page.content()
             let currentHTMLSize = html.length 
         
             let bodyHTMLSize = await page.evaluate(() => document.body.innerHTML.length)
-    
-            console.log('last: ', lastHTMLSize, ' <> curr: ', currentHTMLSize, " body html size: ", bodyHTMLSize)
+            
+            // Leaving commented log in case it's needed in future testing
+            // console.log('last: ', lastHTMLSize, ' <> curr: ', currentHTMLSize, " body html size: ", bodyHTMLSize)
     
             if (lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize) {
                 countStableSizeIterations++
