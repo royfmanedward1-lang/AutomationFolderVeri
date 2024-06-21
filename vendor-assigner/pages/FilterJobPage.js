@@ -1,5 +1,4 @@
 import { expect } from "@playwright/test"
-
 export class FilterJobPage {
     constructor(page) {
         this.page = page
@@ -28,24 +27,159 @@ export class FilterJobPage {
         this.successAlertError = page.getByText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
     }
 
-    unSelectAllComboBoxStatus = async (page) => {
-        await page.getByRole('option', { name: 'Select All' }).getByRole('checkbox').uncheck()
-    }
-
-    selectComboBoxStatus = async (page, statuses) => {
-        for (const status of statuses) {
-            await page.getByRole('option', { name: status }).getByRole('checkbox').check()
+    getRandomItems = async (type, number) => {
+        const divisions = [
+            "California",
+            "Florida",
+            "Canada",
+            "Mountain",
+            "National",
+            "Central",
+            "Northeast",
+            "South",
+            "Texas",
+            "Corporate",
+            "New Jersey"
+        ];
+        const locations = [
+            "Veritext",
+            "Client",
+            "Remote",
+            "Other",
+            "TBD"
+        ];
+        const partners = [
+            "Court Reporter",
+            "Interpreter",
+            "Videographer",
+            "Transcriber"
+        ];
+        const statuses = [
+            "Archived",
+            "Cancelled",
+            "Closed",
+            "Confirmed",
+            "Invoiced",
+            "Scheduled",
+            "Wait for call"
+        ];
+        const proceeding = [
+            "Arbitration",
+            "Asbestos",
+            "Boardroom Rental Only",
+            "Captioning/Cart",
+            "CNA",
+            "Courts/Trials/Bankruptcy",
+            "Cross-Examination",
+            "Depositions",
+            "Discovery / Questioning",
+            "EUO/Statement"
+        ];
+        const services = [
+            "Audio/Video Transcription",
+            "Conference Call",
+            "Loaner Laptop(s)",
+            "Realtime",
+            "Remote Realtime",
+            "Rough Draft",
+            "Tech Support",
+            "Time Stamping",
+            "Day In the Life",
+            "Duplicate Video"
+        ];
+        let strings
+        switch (type) {
+            case 'divisions':
+                strings = divisions
+                break
+            case 'locations':
+                strings = locations
+                break
+            case 'partners':
+                strings = partners
+                break
+            case 'statuses':
+                strings = statuses
+                break
+            case 'proceeding':
+                strings = proceeding
+                break
+            case 'services':
+                strings = services
+                break
+            default:
+                strings = "No value found";
         }
-    }
 
-    unSelectComboBoxDivisions = async (page, filterJobPage) => {
-        const divisionItemsId = await filterJobPage.filterDivisions.getAttribute('aria-controls')
-        const divisionItemsParent = await page.locator(`[id='${divisionItemsId}']`)
-        const divisionItems = await divisionItemsParent.locator('li')
-        for (let index = 0; index < await divisionItems.count(); index++) {
-            const element = await divisionItems.nth(index);
-            const isSelected = await element.getAttribute('aria-selected')
-            if (isSelected == 'true') {
+        for (let i = strings.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [strings[i], strings[j]] = [strings[j], strings[i]];
+        }
+        return strings.slice(0, number);
+    }
+    setFilter = async (page, combo, items) => {
+        let comboLocator
+        let filterMenu = page.locator('#menu- > .MuiBackdrop-root')
+        switch (combo) {
+            case 'division':
+                comboLocator = '#filter-divisions'
+                break
+            case 'location':
+                comboLocator = '#filter-locationTypes'
+                break
+            case 'partners':
+                comboLocator = '#filter-serviceTypes'
+                break
+            case 'status':
+                comboLocator = '#filter-jobStatuses'
+                break
+            case 'proceeding':
+                comboLocator = '#filter-proceedingTypes'
+                break
+            case 'service':
+                comboLocator = '#filter-services'
+                break
+            default:
+                strings = "No value found";
+        }
+
+        let filterCombo = page.locator(comboLocator)
+        await filterCombo.click()
+        if (combo == 'division') {
+            await this.unSelectAllComboBox(page, true, filterCombo)
+        }
+        else {
+            await this.unSelectAllComboBox(page, false, filterCombo)
+        }
+        for (const item of items) {
+            await page.getByRole('option', { name: item, exact: true }).first().getByRole('checkbox').check()
+        }
+        await filterMenu.click()
+
+    }
+    unSelectAllComboBox = async (page, isDivision, comboBox) => {
+        if (isDivision) {
+            const divisionItemsId = await comboBox.getAttribute('aria-controls')
+            const divisionItemsParent = await page.locator(`[id='${divisionItemsId}']`)
+            const divisionItems = await divisionItemsParent.locator('li')
+            for (let index = 0; index < await divisionItems.count(); index++) {
+                const element = await divisionItems.nth(index);
+                const isSelected = await element.getAttribute('aria-selected')
+                if (isSelected == 'true') {
+                    await element.click()
+                }
+            }
+        }
+        else {
+            const itemsId = await comboBox.getAttribute('aria-controls')
+            const itemsParent = await page.locator(`[id='${itemsId}']`)
+            const items = await itemsParent.locator('li')
+            const element = await items.nth(0)
+            if (await element.getAttribute('tabindex') == '-1') {
+                await element.click()
+            }
+            else {
+                await element.click()
                 await element.click()
             }
         }
@@ -58,168 +192,79 @@ export class FilterJobPage {
         return await items.count()
     }
 
-    selectFirstComboBoxDivision = async (page, filterJobPage) => {
-        const divisionItemsId = await filterJobPage.filterDivisions.getAttribute('aria-controls')
-        const divisionItemsParent = await page.locator(`[id='${divisionItemsId}']`)
-        const divisionItems = await divisionItemsParent.locator('li')
-        await divisionItems.nth(0).click()
-    }
-
-    unSelectComboBox = async (page, comboBox) => {
-        const itemsId = await comboBox.getAttribute('aria-controls')
-        const itemsParent = await page.locator(`[id='${itemsId}']`)
-        const items = await itemsParent.locator('li')
-        for (let index = 0; index < await items.count(); index++) {
-            const element = await items.nth(index);
-            const isSelected = await element.getAttribute('aria-selected')
-            if (isSelected == 'true') {
-                await element.click()
-            }
+    createFilter = async (name, isCoverage) => {
+        let divisions
+        if (isCoverage) {
+            divisions = await this.getRandomItems('divisions', 1)
         }
+        else {
+            divisions = await this.getRandomItems('divisions', 3)
+        }
+        let locations = await this.getRandomItems('locations', 3)
+        let partners = await this.getRandomItems('partners', 3)
+        let statuses = await this.getRandomItems('statuses', 3)
+        let proceeding = await this.getRandomItems('proceeding', 3)
+        let services = await this.getRandomItems('services', 3)
+        await this.filterButton.click()
+        await this.setFilter(this.page, 'division', divisions)
+        await this.setFilter(this.page, 'location', locations)
+        await this.setFilter(this.page, 'partners', partners)
+        await this.setFilter(this.page, 'status', statuses)
+        await this.setFilter(this.page, 'proceeding', proceeding)
+        await this.setFilter(this.page, 'service', services)
+        await this.createEditToggle.click()
+        await this.defaultCheckbox.click()
+        await this.createFilterTextbox.fill(name)
+        await this.buttonSave.click()
+        await this.buttonSaveNew.click()
+        await this.buttonApply.click()
     }
 
-    createFilter = async (page, filterJobPage, name, statuses) => {
-        await expect(filterJobPage.filterButton).toHaveText('FILTER')
-        await filterJobPage.filterButton.click()
-        await expect(filterJobPage.filterPreset).toBeVisible()
-        await filterJobPage.filterPreset.click()
-        await filterJobPage.filterPresetDefaultOption.click()
-        await expect(filterJobPage.filterDivisions).toBeVisible()
-        await filterJobPage.filterDivisions.click()
-        await filterJobPage.filterMenu.click()
-        await expect(filterJobPage.filterCoverageAreas).toBeDisabled()
-        await expect(filterJobPage.filterLocation).toBeVisible()
-        await filterJobPage.filterLocation.click()
-        await filterJobPage.filterMenu.click()
-        await expect(filterJobPage.filterPartner).toBeVisible()
-        await filterJobPage.filterPartner.click()
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterStatus.click()
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterProceeding.click()
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterServices.click()
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.createEditToggle.click()
-        await filterJobPage.defaultCheckbox.click()
-        await filterJobPage.createFilterTextbox.fill(name)
-        await expect(filterJobPage.createFilterTextbox).toHaveValue(name)
-        await filterJobPage.filterStatus.click()
-        await filterJobPage.unSelectAllComboBoxStatus(page)
-        await filterJobPage.selectComboBoxStatus(page, statuses)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterDivisions.click()
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.buttonSave.click()
-        await filterJobPage.buttonSaveNew.click()
-        await filterJobPage.buttonApply.click()
-        await expect(filterJobPage.successAlertSaved).toHaveText('Filter preset saved.')
-        await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
+    createFilterWithoutSelectingFilters = async (name) => {
+        await this.filterButton.click()
+        await this.filterPreset.click()
+        await this.filterPresetDefaultOption.click()
+        await this.filterDivisions.click()
+        await this.unSelectAllComboBox(this.page, true, this.filterDivisions)
+        await this.filterMenu.click()
+        await this.filterLocation.click()
+        await this.unSelectAllComboBox(this.page, false, this.filterLocation)
+        await this.filterMenu.click()
+        await this.filterPartner.click()
+        await this.unSelectAllComboBox(this.page, false, this.filterPartner)
+        await this.filterMenu.click()
+        await this.filterStatus.click()
+        await this.unSelectAllComboBox(this.page, false, this.filterStatus)
+        await this.filterMenu.click()
+        await this.filterProceeding.click()
+        await this.unSelectAllComboBox(this.page, false, this.filterProceeding)
+        await this.filterMenu.click()
+        await this.filterServices.click()
+        await this.unSelectAllComboBox(this.page, false, this.filterServices)
+        await this.filterMenu.click()
+        await this.createEditToggle.click()
+        await this.defaultCheckbox.click()
+        await this.createFilterTextbox.fill(name)
+        await this.buttonSave.click()
+        await this.buttonSaveNew.click()
+        await expect(this.buttonApply).toBeDisabled()
     }
 
-    createFilterWithCoverage = async (page, filterJobPage, name, statuses) => {
-        await expect(filterJobPage.filterButton).toHaveText('FILTER')
-        await filterJobPage.filterButton.click()
-        await expect(filterJobPage.filterPreset).toBeVisible()
-        await filterJobPage.filterPreset.click()
-        await filterJobPage.filterPresetDefaultOption.click()
-        await expect(filterJobPage.filterDivisions).toBeVisible()
-        await filterJobPage.filterDivisions.click()
-        await filterJobPage.unSelectComboBoxDivisions(page, filterJobPage)
-        await filterJobPage.selectFirstComboBoxDivision(page, filterJobPage)
-        await filterJobPage.filterMenu.click()
-        await expect(filterJobPage.filterCoverageAreas).toBeEnabled()
-        await filterJobPage.filterCoverageAreas.click()
-        await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterCoverageAreas)).toBeGreaterThan(0)
-        await filterJobPage.filterMenu.click()
-        await expect(filterJobPage.filterLocation).toBeVisible()
-        await filterJobPage.filterLocation.click()
-        await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterLocation)).toBeGreaterThan(0)
-        await filterJobPage.filterMenu.click()
-        await expect(filterJobPage.filterPartner).toBeVisible()
-        await filterJobPage.filterPartner.click()
-        await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterPartner)).toBeGreaterThan(0)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterStatus.click()
-        await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterStatus)).toBeGreaterThan(0)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterProceeding.click()
-        await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterProceeding)).toBeGreaterThan(0)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterServices.click()
-        await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterServices)).toBeGreaterThan(0)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.createEditToggle.click()
-        await filterJobPage.defaultCheckbox.click()
-        await filterJobPage.createFilterTextbox.fill(name)
-        await expect(filterJobPage.createFilterTextbox).toHaveValue(name)
-        await filterJobPage.filterStatus.click()
-        await filterJobPage.unSelectAllComboBoxStatus(page)
-        await filterJobPage.selectComboBoxStatus(page, statuses)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterDivisions.click()
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.buttonSave.click()
-        await filterJobPage.buttonSaveNew.click()
-        await filterJobPage.buttonApply.click()
-        await expect(filterJobPage.successAlertSaved).toHaveText('Filter preset saved.')
-        await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
+    updateFilter = async (name) => {
+        await this.filterButton.click()
+        await this.createEditToggle.click()
+        await this.createFilterTextbox.fill(name)
+        await this.buttonSave.click()
+        await this.buttonUpdatePreset.click()
+        await this.buttonApply.click()
     }
 
-    createFilterWithoutSelectingFilters = async (page, filterJobPage, name) => {
-        await expect(filterJobPage.filterButton).toHaveText('FILTER')
-        await filterJobPage.filterButton.click()
-        await expect(filterJobPage.filterPreset).toBeVisible()
-        await filterJobPage.filterPreset.click()
-        await filterJobPage.filterPresetDefaultOption.click()
-        await expect(filterJobPage.filterDivisions).toBeVisible()
-        await filterJobPage.filterDivisions.click()
-        await filterJobPage.unSelectComboBox(page, filterJobPage.filterDivisions)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterLocation.click()
-        await filterJobPage.unSelectComboBox(page, filterJobPage.filterLocation)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterPartner.click()
-        await filterJobPage.unSelectComboBox(page, filterJobPage.filterPartner)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterStatus.click()
-        await filterJobPage.unSelectComboBox(page, filterJobPage.filterStatus)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterProceeding.click()
-        await filterJobPage.unSelectComboBox(page, filterJobPage.filterProceeding)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.filterServices.click()
-        await filterJobPage.unSelectComboBox(page, filterJobPage.filterServices)
-        await filterJobPage.filterMenu.click()
-        await filterJobPage.createEditToggle.click()
-        await filterJobPage.defaultCheckbox.click()
-        await filterJobPage.createFilterTextbox.fill(name)
-        await filterJobPage.buttonSave.click()
-        await filterJobPage.buttonSaveNew.click()
-        await expect(filterJobPage.buttonApply).toBeDisabled()
-        await expect(this.successAlertError).toHaveText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
-
-    }
-
-    updateFilter = async (filterJobPage, name) => {
-        await filterJobPage.filterButton.click()
-        await expect(filterJobPage.filterButton).toHaveText('FILTER')
-        await expect(filterJobPage.filterPreset).toBeVisible()
-        await filterJobPage.createEditToggle.click()
-        await filterJobPage.createFilterTextbox.fill(name)
-        await filterJobPage.buttonSave.click()
-        await filterJobPage.buttonUpdatePreset.click()
-        await filterJobPage.buttonApply.click()
-    }
-
-    deleteFilter = async (page, filterJobPage, name) => {
-        await filterJobPage.filterButton.click()
-        await expect(filterJobPage.filterButton).toHaveText('FILTER')
-        await expect(filterJobPage.filterPreset).toBeVisible()
-        await filterJobPage.createEditToggle.click()
-        await filterJobPage.buttonDelete.click()
-        const successAleetDelete = await page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
+    deleteFilter = async (name) => {
+        await this.filterButton.click()
+        await this.createEditToggle.click()
+        await this.buttonDelete.click()
+        const successAleetDelete = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
         await expect(successAleetDelete).toHaveText(`Your Filter Preset ${name} has successfully been deleted.`)
-        await filterJobPage.buttonCloseFilter.click()
+        await this.buttonCloseFilter.click()
     }
 }

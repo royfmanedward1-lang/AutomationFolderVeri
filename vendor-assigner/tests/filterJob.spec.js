@@ -1,23 +1,27 @@
 import { LoginPage } from '../pages/LoginPage.js'
+import { HeaderPage } from '../pages/assignament/HeaderPage.js'
 import { FilterJobPage } from '../pages/FilterJobPage.js'
-const { test } = require('@playwright/test')
+const { test, expect } = require('@playwright/test')
 
 //Creat a filter job
 test('Create Filter Job', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses)
-
+  await filterJobPage.createFilter('test filter', false)
+  await expect(filterJobPage.successAlertSaved).toHaveText('Filter preset saved.')
+  await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
+  await filterJobPage.updateFilter('filter updated')
+  await filterJobPage.deleteFilter('filter updated')
 })
 //Creat a filter with coverage
 test('Create Filter job with coverage ', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-  await filterJobPage.createFilterWithCoverage(page, filterJobPage, 'test filter', statuses)
+  await filterJobPage.createFilter('test filter', true)
+  await expect(filterJobPage.successAlertSaved).toHaveText('Filter preset saved.')
+  await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
 
 })
 //Creat a filter without selecting filters
@@ -25,26 +29,20 @@ test('Create Filter job without selecting filters', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
   await loginPage.login()
-  await filterJobPage.createFilterWithoutSelectingFilters(page, filterJobPage, 'test filter')
+  await filterJobPage.createFilterWithoutSelectingFilters('test filter')
+  await expect(filterJobPage.successAlertError).toHaveText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
 
 })
-//update a filter job
-test('Update Filter Job', async ({ page }) => {
+//Apply Filters To Job List
+test('Sign Out And Sign In Again', async ({ page }) => {
   const loginPage = new LoginPage(page)
+  const headerPage = new HeaderPage(page)
   const filterJobPage = new FilterJobPage(page)
-  const statuses = ['Cancelled', 'Closed', 'Confirmed']
   await loginPage.login()
-  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses)
-  await filterJobPage.updateFilter(filterJobPage, 'filter updated')
-
-})
-//delete a filter job
-test('Delete Filter Job', async ({ page }) => {
-  const loginPage = new LoginPage(page)
-  const filterJobPage = new FilterJobPage(page)
-  const statuses = ['Cancelled', 'Closed', 'Confirmed']
+  await filterJobPage.createFilter('test filter')
+  await headerPage.logOut()
   await loginPage.login()
-  await filterJobPage.createFilter(page, filterJobPage, 'test filter', statuses)
-  await filterJobPage.deleteFilter(page, filterJobPage, 'test filter')
+  await filterJobPage.filterButton.click()
+  await expect(await filterJobPage.comboBoxItemsCount(page, filterJobPage.filterPreset)).toEqual(1)
 })
 
