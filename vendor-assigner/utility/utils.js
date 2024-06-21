@@ -94,54 +94,5 @@ module.exports = {
             lastHTMLSize = currentHTMLSize
             await page.waitForTimeout(checkDurationMsecs)
         }
-    },
-    setFilter: async function (page, combo, items) {
-        let comboLocator
-        let filterMenu = page.locator('#menu- > .MuiBackdrop-root')
-        if (combo == 'division') {
-            comboLocator = '#filter-divisions'
-        } else if (combo == 'location') {
-            comboLocator = '#filter-locationTypes'
-        } else if (combo == 'partners') {
-            comboLocator = '#filter-serviceTypes'
-        } else if (combo == 'status') {
-            comboLocator = '#filter-jobStatuses'
-        } else if (combo == 'proceeding') {
-            comboLocator = '#filter-proceedingTypes'
-        } else if (combo == 'service') {
-            comboLocator = '#filter-services'
-        }
-        let filterCombo = page.locator(comboLocator)
-        await filterCombo.click()
-        if (combo == 'division') {
-            const divisionItemsId = await filterCombo.getAttribute('aria-controls')
-            const divisionItemsParent = await page.locator(`[id='${divisionItemsId}']`)
-            const divisionItems = await divisionItemsParent.locator('li')
-            for (let index = 0; index < await divisionItems.count(); index++) {
-                const element = await divisionItems.nth(index);
-                const isSelected = await element.getAttribute('aria-selected')
-                if (isSelected == 'true') {
-                    await element.click()
-                }
-            }
-        }
-        else {
-            const itemsId = await filterCombo.getAttribute('aria-controls')
-            const itemsParent = await page.locator(`[id='${itemsId}']`)
-            const items = await itemsParent.locator('li')
-            const element = await items.nth(0)
-            if (await element.getAttribute('tabindex') == '-1') {
-                await element.click()
-            }
-            else {
-                await element.click()
-                await element.click()
-            }
-        }
-        for (const item of items) {
-            await page.getByRole('option', { name: item, exact: true }).first().getByRole('checkbox').check()
-        }
-        await filterMenu.click()
-
     }
 }
