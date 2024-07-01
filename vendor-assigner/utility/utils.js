@@ -1,7 +1,5 @@
 module.exports = {
-    findJobDetails: async function (page, partnerType) {
-        await this.waitTillHTMLRendered(page)
-
+    findJobDetailsToAssignPartner: async function (page, partnerType) {
         const job = await page.locator('//div[@data-id and .//button[text()="Assign ' + partnerType + '"]][1]')
         const jobId = await job.first().getAttribute('data-id')
 
@@ -15,9 +13,8 @@ module.exports = {
             button: button
         }
     },
-    findJobDetailsForAddNew: async function (page, partnerType, isPrimaryType) {
-        await this.waitTillHTMLRendered(page)
 
+    findJobDetailsForAddNew: async function(page, partnerType, isPrimaryType) {
         let job
         if (isPrimaryType) {
             job = await page.locator('//div[@data-id and .//p[text()="' + partnerType + '"]]')
@@ -31,16 +28,42 @@ module.exports = {
 
         console.log("Found JobId: " + jobId + " to add a new " + partnerType)
 
-        const button = page.locator('//*[@data-id="' + jobId + '"]/descendant::*[contains(text(), "ADD NEW")]/ancestor::button')
+        const button = page.locator('//*[@data-id="' + jobId + '"]/descendant::*[(text()="ADD NEW")]/ancestor::button')
 
         return {
             jobId: jobId,
             button: button
         }
     },
-    findPartnerDetails: async function (page, partnerType) {
-        await this.waitTillHTMLRendered(page)
 
+    findJobDetailsWithPartnerStatus: async function(page, status) {
+        await this.waitTillHTMLRendered(page)        
+        const allJobs = await page.locator('//*[contains(text(),"' + status + '")]/ancestor::*[@data-id]')
+        const numberOfOptions = await allJobs.count()
+        const statusOptionNumber = Math.floor(Math.random() * numberOfOptions)
+        const job = await allJobs.nth(statusOptionNumber)
+        const jobId = await job.getAttribute('data-id')
+
+        const partnerStatusButton = await page.locator('//*[@data-id="' + jobId + '"]/descendant::*[contains(text(),"' + status + '")][1]')
+        const selectedPartnerDetails = await partnerStatusButton.locator('//ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]')
+
+        const partnerNameDiv = await selectedPartnerDetails
+                        .locator('//descendant::*[@class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap mui-style-1hqbags"]')
+        const partnerName = await partnerNameDiv.getAttribute('aria-label')
+        const partnerType = await partnerNameDiv.locator('//parent::*/preceding-sibling::*').textContent()
+
+        console.log("Found JobId: " + jobId + " with a partner called " + partnerName + " assigned as a " + partnerType + "  with status " + status)
+        
+        return {
+            jobId : jobId,
+            partnerName : partnerName,
+            partnerType: partnerType,
+            button : partnerStatusButton  
+        }
+    },
+
+    findPartnerDetails: async function(page, partnerType) {
+        await this.waitTillHTMLRendered(page)
         const partner = await page.locator('//div[@data-field="availability" and .//span[text()="Available"]]' +
             '/ancestor::*[@data-id and .//button[not(@disabled) and text()="Add Partner"]][1]')
 
@@ -78,8 +101,6 @@ module.exports = {
 
             let bodyHTMLSize = await page.evaluate(() => document.body.innerHTML.length)
 
-            console.log('last: ', lastHTMLSize, ' <> curr: ', currentHTMLSize, " body html size: ", bodyHTMLSize)
-
             if (lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize) {
                 countStableSizeIterations++
             } else {
@@ -87,7 +108,7 @@ module.exports = {
                 countStableSizeIterations = 0
             }
             if (countStableSizeIterations >= minStableSizeIterations) {
-                console.log("Page rendered fully..")
+                console.log("Page rendered fully. Body html size: ", bodyHTMLSize)
                 break
             }
 
