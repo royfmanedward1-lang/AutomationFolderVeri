@@ -1,4 +1,4 @@
-import { test} from '@playwright/test'
+import { test } from '@playwright/test'
 import { LoginPage } from '../pages/LoginPage.js'
 import { FilterPage } from '../pages/FilterPage.js'
 import { AssignmentPage } from '../pages/AssignmentPage.js'

@@ -12,9 +12,11 @@ export class AssignmentPage {
 
         //Partner Status
         this.changeStatusOption = page.getByRole('option', { name: 'Change Status' })
+        this.removePartnerOption = page.getByRole('option', { name: 'Remove Partner' })
 
         //Confirmation Modal
         this.confirmStatusChangeButton = page.getByRole('button', { name: 'Yes, Change' })
+        this.removePartnerButton = page.getByRole('button', { name: 'Remove' })
         this.cancelButton = page.getByRole('button', { name: 'Cancel' })
     }
 
@@ -70,6 +72,14 @@ export class AssignmentPage {
 
             console.log("Tried selecting status change from " + currentStatus + " to " + newStatus + " then canceled")
         }
+    }
+
+    async removePartner(jobId, partnerName, partnerType) {
+        const jobLocator = '//div[@data-id="' + jobId + '"]/descendant::*[text()="' + partnerType + '"]/following-sibling::*/descendant::*[text()="' + partnerName + '"]'
+        await expect(this.page.locator(jobLocator)).toBeVisible()
+        await this.removePartnerOption.click()
+        await this.removePartnerButton.click()
+        await expect(this.page.locator(jobLocator)).not.toBeVisible()
     }
 
     async selectChangeStatus() {
