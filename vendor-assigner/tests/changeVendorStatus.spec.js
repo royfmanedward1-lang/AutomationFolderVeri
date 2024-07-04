@@ -27,17 +27,19 @@ for (const currentStatus of statusTypes) {
                 await assignmentPage.clickOnNewStatus(newStatus)
                 await assignmentPage.confirmStatusChange(true, jobDetails.jobId, jobDetails.partnerName, jobDetails.partnerType, currentStatus, newStatus)
             })
-        }
 
-        test(`Cancel Partner Assignement changing from ${currentStatus} to ${newStatus}`, async ({page}) => {
+            test(`Cancel Partner Assignement changing from ${currentStatus} to ${newStatus}`, async ({page}) => {
                 const assignmentPage = new AssignmentPage(page)
                 const jobDetails = await utils.findJobDetailsWithPartnerStatus(page, currentStatus)
                 await assignmentPage.clickOnStatus(jobDetails.button)
                 await assignmentPage.selectChangeStatus()
                 await assignmentPage.clickOnNewStatus(newStatus)
                 await assignmentPage.confirmStatusChange(false, jobDetails.jobId, jobDetails.partnerName, jobDetails.partnerType, currentStatus, newStatus) 
-        })
+            })
+        }
     }
 }
+
+
 
 
