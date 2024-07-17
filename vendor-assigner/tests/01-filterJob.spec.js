@@ -3,7 +3,7 @@ import { HeaderPage } from '../pages/assignament/HeaderPage.js'
 import { FilterJobPage } from '../pages/FilterJobPage.js'
 const { test, expect } = require('@playwright/test')
 
-//Creat a filter job
+//Create a filter job
 test('Create Filter Job', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
@@ -14,7 +14,7 @@ test('Create Filter Job', async ({ page }) => {
   await filterJobPage.updateFilter('filter updated')
   await filterJobPage.deleteFilter('filter updated')
 })
-//Creat a filter with coverage
+//Create a filter with coverage
 test('Create Filter job with coverage ', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
@@ -24,7 +24,7 @@ test('Create Filter job with coverage ', async ({ page }) => {
   await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
 
 })
-//Creat a filter without selecting filters
+//Create a filter without selecting filters
 test('Create Filter job without selecting filters', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
@@ -33,7 +33,7 @@ test('Create Filter job without selecting filters', async ({ page }) => {
   await expect(filterJobPage.successAlertError).toHaveText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
 
 })
-//Apply Filters To Job List
+
 test('Sign Out And Sign In Again', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const headerPage = new HeaderPage(page)

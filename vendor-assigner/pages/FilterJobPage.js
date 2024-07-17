@@ -152,7 +152,7 @@ export class FilterJobPage {
             await this.unSelectAllComboBox(page, false, filterCombo)
         }
         for (const item of items) {
-            await page.getByRole('option', { name: item, exact: true }).first().getByRole('checkbox').check()
+            await page.getByRole('option', { name: item, exact: true }).first().click()
         }
         await filterMenu.click()
 
@@ -266,5 +266,14 @@ export class FilterJobPage {
         const successAleetDelete = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
         await expect(successAleetDelete).toHaveText(`Your Filter Preset ${name} has successfully been deleted.`)
         await this.buttonCloseFilter.click()
+    }
+
+    async setNewFilters() {
+        let statuses = ["Confirmed", "Invoiced", "Scheduled", "Wait for call"]
+        await this.filterButton.click()
+        const division = await this.getRandomItems('divisions', 1)
+        await this.setFilter(this.page, 'division', division)
+        await this.setFilter(this.page, 'status', statuses)
+        await this.buttonApply.click()
     }
 }

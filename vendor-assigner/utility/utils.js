@@ -19,8 +19,11 @@ module.exports = {
         if (isPrimaryType) {
             job = await page.locator('//div[@data-id and .//p[text()="' + partnerType + '"]]')
         } else {
-            const allJobs = page.locator('//div[@data-id and .//p[text()="ADD NEW"]]')
-            const numberOfOptions = await allJobs.count()
+            let allJobs = page.locator('//div[@data-id and .//p[text()="ADD NEW"]]')
+            let numberOfOptions = await allJobs.count()
+            if (numberOfOptions > 20) {
+                numberOfOptions = 20
+            }
             const addNewButtonNumber = Math.floor(Math.random() * numberOfOptions) + 1
             job = await allJobs.nth(addNewButtonNumber)
         }
@@ -39,7 +42,10 @@ module.exports = {
     findJobDetailsWithPartnerStatus: async function(page, status) {
         await this.waitTillHTMLRendered(page)        
         const allJobs = await page.locator('//*[contains(text(),"' + status + '")]/ancestor::*[@data-id]')
-        const numberOfOptions = await allJobs.count()
+        let numberOfOptions = await allJobs.count()
+        if (numberOfOptions > 20) {
+            numberOfOptions = 20
+        }
         const statusOptionNumber = Math.floor(Math.random() * numberOfOptions)
         const job = await allJobs.nth(statusOptionNumber)
         const jobId = await job.getAttribute('data-id')
@@ -130,7 +136,6 @@ module.exports = {
                 countStableSizeIterations = 0
             }
             if (countStableSizeIterations >= minStableSizeIterations) {
-                console.log("Page rendered fully. Body html size: ", bodyHTMLSize)
                 break
             }
 

@@ -34,7 +34,6 @@ export class AssignmentPage {
             await viewMorePartners.click()
         }
         
-        await utils.waitTillHTMLRendered(this.page)
         await expect(this.page.locator('//div[@data-id="' + this.jobDetails.jobId + '" and .//p[text()="' + partnerType + '"]]//parent::p[@aria-label="' + partnerDetails.partnerName + '"]')).toBeVisible()
     } 
     
@@ -49,7 +48,6 @@ export class AssignmentPage {
     }
 
     async confirmStatusChange(confirmChange, jobId, partnerName, partnerType, currentStatus, newStatus) {
-        await utils.waitTillHTMLRendered(this.page)
         const statusLocator = '//*[@data-id="' + jobId + '"]/descendant::*[contains(text(), "' + partnerType + '")]/following-sibling::*/descendant::*' +
                 '[@aria-label="' + partnerName + '"]/ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]/descendant::*[@aria-label="Select Partner Status"]'
         let statusButton
