@@ -1,20 +1,24 @@
 import { test } from '@playwright/test'
 import { LoginPage } from '../pages/LoginPage.js'
 import { FilterPage } from '../pages/FilterPage.js'
-import { AssignmentPage } from '../pages/AssignmentPage.js'
 import { FilterJobPage } from '../pages/FilterJobPage.js'
+import { AssignmentPage } from '../pages/AssignmentPage.js'
 
-test.beforeEach('Logging in', async ({ page }) => {
+test.beforeEach('Logging in and set jobs', async ({ page }) => {
   //login
   const loginPage = new LoginPage(page)
-  await loginPage.login()    
+  await loginPage.login()
 
+  //change date
   const filterPage = new FilterPage(page)
-  await filterPage.changeFilterDate()
-  
-  //Assign new filters
+  const totalJobs = await filterPage.getTotalJobs()
+  if (totalJobs === 0) {
+    await filterPage.changeFilterDate()
+  }
+
+  //specific status to assign partners
   const filterJobPage = new FilterJobPage(page)
-  await filterJobPage.setNewFilters()
+  await filterJobPage.applyOnlyValidJobs()
 })
 
 const partnerTypePrimaryList = ['Steno Reporter','Transcriber','Interpreter','Videographer', 'Digital Reporter']
@@ -28,7 +32,7 @@ for (const partnerType of partnerTypePrimaryList) {
   })
 }
 
-const partnerTypeSecondaryList = ['Proofreader', 'Mediator','Concierge-Tech','Corrector','Scopist','Process Server','Trial Tech', 'Other']
+const partnerTypeSecondaryList = ['Proofreader','Mediator','Concierge-Tech','Corrector','Scopist','Process Server','Trial Tech','Other']
 for (const partnerType of partnerTypeSecondaryList) {
   test(`Add ${partnerType} to a job using ADD NEW and verify if ${partnerType} is added`, async ({ page }) => {
     const isPrimaryType = false

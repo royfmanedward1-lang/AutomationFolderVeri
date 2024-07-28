@@ -1,5 +1,6 @@
-import * as utils from '../utility/utils'
+import * as utils from '../utility/utils.js'
 import { expect } from '@playwright/test'
+import { FilterPage } from './FilterPage.js'
 
 export class AssignmentPage {
     constructor(page){
@@ -21,14 +22,17 @@ export class AssignmentPage {
     }
 
     async addPartner(partnerType) {
-        await utils.waitTillHTMLRendered(this.page)
         const partnerDetails = await utils.findPartnerDetails(this.page, partnerType)
     
-        await partnerDetails.button.click()
-        await this.applyButton.click()
-
         console.log("Selected partner " + partnerDetails.partnerName + " as a " + partnerType)
 
+        await partnerDetails.button.click()
+        await expect(this.applyButton).toBeEnabled()
+        await this.applyButton.click()
+        await utils.waitLoadToFinish(this.page)
+        const filterPage = new FilterPage(this.page)
+        await filterPage.checkFiltersWereApplied()
+        
         const viewMorePartners = await this.page.locator('//div[@data-id=' + this.jobDetails.jobId + ']/descendant::*[contains(text(), "VIEW MORE")]')
         if (await viewMorePartners.isVisible()){
             await viewMorePartners.click()
@@ -38,7 +42,6 @@ export class AssignmentPage {
     } 
     
     async clickOnStatus(status) {
-        await status.waitFor()
         await status.click()
     }
 
@@ -52,19 +55,20 @@ export class AssignmentPage {
                 '[@aria-label="' + partnerName + '"]/ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]/descendant::*[@aria-label="Select Partner Status"]'
         let statusButton
         if (confirmChange) {
-            await this.confirmStatusChangeButton.waitFor()
             await this.confirmStatusChangeButton.click()
 
-            await utils.waitTillHTMLRendered(this.page)
+            await utils.waitLoadToFinish(this.page)
+            const filterPage = new FilterPage(this.page)
+            await filterPage.checkFiltersWereApplied()
+
             statusButton = await this.page.locator(statusLocator).first()
             await expect(statusButton).toHaveText(newStatus)
 
             console.log(partnerName + ", assigned as a " + partnerType + " partner to job " + jobId + ", had their status successfully updated from " + currentStatus + " to " + newStatus)
         } else {
-            await this.cancelButton.waitFor()
             await this.cancelButton.click()
 
-            await utils.waitTillHTMLRendered(this.page)
+            await utils.waitLoadToFinish(this.page)
             statusButton = await this.page.locator(statusLocator).first()
             await expect(statusButton).toHaveText(currentStatus)
 
@@ -81,23 +85,22 @@ export class AssignmentPage {
     }
 
     async selectChangeStatus() {
-        await this.changeStatusOption.waitFor()
         await this.changeStatusOption.hover()
     }
 
     async selectJobAndAssignPartner(partnerType) {
-        await utils.waitTillHTMLRendered(this.page)
         this.jobDetails = await utils.findJobDetailsToAssignPartner(this.page, partnerType)
         await this.jobDetails.button.click()
         console.log("Selected job with jobid: " + this.jobDetails.jobId + " for " + partnerType)
+        await utils.waitLoadToFinish(this.page)
     }
 
     async selectJobToAddNewPartner(partnerType, isPrimaryType) {
-        await utils.waitTillHTMLRendered(this.page)
         this.jobDetails = await utils.findJobDetailsForAddNew(this.page, partnerType, isPrimaryType)
         await this.jobDetails.button.click()
         
         console.log("Clicked on job with jobid: " + this.jobDetails.jobId + " for adding " + partnerType)
+        await utils.waitLoadToFinish(this.page)
     }
 
     async selectPartnerTypeToAddNew(partnerType) {

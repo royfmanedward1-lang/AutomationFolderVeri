@@ -3,11 +3,15 @@ import { HeaderPage } from '../pages/assignament/HeaderPage.js'
 import { FilterJobPage } from '../pages/FilterJobPage.js'
 const { test, expect } = require('@playwright/test')
 
+test.beforeEach('Logging in', async ({ page }) => {
+  //login
+  const loginPage = new LoginPage(page)
+  await loginPage.login()
+})
+
 //Create a filter job
 test('Create Filter Job', async ({ page }) => {
-  const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-  await loginPage.login()
   await filterJobPage.createFilter('test filter', false)
   await expect(filterJobPage.successAlertSaved).toHaveText('Filter preset saved.')
   await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
@@ -16,9 +20,7 @@ test('Create Filter Job', async ({ page }) => {
 })
 //Create a filter with coverage
 test('Create Filter job with coverage ', async ({ page }) => {
-  const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-  await loginPage.login()
   await filterJobPage.createFilter('test filter', true)
   await expect(filterJobPage.successAlertSaved).toHaveText('Filter preset saved.')
   await expect(filterJobPage.successAlertUpdated).toHaveText('Filter preset updated.')
@@ -26,9 +28,7 @@ test('Create Filter job with coverage ', async ({ page }) => {
 })
 //Create a filter without selecting filters
 test('Create Filter job without selecting filters', async ({ page }) => {
-  const loginPage = new LoginPage(page)
   const filterJobPage = new FilterJobPage(page)
-  await loginPage.login()
   await filterJobPage.createFilterWithoutSelectingFilters('test filter')
   await expect(filterJobPage.successAlertError).toHaveText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
 
@@ -38,7 +38,6 @@ test('Sign Out And Sign In Again', async ({ page }) => {
   const loginPage = new LoginPage(page)
   const headerPage = new HeaderPage(page)
   const filterJobPage = new FilterJobPage(page)
-  await loginPage.login()
   await filterJobPage.createFilter('test filter')
   await headerPage.logOut()
   await loginPage.login()

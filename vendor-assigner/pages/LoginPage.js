@@ -24,7 +24,5 @@ export class LoginPage {
 
         await this.page.getByRole('button', { name: 'LOGIN' }).waitFor()
         await this.page.getByRole('button', { name: 'LOGIN' }).click()
-
-        await utils.waitTillHTMLRendered(this.page)
     }
 }

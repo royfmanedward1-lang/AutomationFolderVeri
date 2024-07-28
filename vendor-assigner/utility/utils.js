@@ -1,6 +1,8 @@
+import { expect } from "@playwright/test"
+
 module.exports = {
     findJobDetailsToAssignPartner: async function (page, partnerType) {
-        const job = await page.locator('//div[@data-id and .//button[text()="Assign ' + partnerType + '"]][1]')
+        const job = await page.locator('//div[@data-id and .//button[text()="Assign ' + partnerType + '"]]')
         const jobId = await job.first().getAttribute('data-id')
 
         console.log("Found JobId: " + jobId + " which needs a " + partnerType)
@@ -16,18 +18,27 @@ module.exports = {
 
     findJobDetailsForAddNew: async function(page, partnerType, isPrimaryType) {
         let job
-        if (isPrimaryType) {
-            job = await page.locator('//div[@data-id and .//p[text()="' + partnerType + '"]]')
-        } else {
-            let allJobs = page.locator('//div[@data-id and .//p[text()="ADD NEW"]]')
-            let numberOfOptions = await allJobs.count()
-            if (numberOfOptions > 20) {
-                numberOfOptions = 20
-            }
-            const addNewButtonNumber = Math.floor(Math.random() * numberOfOptions) + 1
-            job = await allJobs.nth(addNewButtonNumber)
+        let jobId
+        const allJobs = page.locator('//div[@data-id and .//p[text()="ADD NEW"]]')
+        const numberOfOptions = await allJobs.count()
+        
+        if (numberOfOptions > 20) {
+            numberOfOptions = 20
         }
-        const jobId = await job.first().getAttribute('data-id')
+        const addNewButtonNumber = Math.floor(Math.random() * numberOfOptions) - 1
+        
+        do {
+            if (isPrimaryType) {
+                if (await page.locator('//div[@data-id and .//p[text()="' + partnerType + '"]]').count() != 0) {
+                    job = await page.locator('//div[@data-id and .//p[text()="' + partnerType + '"]]').first()
+                } else {
+                    job = await allJobs.nth(addNewButtonNumber)
+                }
+            } else {
+                job = await allJobs.nth(addNewButtonNumber)
+            }
+            jobId = await job.getAttribute('data-id')
+        }  while (await page.locator('//div[@data-id="' + jobId + '" and .//button[text()="Assign ' + partnerType + '"]]').count() != 0)
 
         console.log("Found JobId: " + jobId + " to add a new " + partnerType)
 
@@ -40,13 +51,13 @@ module.exports = {
     },
 
     findJobDetailsWithPartnerStatus: async function(page, status) {
-        await this.waitTillHTMLRendered(page)        
+        await this.waitLoadToFinish(page)        
         const allJobs = await page.locator('//*[contains(text(),"' + status + '")]/ancestor::*[@data-id]')
         let numberOfOptions = await allJobs.count()
         if (numberOfOptions > 20) {
             numberOfOptions = 20
         }
-        const statusOptionNumber = Math.floor(Math.random() * numberOfOptions)
+        const statusOptionNumber = Math.floor(Math.random() * numberOfOptions) - 1
         const job = await allJobs.nth(statusOptionNumber)
         const jobId = await job.getAttribute('data-id')
 
@@ -69,7 +80,7 @@ module.exports = {
     },
 
     findPartnerDetails: async function(page, partnerType) {
-        await this.waitTillHTMLRendered(page)
+        await this.waitLoadToFinish(page)
         const partner = await page.locator('//div[@data-field="availability" and .//span[text()="Available"]]' +
             '/ancestor::*[@data-id and .//button[not(@disabled) and text()="Add Partner"]][1]')
 
@@ -93,6 +104,14 @@ module.exports = {
         }
     },
 
+    getRandomDifferent: function (arr, last = undefined) {
+        let num
+        do {
+            num = Math.floor(Math.random() * arr.length)
+        } while (arr[num] === last)
+        return arr[num]
+    },
+    
     findJobWithPartnerType: async function(page, partnerType) {
         const allJobs = page.locator('//div[@data-id and .//p[contains(text(),"' + partnerType + '")]]')
         const numberOfOptions = await allJobs.count()
@@ -115,32 +134,9 @@ module.exports = {
         }
     },
 
-    waitTillHTMLRendered: async function (page, timeout = 30000) {
-        const checkDurationMsecs = 1000
-        const maxChecks = timeout / checkDurationMsecs
-        let lastHTMLSize = 0
-        let checkCounts = 1
-        let countStableSizeIterations = 0
-        const minStableSizeIterations = 3
+    waitLoadToFinish: async function (page) {
+        await page.waitForLoadState('domcontentloaded')
+        await expect(page.getByRole('grid').getByRole('progressbar')).not.toBeAttached() 
 
-        while (checkCounts++ <= maxChecks) {
-            let html = await page.content()
-            let currentHTMLSize = html.length
-
-            let bodyHTMLSize = await page.evaluate(() => document.body.innerHTML.length)
-
-            if (lastHTMLSize != 0 && currentHTMLSize == lastHTMLSize) {
-                countStableSizeIterations++
-            } else {
-                //reset the counter
-                countStableSizeIterations = 0
-            }
-            if (countStableSizeIterations >= minStableSizeIterations) {
-                break
-            }
-
-            lastHTMLSize = currentHTMLSize
-            await page.waitForTimeout(checkDurationMsecs)
-        }
     }
 }

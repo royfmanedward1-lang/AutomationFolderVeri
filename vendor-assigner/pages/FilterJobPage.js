@@ -1,3 +1,4 @@
+import * as utils from "../utility/utils.js"
 import { expect } from "@playwright/test"
 export class FilterJobPage {
     constructor(page) {
@@ -25,6 +26,21 @@ export class FilterJobPage {
         this.successAlertUpdated = page.getByText('Filter preset updated.')
         this.buttonCloseFilter = page.getByRole('button', { name: 'Close' })
         this.successAlertError = page.getByText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
+    }
+
+    async applyRandomDivisionAsFilter() {
+        const division = await this.getRandomItems('divisions', 1)
+        await this.filterButton.click()
+        await this.setFilter(this.page, 'division', division)
+        await this.buttonApply.click()
+    }
+
+    async applyOnlyValidJobs() {
+        let statuses = ["Confirmed", "Invoiced", "Scheduled", "Wait for call"]
+        await this.filterButton.click()
+        await this.setFilter(this.page, 'status', statuses)
+        await this.buttonApply.click()
+        await utils.waitLoadToFinish(this.page)
     }
 
     getRandomItems = async (type, number) => {
@@ -117,6 +133,7 @@ export class FilterJobPage {
         }
         return strings.slice(0, number);
     }
+    
     setFilter = async (page, combo, items) => {
         let comboLocator
         let filterMenu = page.locator('#menu- > .MuiBackdrop-root')
@@ -157,6 +174,7 @@ export class FilterJobPage {
         await filterMenu.click()
 
     }
+
     unSelectAllComboBox = async (page, isDivision, comboBox) => {
         if (isDivision) {
             const divisionItemsId = await comboBox.getAttribute('aria-controls')
@@ -275,5 +293,6 @@ export class FilterJobPage {
         await this.setFilter(this.page, 'division', division)
         await this.setFilter(this.page, 'status', statuses)
         await this.buttonApply.click()
+        await utils.waitLoadToFinish(this.page)
     }
 }
