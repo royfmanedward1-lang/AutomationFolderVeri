@@ -2,3 +2,4 @@
 vendor-assigner/package-lock.json
 common-services/*-lock.json
 common-services/api-tests/*-lock.json
+common-services/node_modules/*
