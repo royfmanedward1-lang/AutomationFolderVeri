@@ -138,5 +138,10 @@ module.exports = {
         await page.waitForLoadState('domcontentloaded')
         await expect(page.getByRole('grid').getByRole('progressbar')).not.toBeAttached() 
 
+    },
+    waitGridToLoad: async function (page) {
+        const imgLocator = page.getByRole('grid').getByRole('img');
+        await imgLocator.waitFor({ state: 'visible' });
+        await imgLocator.waitFor({ state: 'detached' });
     }
 }
