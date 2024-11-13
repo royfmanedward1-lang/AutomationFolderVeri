@@ -29,7 +29,6 @@ test('Invalid Characters', async ({ page }) => {
 test('Exceeding Characters', async ({ page }) => {
   const columnSettings = new ColumnSettingsPage(page);
 
-  
   let length;
   await test.step('Attempt to create a setting with exceeding characters', async () => {
     length = await columnSettings.createSettingExeedingCharacters();

@@ -12,6 +12,7 @@ test.beforeEach('Logging in', async ({ page }) => {
 test('Check Job List and Columns', async ({ page }) => {
     const defaultColumnList = ["Job Number", "Case Name", "Job Date", "Start Time", "Scheduling Client", "Location Type", "City", "Note", "Partner Assignment"]
     const assignmentPage = new AssignmentPage(page)
+    await utils.waitGridToLoad(page)
     await assignmentPage.checkColumnList(defaultColumnList)
 })
 
