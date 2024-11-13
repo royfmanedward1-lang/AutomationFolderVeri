@@ -1,6 +1,7 @@
 import { test } from '@playwright/test'
 import { LoginPage } from '../pages/LoginPage.js'
 import { AssignmentPage } from '../pages/AssignmentPage.js'
+import * as utils from "../utility/utils.js"
 
 test.beforeEach('Logging in', async ({ page }) => {
     //login
@@ -19,6 +20,7 @@ for (const order of ["Ascending", "Descending"]) {
     for (const columns of defaultColumnList) {
         test(`${order} Sorting Job Column ${columns}`, async ({ page }) => {
             const assignmentPage = new AssignmentPage(page)
+            await utils.waitGridToLoad(page)
             await assignmentPage.sortRandomColumn(columns, order)
         })
     }

@@ -11,6 +11,7 @@ test.beforeEach('Logging in', async ({ page }) => {
 
     //clear all filters
     const filterPage = new FilterPage(page)
+    await utils.waitGridToLoad(page)
     await filterPage.changeFilterDate()
 })
 

@@ -23,6 +23,7 @@ export class FilterJobPage {
         this.buttonDelete = page.getByRole('button', { name: 'DELETE' })
         this.buttonApply = page.locator('#apply-button')
         this.successAlertSaved = page.getByText('Filter preset saved.')
+        this.noJobMatched = page.getByText('No Jobs match selected filters')
         this.successAlertUpdated = page.getByText('Filter preset updated.')
         this.buttonCloseFilter = page.getByRole('button', { name: 'Close' })
         this.successAlertError = page.getByText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
@@ -223,6 +224,7 @@ export class FilterJobPage {
         let statuses = await this.getRandomItems('statuses', 3)
         let proceeding = await this.getRandomItems('proceeding', 3)
         let services = await this.getRandomItems('services', 3)
+        await utils.waitGridToLoad(this.page)
         await this.filterButton.click()
         await this.setFilter(this.page, 'division', divisions)
         await this.setFilter(this.page, 'location', locations)
@@ -235,10 +237,12 @@ export class FilterJobPage {
         await this.createFilterTextbox.fill(name)
         await this.buttonSave.click()
         await this.buttonSaveNew.click()
+        await this.page.waitForTimeout(3000);
         await this.buttonApply.click()
     }
 
     createFilterWithoutSelectingFilters = async (name) => {
+        await utils.waitGridToLoad(this.page)
         await this.filterButton.click()
         await this.filterPreset.click()
         await this.filterPresetDefaultOption.click()
@@ -271,18 +275,29 @@ export class FilterJobPage {
     updateFilter = async (name) => {
         await this.filterButton.click()
         await this.createEditToggle.click()
+        await this.page.waitForTimeout(2000);
         await this.createFilterTextbox.fill(name)
+        await this.page.waitForTimeout(2000);
         await this.buttonSave.click()
+        await this.page.waitForTimeout(2000);
         await this.buttonUpdatePreset.click()
+        await this.successAlertUpdated.first().waitFor({ state: 'visible' })
+        await this.successAlertUpdated.first().waitFor({ state: 'detached' })
         await this.buttonApply.click()
+        await this.page.waitForTimeout(10000);
     }
 
     deleteFilter = async (name) => {
         await this.filterButton.click()
+        await this.filterPreset.click()
+        const filterCurrentPreset =  this.page.getByRole('option', { name: `${name}` })
+        await filterCurrentPreset.click();
         await this.createEditToggle.click()
+        await this.page.waitForTimeout(3000);
         await this.buttonDelete.click()
-        const successAleetDelete = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
-        await expect(successAleetDelete).toHaveText(`Your Filter Preset ${name} has successfully been deleted.`)
+        const successAlertDelete = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
+        await successAlertDelete.waitFor({ state: 'visible' })
+        await expect(successAlertDelete).toHaveText(`Your Filter Preset ${name} has successfully been deleted.`)
         await this.buttonCloseFilter.click()
     }
 

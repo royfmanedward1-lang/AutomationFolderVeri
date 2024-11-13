@@ -140,8 +140,8 @@ module.exports = {
 
     },
     waitGridToLoad: async function (page) {
-        const imgLocator = page.getByRole('grid').getByRole('img');
-        await imgLocator.waitFor({ state: 'visible' });
-        await imgLocator.waitFor({ state: 'detached' });
+        await page.locator('button.MuiLoadingButton-loading:has-text("APPLY")').waitFor({ state: 'visible' })
+        const applyButton = page.locator('button.MuiLoadingButton-loading:has-text("APPLY")');
+        await applyButton.locator('span.MuiLoadingButton-loadingIndicator').waitFor({ state: 'detached' });
     }
 }

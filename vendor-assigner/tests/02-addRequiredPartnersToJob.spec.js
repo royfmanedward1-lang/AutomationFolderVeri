@@ -2,6 +2,7 @@ import { test } from '@playwright/test'
 import { LoginPage } from '../pages/LoginPage.js'
 import { FilterJobPage } from '../pages/FilterJobPage.js'
 import { AssignmentPage } from '../pages/AssignmentPage.js'
+import * as utils from "../utility/utils.js"
 
 test.beforeEach('Logging in and set jobs', async ({ page }) => {
   //login
@@ -14,6 +15,7 @@ for (const partnerType of partnerTypeList) {
   test(`Add ${partnerType} to a job and verify if ${partnerType} is added`, async ({ page }) => {
     const filterJobPage = new FilterJobPage(page)
     const assignmentPage = new AssignmentPage(page)
+    await utils.waitGridToLoad(page)
     await filterJobPage.applyOnlyValidJobs()
     await assignmentPage.selectJobAndAssignPartner(partnerType)
     await assignmentPage.addPartner(partnerType)

@@ -139,7 +139,6 @@ export class ColumnSettingsPage {
         await this.settingsButton.click()
         await this.createEditToggle.click()
         await this.deleteButton.click()
-        await this.confimrDeleteBtutton.click()
         const confirmationDeleted = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
         return confirmationDeleted
     }
