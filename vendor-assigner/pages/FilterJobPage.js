@@ -1,5 +1,6 @@
 import * as utils from "../utility/utils.js"
 import { expect } from "@playwright/test"
+const timer = 3000;
 export class FilterJobPage {
     constructor(page) {
         this.page = page
@@ -27,6 +28,11 @@ export class FilterJobPage {
         this.successAlertUpdated = page.getByText('Filter preset updated.')
         this.buttonCloseFilter = page.getByRole('button', { name: 'Close' })
         this.successAlertError = page.getByText('Your preset could not be saved. No filters have been selected. Please select filters before proceeding.')
+    }
+
+    async clickWithDelay(element, delay) {
+        await this.page.waitForTimeout(delay);
+        await element.click();
     }
 
     async applyRandomDivisionAsFilter() {
@@ -134,7 +140,7 @@ export class FilterJobPage {
         }
         return strings.slice(0, number);
     }
-    
+
     setFilter = async (page, combo, items) => {
         let comboLocator
         let filterMenu = page.locator('#menu- > .MuiBackdrop-root')
@@ -237,8 +243,7 @@ export class FilterJobPage {
         await this.createFilterTextbox.fill(name)
         await this.buttonSave.click()
         await this.buttonSaveNew.click()
-        await this.page.waitForTimeout(3000);
-        await this.buttonApply.click()
+        await this.clickWithDelay(this.buttonApply, timer)
     }
 
     createFilterWithoutSelectingFilters = async (name) => {
@@ -275,26 +280,21 @@ export class FilterJobPage {
     updateFilter = async (name) => {
         await this.filterButton.click()
         await this.createEditToggle.click()
-        await this.page.waitForTimeout(2000);
         await this.createFilterTextbox.fill(name)
-        await this.page.waitForTimeout(2000);
-        await this.buttonSave.click()
-        await this.page.waitForTimeout(2000);
-        await this.buttonUpdatePreset.click()
+        await this.clickWithDelay(this.buttonSave, timer)
+        await this.clickWithDelay(this.buttonUpdatePreset, timer)
         await this.successAlertUpdated.first().waitFor({ state: 'visible' })
         await this.successAlertUpdated.first().waitFor({ state: 'detached' })
         await this.buttonApply.click()
-        await this.page.waitForTimeout(10000);
     }
 
     deleteFilter = async (name) => {
-        await this.filterButton.click()
+        await this.clickWithDelay(this.filterButton, timer)
         await this.filterPreset.click()
-        const filterCurrentPreset =  this.page.getByRole('option', { name: `${name}` })
+        const filterCurrentPreset = this.page.getByRole('option', { name: `${name}` })
         await filterCurrentPreset.click();
         await this.createEditToggle.click()
-        await this.page.waitForTimeout(3000);
-        await this.buttonDelete.click()
+        await this.clickWithDelay(this.buttonDelete, timer)
         const successAlertDelete = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
         await successAlertDelete.waitFor({ state: 'visible' })
         await expect(successAlertDelete).toHaveText(`Your Filter Preset ${name} has successfully been deleted.`)
