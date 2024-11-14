@@ -12,6 +12,6 @@ export class HeaderPage {
     async logOut() {
         await this.userIcon.click()
         await this.logOutButton.click()
-        await this.page.waitForURL(/\/login/, { timeout: 5000 })
+        await this.page.getByRole('button', { name: 'LOGIN' }).waitFor({ state: 'visible' })
     }
 }

@@ -32,7 +32,7 @@ export class FilterPage {
             const filterDate = await this.page.getByPlaceholder('MM/DD/YYYY – MM/DD/YYYY')
             await filterDate.fill(startDate + " – " + endDate)
             await filterDate.fill(startDate + " – " + endDate)
-            await this.page.locator('//button[@id=":r2:"]').click()
+            await this.page.getByRole('button', { name: 'APPLY' }).click()
             await utils.waitLoadToFinish(this.page)
             await this.checkFiltersWereApplied()
         }

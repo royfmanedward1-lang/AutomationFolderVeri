@@ -78,6 +78,8 @@ export class ColumnSettingsPage {
 
     createSettingInvalidCharacter = async () => {
         await this.settingsButton.click()
+        await this.unCheckRandomColumn(3)
+        await this.checkRandomColumn(5)
         await this.createEditToggle.click()
         await this.createColumnTextBox.fill('Test*')
         const invalidCharacterHint = await this.page.getByText('Remove invalid character "*"')
@@ -85,6 +87,8 @@ export class ColumnSettingsPage {
     }
     createSettingExeedingCharacters = async () => {
         await this.settingsButton.click()
+        await this.unCheckRandomColumn(3)
+        await this.checkRandomColumn(5)
         await this.createEditToggle.click()
         await this.createColumnTextBox.fill('test_exeeding_character_more_than_40_characters')
         const text = await this.createColumnTextBox.inputValue()
@@ -139,7 +143,6 @@ export class ColumnSettingsPage {
         await this.settingsButton.click()
         await this.createEditToggle.click()
         await this.deleteButton.click()
-        await this.confimrDeleteBtutton.click()
         const confirmationDeleted = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
         return confirmationDeleted
     }

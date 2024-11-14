@@ -8,7 +8,7 @@ export class PartnerInfoPage {
         this.inputEmail = page.locator(`[name='email']`).first()
         this.inputBillingEmail = page.locator(`[name='billingEmail']`).first()
         this.errorEmail = page.getByText('Enter a valid email address.Example: email@example.com').first()
-        this.menu = page.locator('.app > div > div > div').first()
+        this.menu = page.locator('#profile-form')
         this.inputAgencyName = page.locator(`[name='name']`).first()
         this.buttonSave = page.getByRole('button', { name: 'Save' })
         this.inputIndependentContractor = page.getByLabel('Independent Contractor')
@@ -60,6 +60,16 @@ export class PartnerInfoPage {
         }
         return serviceArray;
     }
+
+    isServiceFieldFocused= async () => {
+        const serviceLabel = await this.page.locator('label').filter({
+            hasText: 'Service'
+        })
+        const attributeFor = await serviceLabel.getAttribute('for')
+        const serviceOptionsSelector = `[aria-owns='${attributeFor}-listbox']`;
+        const serviceOptions = await this.page.locator(serviceOptionsSelector);
+        return serviceOptions;
+    } 
 
     verifyAlphabeticalOrder(servicesArray) {
         const sortedArray = [...servicesArray].sort((a, b) => a.localeCompare(b));
