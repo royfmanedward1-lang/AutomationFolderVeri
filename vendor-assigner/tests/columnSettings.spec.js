@@ -97,7 +97,12 @@ test('Creating a new Preset with a name already in use', async ({ page }) => {
 
   await test.step('Verify that the error message for duplicate preset name is shown', async () => {
     await expect(existingPreset).toHaveText('Preset name already exists.');
-  });
+  });  
+  
+  await test.step('Delete the preset "Test"', async () => {
+    await columnSettings.deleteButton.click()
+  })
+  
 });
 
 
