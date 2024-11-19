@@ -43,7 +43,8 @@ export class FilterJobPage {
     }
 
     async applyOnlyValidJobs() {
-        let statuses = ["Confirmed", "Invoiced", "Scheduled", "Wait for call"]
+        //let statuses = ["Confirmed", "Invoiced", "Scheduled", "Wait for call"]
+        let statuses = ["Archived", "Cancelled", "Closed"]
         await this.filterButton.click()
         await this.setFilter(this.page, 'status', statuses)
         await this.buttonApply.click()
