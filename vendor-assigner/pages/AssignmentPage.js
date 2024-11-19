@@ -33,9 +33,8 @@ export class AssignmentPage {
         await partnerDetails.button.click()
         await expect(this.applyButton).toBeEnabled()
         await this.applyButton.click()
-        await utils.waitLoadToFinish(this.page)
-        const filterPage = new FilterPage(this.page)
-        await filterPage.checkFiltersWereApplied()
+
+        await expect(this.page.getByText('Partners assigned to the job #' + this.jobDetails.jobId)).toBeVisible()
         
         const viewMorePartners = await this.page.locator('//div[@data-id=' + this.jobDetails.jobId + ']/descendant::*[contains(text(), "VIEW MORE")]')
         if (await viewMorePartners.isVisible()){

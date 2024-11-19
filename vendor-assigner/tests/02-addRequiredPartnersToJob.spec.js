@@ -26,11 +26,11 @@ for (const partnerType of partnerTypeList) {
     });
 
     await test.step('Select job and assign partner', async () => {
-      await utils.waitGridToLoad(page);
       await assignmentPage.selectJobAndAssignPartner(partnerType);
     });
 
     await test.step('Add the partner to the job', async () => {
+      await utils.waitGridToLoad(page);
       await assignmentPage.addPartner(partnerType);
     });
   });

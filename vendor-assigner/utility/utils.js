@@ -82,20 +82,20 @@ module.exports = {
     findPartnerDetails: async function(page, partnerType) {
         await this.waitLoadToFinish(page)
         const partner = await page.locator('//div[@data-field="availability" and .//span[text()="Available"]]' +
-            '/ancestor::*[@data-id and .//button[not(@disabled) and text()="Add Partner"]][1]')
+            '/ancestor::*//button[not(@disabled) and text()="Add Partner"]/ancestor::*[@data-id]')
 
         console.log(await partner.count() + " " + partnerType + " partners available")
 
         if (await partner.count() === 0) {
             throw new Error("There are no partners available for a " + partnerType)
         } else {
-            const dataId = await partner.first().getAttribute('data-id')
-            const firstName = await page.locator('//div[@data-id="' + dataId + '"]//div[@data-field="firstName"]').textContent()
-            const lastName = await page.locator('//div[@data-id="' + dataId + '"]//div[@data-field="lastName"]').textContent()
+            const partnerId = await partner.first().getAttribute('data-id')
+            const firstName = await page.locator('//div[@data-id="' + partnerId + '"]//div[@data-field="firstName"]').textContent()
+            const lastName = await page.locator('//div[@data-id="' + partnerId + '"]//div[@data-field="lastName"]').textContent()
 
             console.log("Found partner " + firstName + " " + lastName + " who is a " + partnerType)
 
-            const button = await page.locator('//div[@data-id="' + dataId + '"]//button[text()="Add Partner"]')
+            const button = await page.locator('//div[@data-id="' + partnerId + '"]//button[text()="Add Partner"]')
 
             return {
                 partnerName: firstName + " " + lastName,
