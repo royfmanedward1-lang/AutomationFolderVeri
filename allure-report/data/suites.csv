@@ -1,0 +1,7 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Wed Nov 20 09:52:37 CST 2024","Wed Nov 20 09:52:41 CST 2024","4498","chrome","LoginPage.spec.js","Login Test: Verify the login functionality for MyVeritext","","","Attempt to access with Incorrect username",""
+"passed","Wed Nov 20 09:52:42 CST 2024","Wed Nov 20 09:52:46 CST 2024","4515","chrome","LoginPage.spec.js","Login Test: Verify the login functionality for MyVeritext","","","Attempt to access with Incorrect password",""
+"passed","Fri Jul 05 09:47:03 CST 2024","Fri Jul 05 09:47:09 CST 2024","6113","chrome","LoginPage.spec.js","","","","Login for User Allan@outlook.com",""
+"passed","Fri Jul 05 09:47:03 CST 2024","Fri Jul 05 09:47:09 CST 2024","6418","chrome","LoginPage.spec.js","","","","Login for User gguerrero@veritext.com",""
+"passed","Wed Nov 20 09:52:22 CST 2024","Wed Nov 20 09:52:35 CST 2024","12479","chrome","LoginPage.spec.js","Login Test: Verify the login functionality for MyVeritext","","","Access MyVeritext with valid credentials",""
+"passed","Wed Nov 20 09:52:47 CST 2024","Wed Nov 20 09:52:50 CST 2024","3548","chrome","LoginPage.spec.js","Login Test: Verify the login functionality for MyVeritext","","","Verify the Forgot Password link exists and is clickable",""
