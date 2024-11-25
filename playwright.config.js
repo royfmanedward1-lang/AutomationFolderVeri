@@ -3,7 +3,7 @@ const { devices } = require('@playwright/test');
 const { permission } = require('process');
 
 const config = {
-  testDir: './tests',
+  testDir: './MV-tests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {

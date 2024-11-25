@@ -77,9 +77,7 @@ test.describe("Login Test: Verify the login functionality for MyVeritext", () =>
     });
   });
 
-  test("Navigate to forgot password page", async ({
-    page,
-  }) => {
+  test("Navigate to forgot password page", async ({ page }) => {
     //Verify the Forgot Password link
     await test.step("Then the Forgot Password link should be visible", async () => {
       await expect(loginPage.forgotPasswordLink).toBeVisible();

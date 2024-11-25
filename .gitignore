@@ -4,8 +4,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-tests/CalendarPage.spec.js/
-tests/CalendarPage2.spec.js/
 pageobjects/CalendarPage.js/
 tests-examples/demo-todo-app.spec.js/
 allure-report/
