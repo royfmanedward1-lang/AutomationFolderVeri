@@ -27,7 +27,7 @@ export class BulkActionPage {
         this.conciergeTechOption = page.getByRole('option', { name: 'Concierge-Tech' })
         this.mediatorOption = page.getByRole('option', { name: 'Mediator' })
         this.trialTechOption = page.getByRole('option', { name: 'Trial Tech' })
-        this.partnerSelected = page.getByRole('heading', { name: 'Partner Selected' })
+        this.partnerSelected = page.getByRole('heading', { name: /Partners? Selected/ })
         this.closeButton = page.getByRole('button', { name: 'Close' })
         this.updateStatusButton = page.getByRole('button', { name: 'Update Status' })
         this.cancelButton = page.getByRole('button', { name: 'Cancel' })

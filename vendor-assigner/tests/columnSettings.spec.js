@@ -62,15 +62,16 @@ test('Creating a Preset', async ({ page }) => {
   
   await test.step('Verify that the preset was successfully updated', async () => {
     await expect(confirmationUpdated).toHaveText('Column preset successfully updated.');
+    await confirmationUpdated.waitFor({ state: 'detached'});
   });
   
   let confirmationDeleted;
   await test.step('Delete the preset "Test_Update"', async () => {
-    confirmationDeleted = await columnSettings.deleteFilter('Test_Update');
+     confirmationDeleted = await columnSettings.deleteFilter('Test_Update');
   });
 
   await test.step('Verify that the preset was successfully deleted', async () => {
-    await expect(confirmationDeleted).toHaveText('Your Filter Preset Test_Update has successfully been deleted.');
+    await expect(confirmationDeleted).toHaveText('Your Column Preset Test_Update has successfully been deleted.');
   });
 });
 
@@ -98,19 +99,34 @@ test('Creating a new Preset with a name already in use', async ({ page }) => {
   await test.step('Verify that the error message for duplicate preset name is shown', async () => {
     await expect(existingPreset).toHaveText('Preset name already exists.');
   });  
-  
+
   await test.step('Delete the preset "Test"', async () => {
     await columnSettings.deleteButton.click()
   })
   
 });
 
-
 test('Creating a new Preset with the columns in a configuration already in use', async ({ page }) => {
-  const columnSettings = new ColumnSettingsPage(page)
-  const successSave = await columnSettings.createSetting('Test')
-  await expect(successSave).toHaveText(`Column preset successfully created.`)
-  await columnSettings.applyButton.click()
-  const existingConfigurationPreset = await columnSettings.createSettingWithConfigurationUsed('Test_copy')
-  await expect(existingConfigurationPreset).toHaveText(`Preset already exists with this columns configuration.`)
-})
+  const columnSettings = new ColumnSettingsPage(page);
+ 
+  await test.step('Create a new preset named "Test"', async () => {
+    const successSave = await columnSettings.createSetting('Test');
+    await expect(successSave).toHaveText('Column preset successfully created.');
+  });
+
+
+  await test.step('Apply the "Test" preset', async () => {
+    await columnSettings.applyButton.click();
+  });
+
+
+  await test.step('Attempt to create a new preset with an existing column configuration', async () => {
+    const existingConfigurationPreset = await columnSettings.createSettingWithConfigurationUsed('Test_copy');
+    await expect(existingConfigurationPreset).toHaveText('Preset already exists with this columns configuration.');
+  });
+  
+ await test.step('Delete the preset "Test"', async () => {
+    await columnSettings.deleteButton.click()
+  })
+  
+});

@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test"
-
+const timer = 3000;
 export class ColumnSettingsPage {
     constructor(page) {
         this.page = page
@@ -15,7 +15,6 @@ export class ColumnSettingsPage {
         this.closeButton = page.getByRole('button', { name: 'Close' })
         this.applyButton = page.getByRole('button', { name: 'Apply', exact: true })
         this.cancelButton = page.getByRole('button', { name: 'Cancel' })
-        this.confimrDeleteBtutton = page.getByRole('button', { name: 'YES, DELETE' })
         this.successSave = page.getByText('Column preset successfully')
         this.successUpdate = page.getByText('Column preset successfully')
         this.succesDelete = page.getByText('Your Filter Preset System')
@@ -114,7 +113,7 @@ export class ColumnSettingsPage {
         await this.createColumnTextBox.fill(name)
         await this.saveButton.click()
         await this.saveAsNewButton.click('Save as new')
-        const existingPreset = await this.page.getByText('Preset name already exists.')
+        const existingPreset = await this.page.getByText('Preset name already exists.').first()
         return existingPreset
     }
 
@@ -124,7 +123,7 @@ export class ColumnSettingsPage {
         await this.createColumnTextBox.fill(name)
         await this.saveButton.click()
         await this.saveAsNewButton.click('Save as new')
-        const existingConfigurationPreset = await this.page.getByText('Preset already exists with this columns configuration.')
+        const existingConfigurationPreset = await this.page.getByText('Preset already exists with this columns configuration.').first()
         return existingConfigurationPreset
     }
 
@@ -141,9 +140,10 @@ export class ColumnSettingsPage {
 
     deleteFilter = async (name) => {
         await this.settingsButton.click()
+        await this.page.waitForTimeout(timer);
         await this.createEditToggle.click()
         await this.deleteButton.click()
-        const confirmationDeleted = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
+        const confirmationDeleted = await this.page.getByText(`Your Column Preset ${name} has successfully been deleted.`)
         return confirmationDeleted
     }
 }
