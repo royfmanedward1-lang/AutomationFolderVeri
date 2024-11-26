@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test"
-
+const timer = 3000;
 export class ColumnSettingsPage {
     constructor(page) {
         this.page = page
@@ -140,9 +140,10 @@ export class ColumnSettingsPage {
 
     deleteFilter = async (name) => {
         await this.settingsButton.click()
+        await this.page.waitForTimeout(timer);
         await this.createEditToggle.click()
         await this.deleteButton.click()
-        const confirmationDeleted = await this.page.getByText(`Your Filter Preset ${name} has successfully been deleted.`)
+        const confirmationDeleted = await this.page.getByText(`Your Column Preset ${name} has successfully been deleted.`)
         return confirmationDeleted
     }
 }

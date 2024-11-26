@@ -62,15 +62,16 @@ test('Creating a Preset', async ({ page }) => {
   
   await test.step('Verify that the preset was successfully updated', async () => {
     await expect(confirmationUpdated).toHaveText('Column preset successfully updated.');
+    await confirmationUpdated.waitFor({ state: 'detached'});
   });
   
   let confirmationDeleted;
   await test.step('Delete the preset "Test_Update"', async () => {
-    confirmationDeleted = await columnSettings.deleteFilter('Test_Update');
+     confirmationDeleted = await columnSettings.deleteFilter('Test_Update');
   });
 
   await test.step('Verify that the preset was successfully deleted', async () => {
-    await expect(confirmationDeleted).toHaveText('Your Filter Preset Test_Update has successfully been deleted.');
+    await expect(confirmationDeleted).toHaveText('Your Column Preset Test_Update has successfully been deleted.');
   });
 });
 
