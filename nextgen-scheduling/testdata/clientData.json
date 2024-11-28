@@ -1,0 +1,26 @@
+ 
+  [
+        {
+            "clientName": "Goldstein & Company",
+            "clientAddress": "1805 Ponce de Leon, Suite 400",
+            "division": "Corp Services",
+            "caller": "Abigail Maines",
+            "attorney": "Jason Goldstein",
+            "caseNbr": "",
+            "caseName": "",
+            "plaintiff": "",
+            "defendant": ""
+          },
+        
+        {
+           "clientName": "MCS Group",
+           "clientAddress": "1601 Market Street, Suite 800 ",
+           "division": "Michigan",
+           "caller": "Lori Bennani",
+           "attorney": "Billing Department",
+           "caseNbr": "19STCV21242",
+           "caseName": "Migatz, Margo v. Redfern, Hannah Hale",
+           "plaintiff": "Migatz, Margo",
+           "defendant": "Redfern, Hannah Hale"
+         }
+    ]
