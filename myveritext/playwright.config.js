@@ -11,7 +11,7 @@ const config = {
     timeout: 5000
   },
   
-  reporter: 'html',
+  reporter: [['html'],['allure-playwright']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 
   projects: [
@@ -24,7 +24,7 @@ const config = {
     //viewport : {width: 720, height: 720},
     screenshot : 'on',
     ignoreHttpsErrors: false,
-    reporter: "allure-playwright",
+    reporter:  [['html'],['allure-playwright']],
     Permissions:["gelocation"],
     video: 'retain-on-failure',
     trace : 'on',//off,on

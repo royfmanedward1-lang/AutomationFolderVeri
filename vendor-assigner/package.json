@@ -19,6 +19,8 @@
     "globals": "^15.4.0"
   },
   "dependencies": {
+    "allure-commandline": "^2.32.0",
+    "allure-playwright": "^3.0.6",
     "dotenv": "^16.4.5"
   }
 }
