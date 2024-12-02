@@ -10,7 +10,16 @@ export class AssignmentPage {
         this.selectAllCheckbox = this.page.getByLabel('Select all rows')
         this.columnSettingsButton = this.page.getByLabel('Column Settings')
         this.columns = this.page.getByRole('columnheader')
+
+        //Job List
+        this.assignPartnerButton = this.page.getByRole('button', {name: 'Assign'});
+        this.addNewButton = this.page.getByRole('button', {name: 'Add New'});
         
+        //Partner Types Dialog
+        this.partnerTypesPopup = this.page.getByRole('dialog');
+        this.partnerTypesBlankCheckbox = this.page.getByRole('dialog').getByTestId('CheckBoxOutlineBlankIcon');
+        this.selectLanguageList = this.page.getByText('Select a Language');
+
         //Partner Page
         this.applyButton = this.page.getByRole('button', {name : 'Apply', exact: true})
         this.addButton = this.page.getByRole('button', { name: 'Add' })
@@ -52,7 +61,7 @@ export class AssignmentPage {
         const statusSelector = await this.page.getByRole('menuitem', { name: newStatus })
         await statusSelector.click() 
     }
-
+    
     async confirmStatusChange(confirmChange, jobId, partnerName, partnerType, currentStatus, newStatus) {
         const statusLocator = '//*[@data-id="' + jobId + '"]/descendant::*[contains(text(), "' + partnerType + '")]/following-sibling::*/descendant::*' +
                 '[@aria-label="' + partnerName + '"]/ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]/descendant::*[@aria-label="Select Partner Status"]'
