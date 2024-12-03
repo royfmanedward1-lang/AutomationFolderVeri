@@ -7,26 +7,18 @@ export class Case {
        
         //Plaintiff
         this.PlaintiffField =  page.locator('#plaintiff').getByRole('combobox') 
-     //   this.PlaintiffInput =  page.locator('//*[@id=":rq:"]')
-    //    this.PlaintiffSelect =  page.locator('//*[@id=":rq:-option-0"]')
         this.checkIconPlaintiff = page.locator('#plaintiff').getByTestId('checkIcon')
    
         //Defendant
         this.DefendantField =  page.locator('#defendant').getByRole('combobox') 
-     //   this.DefendantInput =  page.locator('//*[@id=":rt:"]')
-     //   this.DefendantSelect =  page.locator('//*[@id=":rt:-option-0"]')
         this.checkIconDefendant = page.locator('#defendant').getByTestId('checkIcon')
 
         //case number
         this.caseNbrField =  page.locator('#caseNumber').getByRole('combobox') 
-     //   this.caseNbrInput =  page.locator('//*[@id=":rk:"]')
-     //   this.caseNbrSelect =  page.locator('//*[@id=":rk:-option-0"]')
         this.checkIconcaseNbr = page.locator('#caseNumber').getByTestId('checkIcon')
 
         //case name
         this.caseNameField =  page.locator('#caseName').getByRole('combobox') 
-      //  this.caseNameInput =  page.locator('//*[@id=":rn:"]')
-      //  this.caseNameSelect =  page.locator('//*[@id=":rn:-option-0"]')
         this.checkIconcaseName = page.locator('#caseName').getByTestId('checkIcon')
     }
 
