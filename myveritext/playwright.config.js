@@ -1,9 +1,9 @@
 // @ts-check
 const { devices } = require('@playwright/test');
-const { permission } = require('process');
+//const { permission } = require('process');
 
 const config = {
-  testDir: './myveritext/MV-tests',
+  testDir: './MV-tests',
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -25,8 +25,8 @@ const config = {
     screenshot : 'on',
     ignoreHttpsErrors: false,
     reporter: "allure-playwright",
-    Permissions:["gelocation"],
-    video: 'retain-on-failure',
+    Permissions:["geolocation"],
+    video: 'on',
     trace : 'on',//off,on
     //...devices["iPhone 14 Pro Max landscape"]
     },
