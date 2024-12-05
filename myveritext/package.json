@@ -1,7 +1,6 @@
 {
   "name": "myveritextautomationplaywright",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "regression": "npx playwright test"
@@ -13,9 +12,13 @@
     "@playwright/test": "^1.49.0",
     "@types/node": "^20.14.2"
   },
-  "dependencies": {
-    "@cucumber/cucumber": "^10.8.0",
-    "allure-commandline": "^2.32.0",
-    "allure-playwright": "^3.0.6"
-  }
+"dependencies": {
+  "@cucumber/cucumber": "^10.8.0",
+  "allure-commandline": "^2.32.0",
+  "allure-playwright": "^3.0.6"
+},
+"directories": {
+  "test": "tests"
+},
+"description": ""
 }

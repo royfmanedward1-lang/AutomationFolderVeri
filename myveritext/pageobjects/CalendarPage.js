@@ -14,6 +14,7 @@ class CalendarPage {
     this.todayButton = page.locator("button:has-text('Today')");
     this.previousButton = page.locator(".fc-prev-button.fc-button.fc-button-primary");
     this.nextButton = page.locator(".fc-next-button.fc-button.fc-button-primary");
+    this.scheduleProceedingButton = page.locator("button:has-text('Schedule Proceeding')");
 
   }
 
@@ -82,6 +83,10 @@ class CalendarPage {
 
   async navigateToNext() {
     await this.nextButton.click();
+  }
+
+  async clickScheduleProceeding() {
+    await this.scheduleProceedingButton.click();
   }
 }
 
