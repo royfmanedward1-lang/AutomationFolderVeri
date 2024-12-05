@@ -1,53 +1,53 @@
 // @ts-check
-const { devices } = require('@playwright/test');
+const { devices } = require("@playwright/test");
 
 const DEFAULT_TIMEOUT = 30 * 1000;
 
-
 const config = {
-  testDir: './MV-tests',
-  
-  timeout: DEFAULT_TIMEOUT,  
+  testDir: "./MV-tests",
+
+  timeout: DEFAULT_TIMEOUT,
   expect: {
-    timeout: 5000  
+    timeout: 5000,
   },
-  
-  reporter: 'html',
+
+  reporter: [["html"], ["allure-playwright"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 
   projects: [
     {
-      name:'chrome',
-  use: {
+      name: "chrome",
+      use: {
+        browserName: "chromium",
+        headless: false,
+        //viewport : {width: 720, height: 720},
+        screenshot: "on",
+        ignoreHttpsErrors: false,
 
-    browserName : 'chromium',
-    headless : false,
-    //viewport : {width: 720, height: 720},
-    screenshot : 'on',
-    ignoreHttpsErrors: false,
-    reporter: "allure-playwright",
-    Permissions:["geolocation"],
-    video: 'on',
-    trace : 'on',//off,on
-    //...devices["iPhone 14 Pro Max landscape"]
+        Permissions: ["geolocation"],
+
+        reporter: [["html"], ["allure-playwright"]],
+
+        video: "retain-on-failure",
+
+        trace: "on", //off,on
+        //...devices["iPhone 14 Pro Max landscape"]
+      },
     },
-  },
-  //{
-   
+    //{
+
     //name:'webkitprofile',
-//use: {
+    //use: {
 
-  //browserName : 'webkit',
-  //headless : false,
-  //screenshot : 'on',
-  //trace : 'on',//off,on
-  //...devices['iPhone 11']
-  //},
-  
-//}
-]
+    //browserName : 'webkit',
+    //headless : false,
+    //screenshot : 'on',
+    //trace : 'on',//off,on
+    //...devices['iPhone 11']
+    //},
 
-
+    //}
+  ],
 };
 
 module.exports = config;

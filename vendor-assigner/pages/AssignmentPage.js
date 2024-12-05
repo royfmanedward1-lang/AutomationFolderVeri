@@ -10,7 +10,16 @@ export class AssignmentPage {
         this.selectAllCheckbox = this.page.getByLabel('Select all rows')
         this.columnSettingsButton = this.page.getByLabel('Column Settings')
         this.columns = this.page.getByRole('columnheader')
+
+        //Job List
+        this.assignPartnerButton = this.page.getByRole('button', {name: 'Assign'});
+        this.addNewButton = this.page.getByRole('button', {name: 'Add New'});
         
+        //Partner Types Dialog
+        this.partnerTypesPopup = this.page.getByRole('dialog');
+        this.partnerTypesBlankCheckbox = this.page.getByRole('dialog').getByTestId('CheckBoxOutlineBlankIcon');
+        this.selectLanguageList = this.page.getByText('Select a Language');
+
         //Partner Page
         this.applyButton = this.page.getByRole('button', {name : 'Apply', exact: true})
         this.addButton = this.page.getByRole('button', { name: 'Add' })
@@ -24,25 +33,6 @@ export class AssignmentPage {
         this.removePartnerButton = page.getByRole('button', { name: 'Remove' })
         this.cancelButton = page.getByRole('button', { name: 'Cancel' })
     }
-
-    async addPartner(partnerType) {
-        const partnerDetails = await utils.findPartnerDetails(this.page, partnerType)
-    
-        console.log("Selected partner " + partnerDetails.partnerName + " as a " + partnerType)
-
-        await partnerDetails.button.click()
-        await expect(this.applyButton).toBeEnabled()
-        await this.applyButton.click()
-
-        await expect(this.page.getByText('Partners assigned to the job #' + this.jobDetails.jobId)).toBeVisible()
-        
-        const viewMorePartners = await this.page.locator('//div[@data-id=' + this.jobDetails.jobId + ']/descendant::*[contains(text(), "VIEW MORE")]')
-        if (await viewMorePartners.isVisible()){
-            await viewMorePartners.click()
-        }
-        
-        await expect(this.page.locator('//div[@data-id="' + this.jobDetails.jobId + '" and .//p[text()="' + partnerType + '"]]//parent::p[@aria-label="' + partnerDetails.partnerName + '"]')).toBeVisible()
-    } 
     
     async clickOnStatus(status) {
         await status.click()
@@ -52,7 +42,7 @@ export class AssignmentPage {
         const statusSelector = await this.page.getByRole('menuitem', { name: newStatus })
         await statusSelector.click() 
     }
-
+    
     async confirmStatusChange(confirmChange, jobId, partnerName, partnerType, currentStatus, newStatus) {
         const statusLocator = '//*[@data-id="' + jobId + '"]/descendant::*[contains(text(), "' + partnerType + '")]/following-sibling::*/descendant::*' +
                 '[@aria-label="' + partnerName + '"]/ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]/descendant::*[@aria-label="Select Partner Status"]'
@@ -96,37 +86,6 @@ export class AssignmentPage {
 
     async selectChangeStatus() {
         await this.changeStatusOption.hover()
-    }
-
-    async selectJobAndAssignPartner(partnerType) {
-        this.jobDetails = await utils.findJobDetailsToAssignPartner(this.page, partnerType)
-        await this.jobDetails.button.click()
-        console.log("Selected job with jobid: " + this.jobDetails.jobId + " for " + partnerType)
-        await utils.waitLoadToFinish(this.page)
-    }
-
-    async selectJobToAddNewPartner(partnerType, isPrimaryType) {
-        this.jobDetails = await utils.findJobDetailsForAddNew(this.page, partnerType, isPrimaryType)
-        await this.jobDetails.button.click()
-        
-        console.log("Clicked on job with jobid: " + this.jobDetails.jobId + " for adding " + partnerType)
-        await utils.waitLoadToFinish(this.page)
-    }
-
-    async selectPartnerTypeToAddNew(partnerType) {
-        await this.page.getByLabel(partnerType).check()
-        
-        if (partnerType === 'Interpreter') {
-            await this.page.getByRole('combobox', { name: 'Select Interpreter Language' }).click()
-            const dropdown = await this.page.getByRole('listbox')
-            const numberOfOptions = await dropdown.getByRole('option').count()
-            const randomIndex = Math.floor(Math.random() * numberOfOptions)
-            await dropdown.getByRole('option').nth(randomIndex).click()
-        }
-        
-        await this.addButton.click()  
-        
-        console.log("Selected job with jobid: " + this.jobDetails.jobId + " for " + partnerType)  
     }
 
     async sortRandomColumn(column, order) {

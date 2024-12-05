@@ -1,8 +1,8 @@
-import { LoginPage } from '../pages/LoginPage.js'
-import { HeaderPage } from '../pages/assignament/HeaderPage.js'
-import { FilterJobPage } from '../pages/FilterJobPage.js'
-import * as utils from "../utility/utils.js"
-const { test, expect } = require('@playwright/test')
+import { LoginPage } from '../pages/LoginPage.js';
+import { HeaderPage } from '../pages/assignament/HeaderPage.js';
+import { FilterJobPage } from '../pages/FilterJobPage.js';
+import * as utils from "../utility/utils.js";
+const { test, expect } = require('@playwright/test');
 
 test.beforeEach('Logging in', async ({ page }) => {
   const loginPage = new LoginPage(page)
