@@ -5,7 +5,7 @@ class ProceedingTypePage {
     }
   
     async selectProceedingType(type) {
-      await this.page.locator(`button:has-text("${type}")`).click(); 
+      await this.page.getByText(type, { exact: true }).click();
     }
     
   }

@@ -27,9 +27,11 @@ class LocationPage {
     this.veritextOfficeButtons = page.locator(".MuiButtonBase-root:has(h6)");
 
     //Find Me a Location locators
-    this.countryDropdown = page.locator('.MuiNativeSelect-select.MuiNativeSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input');
-    this.stateDropdown = page.getByLabel('', { exact: true });
-    this.cityInput = page.getByLabel('City');
+    this.countryDropdown = page.locator(
+      ".MuiNativeSelect-select.MuiNativeSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input"
+    );
+    this.stateDropdown = page.getByLabel("", { exact: true });
+    this.cityInput = page.getByLabel("City");
     this.zipPostalInput = page.locator('input[name="Zip/Postal"]');
     this.nextButton = page.getByRole("button", { name: "NEXT" });
 
@@ -37,7 +39,6 @@ class LocationPage {
     this.nextButton = page.getByRole("button", { name: "NEXT" });
   }
 
-  // Methods to select proceeding types
   async selectInPersonOption() {
     await this.inPersonOption.click();
   }
@@ -60,7 +61,7 @@ class LocationPage {
     );
 
     // Wait for the checkbox to be visible
-    await addressLocator.waitFor({ state: "visible", timeout: 10000 });
+    await addressLocator.waitFor({ state: "visible" });
 
     // Check the checkbox
     await addressLocator.check();
@@ -73,7 +74,7 @@ class LocationPage {
     const officeLocator = this.veritextOfficeButtons.filter({
       hasText: officeName,
     });
-    await officeLocator.waitFor({ state: "visible", timeout: 5000 }); // Wait for the office to be visible
+    await officeLocator.waitFor({ state: "visible" });
     await officeLocator.click(); // Click the office button
   }
 
@@ -82,12 +83,10 @@ class LocationPage {
   }
   // Fill in State/Province and City
   async fillStateAndCity(state, city) {
-    
     await this.stateDropdown.click();
-    await this.page.getByRole('option', { name: state }).click();
+    await this.page.getByRole("option", { name: state }).click();
     await this.cityInput.click();
     await this.cityInput.fill(city);
-    
   }
 
   // Fill in a Canadian Zip/Postal Code

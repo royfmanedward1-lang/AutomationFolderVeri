@@ -19,7 +19,7 @@ class DateAndTimePage {
   async selectDate() {
 
    //Wait for the suggested date to be available
-    await this.datePicker.waitFor({ state: "visible", timeout: 30000 });
+    await this.datePicker.waitFor({ state: 'visible' });
   
     // Click the suggested date
     await this.datePicker.click();

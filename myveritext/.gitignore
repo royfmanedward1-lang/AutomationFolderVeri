@@ -9,7 +9,7 @@ tests-examples/demo-todo-app.spec.js/
 allure-report/
 allure-results/
 playwright-report/
-\myveritext\playwright-report
+myveritext/playwright-report
 
 
 

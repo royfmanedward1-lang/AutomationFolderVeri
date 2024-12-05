@@ -156,7 +156,7 @@ test.describe("Job Creation In-Person Proceeding", () => {
     });
   });
 
-  test.only("Create an In-Person job using Veritext Offices option", async () => {
+  test("Create an In-Person job using Veritext Offices option", async () => {
     await test.step("And selects a Veritext office", async () => {
       await commonJobCreationSteps(async () => {
         //Select a random veritext office

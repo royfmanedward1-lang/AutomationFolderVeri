@@ -1,14 +1,15 @@
 // @ts-check
 const { devices } = require('@playwright/test');
-//const { permission } = require('process');
+
+const DEFAULT_TIMEOUT = 30 * 1000;
+
 
 const config = {
   testDir: './MV-tests',
-  /* Maximum time one test can run for. */
-  timeout: 30 * 1000,
-  expect: {
   
-    timeout: 5000
+  timeout: DEFAULT_TIMEOUT,  
+  expect: {
+    timeout: 5000  
   },
   
   reporter: 'html',
