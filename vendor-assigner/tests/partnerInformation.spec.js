@@ -1,12 +1,12 @@
-import { LoginPage } from '../pages/LoginPage.js'
-import { HeaderPage } from '../pages/assignament/HeaderPage.js'
-import { PartnerInfoPage } from '../pages/PartnerInfoPage.js'
-const { test, expect } = require('@playwright/test')
+import { LoginPage } from '../pages/LoginPage.js';
+import { HeaderPage } from '../pages/assignament/HeaderPage.js';
+import { PartnerInfoPage } from '../pages/PartnerInfoPage.js';
+const { test, expect } = require('@playwright/test');
 
 test.beforeEach('Logging in', async ({ page }) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.login()
-})
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+});
 
 test('Search invalid partner information', async ({ page }) => {
     const headerPage = new HeaderPage(page);
@@ -44,7 +44,7 @@ test('Search partner information', async ({ page }) => {
     const firstName = await partnerInfoPage.inputFirstName.inputValue();
 
     await test.step('Verify last name contains "Ancalade"', async () => {
-        await expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Ancalade');
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Ancalade');
     });
 
     await test.step('Clear search and re-search with first name', async () => {
@@ -107,49 +107,51 @@ test('Search agency information', async ({ page }) => {
 });
 
 test('Service type is selectable ', async ({ page }) => {
-    const headerPage = new HeaderPage(page)
-    const partnerInfoPage = new PartnerInfoPage(page)
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
     await test.step('Given I select Partner Information TAB', async () => {
-        await headerPage.partnerInformationTab.click()
+        await headerPage.partnerInformationTab.click();
     });
 
     await test.step('And I fill in "Brandon" in the search text field', async () => {
-        await partnerInfoPage.searchText.fill('Alfara')
+        await partnerInfoPage.searchText.fill('Alfara');
     });
 
     await test.step('And I select the first Option', async () => {
-        await partnerInfoPage.selectFirstOption()
+        await partnerInfoPage.selectFirstOption();
     });
 
     await test.step('Then I should see Independent contractor in the partner Info Page', async () => {
-        await expect(await partnerInfoPage.inputIndependentContractor).toHaveText('Independent Contractor')
-    })
+        await expect(await partnerInfoPage.inputIndependentContractor).toHaveText('Independent Contractor');
+    });
 
     await test.step('And I should see partner type count to have length 1', async () => {
         const partnerTypeCount = page.locator('.mui-1wmkppu');
         const lengthValue = await partnerTypeCount.getAttribute('length');
         expect(lengthValue).toBe('1');
-    })
-    const dropDownService = await partnerInfoPage.getServiceLocator()
-    let servicePlaceholder = await dropDownService.getAttribute('placeholder')
+    });
+
+    const dropDownService = await partnerInfoPage.getServiceLocator();
+    let servicePlaceholder = await dropDownService.getAttribute('placeholder');
 
     await test.step('I should see Select Service placeholder', async () => {
-        await partnerInfoPage.serviceLink.click()
+        await partnerInfoPage.serviceLink.click({ force: true });
         await dropDownService.waitFor({ state: 'visible' });
-        await expect(servicePlaceholder).toEqual('Select Service')
-    })
+        expect(servicePlaceholder).toEqual('Select Service');
+    });
 
     await test.step('When I click on service Dropdown', async () => {
-        await dropDownService.click()
-    })
+        await dropDownService.click();
+    });
 
     await test.step('Then I should see empty string as place holder value for service Dropdown', async () => {
-        servicePlaceholder = await dropDownService.getAttribute('placeholder')
-        await expect(servicePlaceholder).toEqual('')
+        servicePlaceholder = await dropDownService.getAttribute('placeholder');
+        await expect(servicePlaceholder).toEqual('');
         const areServicesAphabeticalOrder = await partnerInfoPage.verifyServiceAlphabeticalOrder();
-        expect(areServicesAphabeticalOrder).toBeTruthy()
-    })
-})
+        expect(areServicesAphabeticalOrder).toBeTruthy();
+    });
+});
 
 test('Partner has a type and an email filled', async ({ page }) => {
     const headerPage = new HeaderPage(page);
@@ -262,7 +264,7 @@ test('Filtering services with empty result', async ({ page }) => {
     });
 
     await test.step('Verify "No Results Found" message appears', async () => {
-        await expect(partnerInfoPage.succesNoResults).toHaveText('No Results FoundTry a new search.');
+        await expect(partnerInfoPage.successNoResults).toHaveText('No Results FoundTry a new search.');
     });
 
     await test.step('Click on the menu after no results are found', async () => {
@@ -293,7 +295,7 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
     });
 
     await test.step('Click on service link', async () => {
-        await partnerInfoPage.serviceLink.click();
+        await partnerInfoPage.serviceLink.click({ force: true });
     });
 
     await test.step('Verify no services are displayed initially', async () => {
@@ -309,7 +311,7 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
 
     await test.step('Verify service dropdown placeholder', async () => {
         let servicePlaceholder = await dropDownService.getAttribute('placeholder');
-        await expect(servicePlaceholder).toEqual('Select Service');
+        expect(servicePlaceholder).toEqual('Select Service');
     });
 
     await test.step('Click on service dropdown to open options', async () => {
@@ -318,7 +320,7 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
 
     await test.step('Verify service dropdown placeholder is cleared', async () => {
         let servicePlaceholder = await dropDownService.getAttribute('placeholder');
-        await expect(servicePlaceholder).toEqual('');
+        expect(servicePlaceholder).toEqual('');
     });
 
     await test.step('Verify services are in alphabetical order', async () => {
@@ -342,7 +344,7 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
         const serviceContainer = page.locator('.MuiBox-root.css-1i0cgck');
         const servicesAdded = serviceContainer.locator('.MuiBox-root.css-auo5id p');
         const servicesAddedText = await servicesAdded.allTextContents();
-        const areServicesAddedAphabeticalOrder = await partnerInfoPage.verifyAlphabeticalOrder(servicesAddedText);
+        const areServicesAddedAphabeticalOrder = partnerInfoPage.verifyAlphabeticalOrder(servicesAddedText);
         expect(areServicesAddedAphabeticalOrder).toBeTruthy();
     });
 
