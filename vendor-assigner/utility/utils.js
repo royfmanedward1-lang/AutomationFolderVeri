@@ -1,35 +1,6 @@
 import { expect } from "@playwright/test"
 
 module.exports = {
-        findJobDetailsWithPartnerStatus: async function(page, status) {
-        await this.waitLoadToFinish(page)        
-        const allJobs = await page.locator('//*[contains(text(),"' + status + '")]/ancestor::*[@data-id]')
-        let numberOfOptions = await allJobs.count()
-        if (numberOfOptions > 20) {
-            numberOfOptions = 20
-        }
-        const statusOptionNumber = Math.floor(Math.random() * numberOfOptions) - 1
-        const job = await allJobs.nth(statusOptionNumber)
-        const jobId = await job.getAttribute('data-id')
-
-        const partnerStatusButton = await page.locator('//*[@data-id="' + jobId + '"]/descendant::*[contains(text(),"' + status + '")][1]')
-        const selectedPartnerDetails = await partnerStatusButton.locator('//ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]')
-
-        const partnerNameDiv = await selectedPartnerDetails
-                        .locator('//descendant::*[@class="MuiTypography-root MuiTypography-body1 MuiTypography-noWrap mui-style-1hqbags"]')
-        const partnerName = await partnerNameDiv.getAttribute('aria-label')
-        const partnerType = await partnerNameDiv.locator('//parent::*/preceding-sibling::*').textContent()
-
-        console.log("Found JobId: " + jobId + " with a partner called " + partnerName + " assigned as a " + partnerType + "  with status " + status)
-        
-        return {
-            jobId : jobId,
-            partnerName : partnerName,
-            partnerType: partnerType,
-            button : partnerStatusButton  
-        }
-    },
-
     getRandomDifferent: function (arr, last = undefined) {
         let num
         do {

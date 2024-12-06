@@ -16,19 +16,16 @@ export class AssignmentPage {
         this.addNewButton = this.page.getByRole('button', {name: 'Add New'});
         
         //Partner Types Dialog
-        this.partnerTypesPopup = this.page.getByRole('dialog');
         this.partnerTypesBlankCheckbox = this.page.getByRole('dialog').getByTestId('CheckBoxOutlineBlankIcon');
         this.selectLanguageList = this.page.getByText('Select a Language');
-
-        //Partner Page
-        this.applyButton = this.page.getByRole('button', {name : 'Apply', exact: true})
-        this.addButton = this.page.getByRole('button', { name: 'Add' })
-
+        
         //Partner Status
-        this.changeStatusOption = page.getByRole('option', { name: 'Change Status' })
-        this.removePartnerOption = page.getByRole('option', { name: 'Remove Partner' })
-
+        this.partnerStatusButton = page.locator('//*[@aria-label="Select Partner Status"]');
+        this.changeStatusOption = page.getByRole('option', { name: 'Change Status' });
+        this.removePartnerOption = page.getByRole('option', { name: 'Remove Partner' });
+        
         //Confirmation Modal
+        this.confirmationPopup = this.page.getByRole('dialog');
         this.confirmStatusChangeButton = page.getByRole('button', { name: 'Yes, Change' })
         this.removePartnerButton = page.getByRole('button', { name: 'Remove' })
         this.cancelButton = page.getByRole('button', { name: 'Cancel' })
@@ -36,37 +33,6 @@ export class AssignmentPage {
     
     async clickOnStatus(status) {
         await status.click()
-    }
-
-    async clickOnNewStatus(newStatus) {
-        const statusSelector = await this.page.getByRole('menuitem', { name: newStatus })
-        await statusSelector.click() 
-    }
-    
-    async confirmStatusChange(confirmChange, jobId, partnerName, partnerType, currentStatus, newStatus) {
-        const statusLocator = '//*[@data-id="' + jobId + '"]/descendant::*[contains(text(), "' + partnerType + '")]/following-sibling::*/descendant::*' +
-                '[@aria-label="' + partnerName + '"]/ancestor::*[@class="MuiGrid-root MuiGrid-item mui-style-1wxaqej"]/descendant::*[@aria-label="Select Partner Status"]'
-        let statusButton
-        if (confirmChange) {
-            await this.confirmStatusChangeButton.click()
-
-            await utils.waitLoadToFinish(this.page)
-            const filterPage = new FilterPage(this.page)
-            await filterPage.checkFiltersWereApplied()
-
-            statusButton = await this.page.locator(statusLocator).first()
-            await expect(statusButton).toHaveText(newStatus)
-
-            console.log(partnerName + ", assigned as a " + partnerType + " partner to job " + jobId + ", had their status successfully updated from " + currentStatus + " to " + newStatus)
-        } else {
-            await this.cancelButton.click()
-
-            await utils.waitLoadToFinish(this.page)
-            statusButton = await this.page.locator(statusLocator).first()
-            await expect(statusButton).toHaveText(currentStatus)
-
-            console.log("Tried selecting status change from " + currentStatus + " to " + newStatus + " then canceled")
-        }
     }
 
     async checkColumnList(defaultColumnList) {
@@ -82,10 +48,6 @@ export class AssignmentPage {
         await this.removePartnerOption.click()
         await this.removePartnerButton.click()
         await expect(this.page.locator(jobLocator)).not.toBeVisible()
-    }
-
-    async selectChangeStatus() {
-        await this.changeStatusOption.hover()
     }
 
     async sortRandomColumn(column, order) {

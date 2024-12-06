@@ -53,7 +53,7 @@ test(`Partner page is loading via ADD NEW`, async ({ page }) => {
 
     await test.step(`Open page through ADD NEW button` , async () => {
         await assignmentPage.addNewButton.first().click();
-        await expect(assignmentPage.partnerTypesPopup).toBeVisible();
+        await expect(assignmentPage.confirmationPopup).toBeVisible();
     });
 
     await test.step('Selecting partner types', async () => {
@@ -73,8 +73,8 @@ test(`Partner page is loading via ADD NEW`, async ({ page }) => {
     });
 
     await test.step('Confirm Add', async () => {
-        await expect(assignmentPage.addButton).toBeEnabled();
-        await assignmentPage.addButton.click();
+        await expect(assignPartnerPage.addButton).toBeEnabled();
+        await assignPartnerPage.addButton.click();
     });
 
     await test.step('Partner Page loads', async () => {
