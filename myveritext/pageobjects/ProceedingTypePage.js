@@ -11,4 +11,3 @@ class ProceedingTypePage {
   }
   
   module.exports = { ProceedingTypePage };
-  

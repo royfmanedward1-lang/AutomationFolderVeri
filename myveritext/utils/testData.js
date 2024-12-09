@@ -122,7 +122,14 @@ const testData = {
       "Live transcription during proceedings",
       "Quick preliminary transcripts",
       "Seamless video conferencing",
+      
     ],
+  },
+  remoteParticipants: {
+    firstNames: ["Gustavo", "John", "Emily", "Michael", "Sarah", "William", "Sophia", "James", "Oliver", "Emma"],
+    lastNames: ["Landa", "Doe", "Smith", "Johnson", "Brown", "Williams", "Jones", "Garcia", "Martinez", "Davis"],
+    roles: ["Attorney", "Paralegal/Legal Assistant", "Witness", "Other"],
+    emails: ["gustavo.landa@example.com", "john.doe@example.com", "emily.smith@example.com", "michael.johnson@example.com", "sarah.brown@example.com", "william.williams@example.com", "sophia.jones@example.com", "james.garcia@example.com", "oliver.martinez@example.com", "emma.davis@example.com"],
   },
   jobCardDetails: {
     successMessage: "Success! You're All Set.",

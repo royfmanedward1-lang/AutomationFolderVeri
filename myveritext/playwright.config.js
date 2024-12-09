@@ -20,17 +20,23 @@ const config = {
       use: {
         browserName: "chromium",
         headless: false,
-        //viewport : {width: 720, height: 720},
+        viewport: null,
         screenshot: "on",
         ignoreHttpsErrors: false,
+        launchOptions: {
+          args: [
+            "--start-maximized", // Maximize browser window
+            "--window-position=0,0", // Set position to top left corner
+            "--window-size=1920,1080", // Set window size to Full HD, or adjust to your screen resolution
+          ],
+        },
 
-        Permissions: ["geolocation"],
+        permissions: ["geolocation"],
 
-        reporter: [["html"], ["allure-playwright"]],
-
-        video: "retain-on-failure",
+        video: "on",
 
         trace: "on", //off,on
+
         //...devices["iPhone 14 Pro Max landscape"]
       },
     },

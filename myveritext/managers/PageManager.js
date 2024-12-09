@@ -10,6 +10,7 @@ class PageManager {
     this.proceedingServicesPage = null;
     this.participantsPage = null;
     this.jobCardPage = null;
+    this.addRemoteParticipants = null;
   }
 
   getLoginPage() {
@@ -83,6 +84,14 @@ class PageManager {
       this.jobCardPage = new JobCardPage(this.page);
     }
     return this.jobCardPage;
+  }
+
+  getAddRemoteParticipantsPage() { 
+    if (!this.addRemoteParticipantsPage) {
+      const { AddRemoteParticipantsPage } = require("../pageobjects/AddRemoteParticipantsPage"); 
+      this.addRemoteParticipantsPage = new AddRemoteParticipantsPage(this.page);
+    }
+    return this.addRemoteParticipantsPage;
   }
     
 }
