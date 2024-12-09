@@ -8,7 +8,7 @@ class JobCardPage {
     this.jobNumberLocator = page
       .locator("div")
       .filter({ hasText: /^[0-9]{7}$/ }); // Match a 7-digit job number
-    this.statusLocator = page.locator("div").filter({ hasText: /^SCHEDULED$/ });
+    this.statusLocator = page.locator("div").filter({ hasText: /^SCHEDULED/, }).first();
   }
 
   async getSuccessMessage() {

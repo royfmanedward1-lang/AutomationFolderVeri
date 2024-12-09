@@ -3,7 +3,7 @@ const { PageManager } = require("../managers/PageManager");
 const testData = require("../utils/testData");
 const { chromium } = require("playwright");
 
-test.describe("Job Creation Remote Proceeding", () => {
+test.describe("Job Remote Creation", () => {
   let browser, context, page, pageManager;
   let loginPage,
     calendarPage,
@@ -13,6 +13,7 @@ test.describe("Job Creation Remote Proceeding", () => {
     locationPage,
     proceedingServicesPage,
     participantsPage,
+    addRemoteParticipantsPage,
     jobCardPage;
 
   test.beforeAll(async () => {
@@ -32,33 +33,33 @@ test.describe("Job Creation Remote Proceeding", () => {
     proceedingServicesPage = pageManager.getProceedingServicesPage();
     participantsPage = pageManager.getParticipantsPage();
     jobCardPage = pageManager.getJobCardPage();
+    addRemoteParticipantsPage = pageManager.getAddRemoteParticipantsPage();
 
-    await test.step("Navigate to MyVeritext Page", async () => {
+    // Perform login
+    await test.step("Enter Valid Credentials", async () => {
       await loginPage.goto();
-    });
-
-    await test.step("Login with Valid Credentials", async () => {
       await loginPage.enterValidCredentials(
         testData.validCredentials.username,
         testData.validCredentials.password
       );
-      await loginPage.clickLoginButton();
     });
 
-    await test.step("Handle Retention Policy", async () => {
+    //Click the login button
+    await test.step("When the user clicks the Log In button", async () => {
+      await loginPage.clickLoginButton();
       await page.waitForURL(testData.urls.calendarPage);
+    });
+
+    await test.step("And the user handle the Retention policy", async () => {
       await calendarPage.handleRetentionPolicyModal();
     });
   });
-
-  // Common steps for creating a job for reuse
-  const commonJobCreationSteps = async (locationOption) => {
-    await test.step("When user clicks Schedule proceeding button", async () => {
+  test("Create a Remote proceeding", async () => {
+    await test.step("When the user clicks the Schedule Proceeding button", async () => {
       await calendarPage.clickScheduleProceeding();
     });
 
-    await test.step("And selects a proceeding type", async () => {
-      //Select a random proceeding
+    await test.step("And selects a Proceeding Type", async () => {
       await proceedingTypePage.selectProceedingType(
         testData.jobDetails.proceedingTypes[
           Math.floor(Math.random() * testData.jobDetails.proceedingTypes.length)
@@ -66,51 +67,51 @@ test.describe("Job Creation Remote Proceeding", () => {
       );
     });
 
-    await test.step("And fills the proceeding basics", async () => {
+    await test.step("And Fill in Proceeding Basics", async () => {
       await caseNamePage.selectCaseName();
       await caseNamePage.selectCountry(testData.jobDetails.country);
       await caseNamePage.clickNext();
     });
 
-    await test.step("And selects the proceeding date and time", async () => {
-      //Select a random time and timezone
+    await test.step("And Select Date and Time", async () => {
       const randomTime =
         testData.dateAndTime.timeOptions[
           Math.floor(Math.random() * testData.dateAndTime.timeOptions.length)
         ];
+
       const randomTimeZoneAbbreviation =
         testData.dateAndTime.timeZoneOptions[
           Math.floor(
             Math.random() * testData.dateAndTime.timeZoneOptions.length
           )
         ];
+
       const timeZoneValue = testData.dateAndTime.getTimeZone(
         randomTimeZoneAbbreviation
       );
-      await dateAndTimePage.selectDate(); //Using date selected by default in the date picker.TO DO refine logic for picking random date.
+
+      await dateAndTimePage.selectDate(); //TO DO, improve logic to select a random date.
       await dateAndTimePage.selectTime(randomTime);
       await dateAndTimePage.selectTimeZone(timeZoneValue);
       await dateAndTimePage.clickNext();
     });
 
-    await test.step("And selects In-Person proceeding", async () => {
-      await locationPage.selectInPersonOption();
-      await locationOption();
+    await test.step("And selects a Remote Proceeding", async () => {
+      await locationPage.selectRemoteOption();
     });
 
-    await test.step("And selects the proceeding services", async () => {
-      //Select a random proceeding service
+    await test.step("And selects multiple Proceeding Services", async () => {
       const randomServices = testData.proceedingServices.additionalServices
         .sort(() => Math.random() - 0.5)
         .slice(0, 2);
       await proceedingServicesPage.selectRandomServices(randomServices);
       await proceedingServicesPage.clickNext();
     });
-
-    await test.step("And setup the participants", async () => {
+    await test.step("And sets up participants", async () => {
       await participantsPage.adjustAttendees(
         testData.jobDetails.participants.attendees
       );
+
       await participantsPage.selectAttyLawyer(
         testData.jobDetails.participants.attyLawyer
       );
@@ -120,6 +121,7 @@ test.describe("Job Creation Remote Proceeding", () => {
       await participantsPage.selectSchedulingOffice(
         testData.jobDetails.participants.schedulingOffice
       );
+
       //Select a random witness
       const randomWitness =
         testData.jobDetails.participants.witnesses[
@@ -128,10 +130,43 @@ test.describe("Job Creation Remote Proceeding", () => {
           )
         ];
       await participantsPage.addWitness(randomWitness);
+
+      await participantsPage.clickNext();
     });
 
-    await test.step("And schedule the proceeding", async () => {
-      await participantsPage.clickScheduleProceeding();
+    await test.step("And adds remote participants", async () => {
+      // Select random values for the participant
+      const randomFirstName =
+        testData.remoteParticipants.firstNames[
+          Math.floor(
+            Math.random() * testData.remoteParticipants.firstNames.length
+          )
+        ];
+      const randomLastName =
+        testData.remoteParticipants.lastNames[
+          Math.floor(
+            Math.random() * testData.remoteParticipants.lastNames.length
+          )
+        ];
+      const randomRole =
+        testData.remoteParticipants.roles[
+          Math.floor(Math.random() * testData.remoteParticipants.roles.length)
+        ];
+      const randomEmail =
+        testData.remoteParticipants.emails[
+          Math.floor(Math.random() * testData.remoteParticipants.emails.length)
+        ];
+
+      await addRemoteParticipantsPage.addRemoteParticipant({
+        firstName: randomFirstName,
+        lastName: randomLastName,
+        role: randomRole,
+        email: randomEmail,
+      });
+
+      await addRemoteParticipantsPage.clickScheduleProceeding();
+    });
+    await test.step("And confirm Scheduling the proceeding", async () => {
       await participantsPage.confirmScheduleProceeding();
     });
 
@@ -144,43 +179,6 @@ test.describe("Job Creation Remote Proceeding", () => {
 
       const status = await jobCardPage.verifyStatus();
       expect(status).toContain(testData.jobCardDetails.status);
-    });
-  };
-
-  test("Create an In-Person job using Address Book option", async () => {
-    await test.step("And selects an address from the address book", async () => {
-      await commonJobCreationSteps(async () => {
-        await locationPage.selectAddressBookOption(testData.jobDetails.address);
-        await locationPage.clickNext();
-      });
-    });
-  });
-
-  test("Create an In-Person job using Veritext Offices option", async () => {
-    await test.step("And selects a Veritext office", async () => {
-      await commonJobCreationSteps(async () => {
-        //Select a random veritext office
-        const randomOffice =
-          testData.jobDetails.veritextOffices[
-            Math.floor(
-              Math.random() * testData.jobDetails.veritextOffices.length
-            )
-          ];
-        await locationPage.selectVeritextOfficesOption(randomOffice);
-      });
-    });
-  });
-
-  test("Create an In-Person job using Find Me a Location option", async () => {
-    await test.step("And enters a state and city", async () => {
-      await commonJobCreationSteps(async () => {
-        await locationPage.selectFindMeLocationOption();
-        await locationPage.fillStateAndCity(
-          testData.jobDetails.findLocationDetails.state,
-          testData.jobDetails.findLocationDetails.city
-        );
-        await locationPage.clickNext();
-      });
     });
   });
 });

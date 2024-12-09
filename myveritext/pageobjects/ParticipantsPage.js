@@ -7,6 +7,7 @@ class ParticipantsPage {
     this.schedulingOfficeDropdown = page.getByLabel("Scheduling Office *");
     this.addWitnessButton = page.locator('button:has-text("+ Witness")');
     this.lastNameField = page.getByLabel("Last Name *");
+    this.nextButton = page.getByRole('button', { name: 'NEXT' });
     this.addWitnessConfirmButton = page.locator(
       'button:has-text("Add Witness")'
     );
@@ -50,6 +51,9 @@ class ParticipantsPage {
   }
   async confirmScheduleProceeding() {
     await this.confirmProceedingButton.click();
+  }
+  async clickNext() {
+    await this.nextButton.click();
   }
 }
 
