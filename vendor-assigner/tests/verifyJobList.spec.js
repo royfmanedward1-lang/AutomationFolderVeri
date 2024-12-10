@@ -1,13 +1,12 @@
-import { test } from '@playwright/test'
-import { LoginPage } from '../pages/LoginPage.js'
-import { AssignmentPage } from '../pages/AssignmentPage.js'
-import * as utils from "../utility/utils.js"
+import { test } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage.js';
+import { AssignmentPage } from '../pages/AssignmentPage.js';
+import * as utils from "../utility/utils.js";
 
 test.beforeEach('Logging in', async ({ page }) => {
-    //login
-    const loginPage = new LoginPage(page)
-    await loginPage.login()
-})
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+});
 
 test('Check Job List and Columns', async ({ page }) => {
     const defaultColumnList = ["Job Number", "Case Name", "Job Date", "Start Time", "Scheduling Client", "Location Type", "City", "Note", "Partner Assignment"];
@@ -37,5 +36,5 @@ for (const order of ["Ascending", "Descending"]) {
                 await assignmentPage.sortRandomColumn(columns, order);
             });
         });
-    }
-}
+    };
+};

@@ -15,7 +15,7 @@ export class PartnerInfoPage {
         this.serviceLink = page.getByRole('tab', { name: 'Services' }).nth(1);
         this.serviceLabel =  page.locator('label').filter({ hasText: 'Service' })
         this.successNoResults = page.locator('div').filter({ hasText: 'No Results Found' }).nth(2);
-    }
+    };
 
     getServiceLocator = async () => {
         const attributeFor = await this.serviceLabel.getAttribute('for');

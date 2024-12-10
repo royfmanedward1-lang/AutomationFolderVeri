@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage.js';
 import { FilterJobPage } from '../pages/FilterJobPage.js';
 import { AssignmentPage } from '../pages/AssignmentPage.js';
-import { AssignPartnerPage } from '../pages/assignament/AssignPartnerPage.js';
+import { AssignPartnerPage } from '../pages/assignement/AssignPartnerPage.js';
 import * as utils from "../utility/utils.js";
 
 test.beforeEach('Logging in and set jobs', async ({ page }) => {
