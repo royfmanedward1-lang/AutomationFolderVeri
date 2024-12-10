@@ -102,9 +102,7 @@ test(`Selecting a partner`, async ({ page }) => {
     await test.step('Selecting a random available partner', async () => {
         await expect(assignPartnerPage.addButton.first()).toBeEnabled();
         const numberOfOptions = await assignPartnerPage.enabledAddButton.count();
-        console.log({numberOfOptions});
         const randomIndex = Math.floor(Math.random() * numberOfOptions) - 1;
-        console.log({randomIndex});
         await assignPartnerPage.enabledAddButton.nth(randomIndex).click();
     });
 
