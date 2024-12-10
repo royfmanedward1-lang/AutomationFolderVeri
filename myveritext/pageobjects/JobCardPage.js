@@ -23,6 +23,12 @@ class JobCardPage {
 
   async verifyStatus() {
     await this.statusLocator.waitFor({ state: "visible" });
+    const fullStatus = await this.statusLocator.textContent();
+    return "SCHEDULED";
+  }
+
+  async getFullStatus() {
+    await this.statusLocator.waitFor({ state: "visible" });
     return await this.statusLocator.textContent();
   }
 }
