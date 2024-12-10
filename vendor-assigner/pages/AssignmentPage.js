@@ -16,7 +16,7 @@ export class AssignmentPage {
         //Partner Types Dialog
         this.partnerTypesBlankCheckbox = this.page.getByRole('dialog').getByTestId('CheckBoxOutlineBlankIcon');
         this.selectLanguageList = this.page.getByText('Select a Language');
-        
+
         //Partner Status
         this.partnerStatusButton = page.locator('//*[@aria-label="Select Partner Status"]');
         this.changeStatusOption = page.getByRole('option', { name: 'Change Status' });
@@ -24,29 +24,21 @@ export class AssignmentPage {
         
         //Confirmation Modal
         this.confirmationPopup = this.page.getByRole('dialog');
-        this.confirmStatusChangeButton = page.getByRole('button', { name: 'Yes, Change' });
-        this.removePartnerButton = page.getByRole('button', { name: 'Remove' });
-        this.cancelButton = page.getByRole('button', { name: 'Cancel' });
-    };
+        this.confirmStatusChangeButton = page.getByRole('button', { name: 'Yes, Change' })
+        this.removePartnerConfirmationButton = page.getByRole('button', { name: 'Remove' })
+        this.cancelButton = page.getByRole('button', { name: 'Cancel' })
+    }
     
     async clickOnStatus(status) {
         await status.click()
     }
 
     async checkColumnList(defaultColumnList) {
-        const pageColumnList = await this.columns.allInnerTexts();
-        await expect(this.selectAllCheckbox).toBeVisible();
-        await expect(this.columnSettingsButton).toBeVisible();
-        expect(pageColumnList.filter(Boolean), "Should have all default columns and in order").toEqual(defaultColumnList);
-    };
-
-    async removePartner(jobId, partnerName, partnerType) {
-        const jobLocator = '//div[@data-id="' + jobId + '"]/descendant::*[text()="' + partnerType + '"]/following-sibling::*/descendant::*[text()="' + partnerName + '"]';
-        await expect(this.page.locator(jobLocator)).toBeVisible();
-        await this.removePartnerOption.click();
-        await this.removePartnerButton.click();
-        await expect(this.page.locator(jobLocator)).not.toBeVisible();
-    };
+        const pageColumnList = await this.columns.allInnerTexts()
+        await expect(this.selectAllCheckbox).toBeVisible()
+        await expect(this.columnSettingsButton).toBeVisible()
+        expect(pageColumnList.filter(Boolean), "Should have all default columns and in order").toEqual(defaultColumnList)
+    }
 
     async sortRandomColumn(column, order) {
         const selectedColumn = await this.columns.filter({ hasText: column });
@@ -119,7 +111,17 @@ export class AssignmentPage {
                 expectedResult = allValues[i] >= allValues[i+1];
             };
             //toBeGreater only works for int/float, and we are comparing sorting with strings, dates and so on
-            expect(expectedResult).toBe(true);
+            expect(expectedResult).toBe(true)
+        }
+    }
+
+    async findJobInfoFromLocator(inputLocator) {
+        const jobId = await inputLocator.locator("//ancestor::*[@data-id]").getAttribute("data-id");
+        const selectedJob = this.page.locator(`//div[@data-id="${jobId}"]`);
+
+        return {
+            jobId,
+            selectedJob
         };
-    };
-};
+    }   
+}
