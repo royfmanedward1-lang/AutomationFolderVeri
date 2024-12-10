@@ -10,6 +10,6 @@ export class AssignPartnerPage {
         this.applyButton = this.page.getByRole('button', { name : 'Apply', exact: true });
         this.partnerSelected = this.page.getByRole('button', { name : 'Selected', exact: true });
         this.removePartnerButton = this.page.getByRole('button', { name : 'Remove' });
-    }
-}
+    };
+};
 

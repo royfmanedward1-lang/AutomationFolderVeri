@@ -1,5 +1,5 @@
 import { LoginPage } from '../pages/LoginPage.js';
-import { HeaderPage } from '../pages/assignament/HeaderPage.js';
+import { HeaderPage } from '../pages/assignement/HeaderPage.js';
 import { PartnerInfoPage } from '../pages/PartnerInfoPage.js';
 const { test, expect } = require('@playwright/test');
 
