@@ -1,26 +1,40 @@
  
   [
-        {
-            "clientName": "Goldstein & Company",
-            "clientAddress": "1805 Ponce de Leon, Suite 400",
-            "division": "Corp Services",
-            "caller": "Abigail Maines",
-            "attorney": "Jason Goldstein",
-            "caseNbr": "",
-            "caseName": "",
-            "plaintiff": "",
-            "defendant": ""
-          },
-        
-        {
-           "clientName": "MCS Group",
-           "clientAddress": "1601 Market Street, Suite 800 ",
-           "division": "Michigan",
-           "caller": "Lori Bennani",
-           "attorney": "Billing Department",
-           "caseNbr": "19STCV21242",
-           "caseName": "Migatz, Margo v. Redfern, Hannah Hale",
-           "plaintiff": "Migatz, Margo",
-           "defendant": "Redfern, Hannah Hale"
-         }
-    ]
+    {
+        "clientName": "Goldstein & Company",
+        "clientAddress": "1805 Ponce de Leon, Suite 400",
+        "division": "Corp Services",
+        "caller": "Abigail Maines",
+        "attorney": "Jason Goldstein",
+        "caseNbr": "",
+        "caseName": "",
+        "plaintiff": "",
+        "defendant": "",
+        "veritextLocationName": "Veritext -  Bakersfield, CA",
+        "remoteLocationName": "Client Managed Remote - CA",
+        "otherLocationName": "Artisan Estate Home, LLC",
+        "numberOfAtendees": "1",
+        "proceedingDate": "01/27/2025",
+        "dueDate": "02/10/2025",
+        "startProceedingTime": "10:25 AM",
+        "endProceedingTime": "02:25 PM"          },
+    
+    {
+       "clientName": "MCS Group",
+       "clientAddress": "1601 Market Street, Suite 800 ",
+       "division": "Michigan",
+       "caller": "Lori Bennani",
+       "attorney": "Billing Department",
+       "caseNbr": "19STCV21242",
+       "caseName": "Migatz, Margo v. Redfern, Hannah Hale",
+       "plaintiff": "Migatz, Margo",
+       "defendant": "Redfern, Hannah Hale",
+       "veritextLocationName": "Veritext -  Chicago, IL",
+        "remoteLocationName": "Client Managed Remote - OH",
+        "otherLocationName": "Walgreens  Store 04327",
+        "proceedingDate": "03/10/2025",
+        "dueDate": "03/24/2025",
+        "startProceedingTime": "08:30 am",
+        "endProceedingTime": "10:30 am"
+     }
+]
