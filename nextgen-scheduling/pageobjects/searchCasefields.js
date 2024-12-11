@@ -20,8 +20,18 @@ export class Case {
         //case name
         this.caseNameField =  page.locator('#caseName').getByRole('combobox') 
         this.checkIconcaseName = page.locator('#caseName').getByTestId('checkIcon')
-    }
 
+        this.fields = (text) => page.locator(`#${text}`).getByRole('combobox');
+        this.checkIcon = (text) => page.locator(`#${text}`).getByTestId('checkIcon');
+    }
+    
+
+    async searchCaseField(locatorField, fieldValue){
+        await this.fields(locatorField).click()
+        await this.fields(locatorField).fill(fieldValue)
+        await this.page.getByText(fieldValue).nth(0).click()
+        await expect(this.checkIcon(locatorField)).toBeVisible()
+    }
      
     async searchCaseNbr(caseNbr){
         await this.caseNbrField.click()

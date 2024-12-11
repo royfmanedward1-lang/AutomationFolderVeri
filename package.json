@@ -5,12 +5,12 @@
   "scripts": {},
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.1"
   },
   "dependencies": {
     "date-holidays": "^3.23.13"
-  }
+  },
+  "description": ""
 }
