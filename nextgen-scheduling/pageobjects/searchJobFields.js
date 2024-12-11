@@ -1,0 +1,123 @@
+import { expect} from "@playwright/test";
+import clientData  from '../testdata/clientData.json'
+const nextGenConfig = require('../nextgen.config');
+
+
+
+export class Job {
+
+   constructor(page){
+        this.page = page
+        //    LOCATORS
+        // Proceeding Date
+        this.proceedingDateField =  page.locator('#proceedingDate')
+        this.proceedingDateInput =  page.getByLabel('Proceeding Date *')
+        this.proceedingDateSelect =  page.getByLabel('Choose date, selected date is')
+        // Proceeding Time
+        this.proceedingStartTime = page.getByLabel('Start Time')
+        this.proceedingEndTime = page.getByLabel('End time', { exact: true })
+        this.proceedingEndTimeCheckbox = page.getByLabel('End time N/A')
+        // Due date
+        this.dueDate = page.getByLabel('Due Date *')
+        // Number of Attendees
+        this.numberOfAttendees = page.locator('#numberOfAttendees').getByRole('spinbutton')
+        // Delivery Days
+        this.deliveryDays = page.locator('#deliveryDays').getByRole('spinbutton')
+        // End time checkbox
+        this.endTimeCheck = this.page.getByLabel('End time N/A')
+        // Publish job button
+        this.publishButton = this.page.getByRole('button', { name: 'PUBLISH JOB' })
+
+
+        // Generic locator for combobox and checkicon fields
+        this.fields = (text) => page.locator(`#${text}`).getByRole('combobox')
+        this.checkIcon = (text) => page.locator(`#${text}`).getByTestId('CheckIcon')
+        
+        
+   }
+
+   async verifyDefaultvalues (locatorField, defaultValue){
+      expect(this.fields(locatorField)).toHaveText(defaultValue)
+
+   }
+
+   async verifyLocationTypeRadioValues (){
+
+      for (const locType in nextgenConfig.locationTypes){
+         await expect(this.page.getByRole('radiogroup')).toContainText(nextgenConfig.locationTypes[locType])
+      }
+      
+   }
+
+   async selectLocationType (locationType, locatorField){
+      const i = 0
+      
+      await this.page.getByLabel(locationType, { exact: true }).check()
+      await this.fields(locatorField).click()
+      
+      if(locationType === "Veritext" || locationType === "Remote" || locationType === 'Other'){
+         switch (locationType){
+         case "Veritext":
+            await this.page.getByText(clientData[i].veritextLocationName, { exact: true }).click()
+            break;
+         case "Remote":
+            await this.page.getByText(clientData[i].remoteLocationName, { exact: true }).click()
+               break;
+         case "Other":
+               await this.page.getByText(clientData[i].otherLocationName, { exact: true }).click()
+               break;
+         }
+         await expect(this.checkIcon(locatorField)).toBeVisible()
+         await expect(this.fields('locationAddress')).not.toBeEmpty()
+         await expect(this.checkIcon('locationAddress')).toBeVisible()
+      } else if(locationType === "Client"){
+         await expect(this.fields('locationClientName')).toHaveText(clientData[i].clientName)
+         } else if(locationType === "TBD"){
+            console.log(locationType)
+      }
+      
+   }
+
+   async verifyTimeZoneIsSelected(){
+      await expect(this.fields('timezone')).not.toBeEmpty()
+      await expect(this.checkIcon('timezone')).toBeVisible()
+   }
+
+   async selectDate(locatorField, selectedDate){
+      await this.page.getByLabel(locatorField).fill(selectedDate)
+      await expect(this.page.getByLabel(locatorField)).toHaveValue(selectedDate)
+   }
+
+   async selectProceedingTime(locatorField, selectedTime){
+      await this.page.getByLabel(locatorField).fill(selectedTime)
+      await expect(this.page.getByLabel(locatorField)).toHaveValue(selectedTime)
+   }
+
+   async enterNumberAttendees(numberOfAttendees){
+      await this.numberOfAttendees.click()
+      await this.numberOfAttendees.fill(numberOfAttendees)
+      await expect(this.numberOfAttendees).toHaveValue(numberOfAttendees)
+   }
+
+   async verifyDefaultValuePartnerService(){
+      await expect(this.page.getByLabel(nextGenConfig.defaultValuePartnerService)).toBeChecked()
+   }
+
+   async verifydefaultValueDeliveyDays(){
+      await expect(this.deliveryDays).toHaveValue(nextGenConfig.deliveryDaysDefaulValue);
+   }
+
+   async publishJob(){
+      await this.publishButton.click()
+      const str = await this.page.getByText('Publishing has updated the').textContent()
+      await expect(this.page.locator('body')).toContainText(nextGenConfig.publishSuccesfulText)
+      await expect(this.page.getByTestId('CheckCircleIcon').locator('path')).toBeVisible()
+
+      const numberPattern = /\d+/g
+      const jobID = str.match(numberPattern)
+      console.log(jobID)
+      
+   }
+
+   
+}

@@ -5,7 +5,7 @@ export class Client {
         this.page = page
  
         this.fields = (text) => page.locator(`#${text}`).getByRole('combobox');
-        this.checkIcon = (text) => page.locator(`#${text}`).getByTestId('checkIcon');
+        this.checkIcon = (text) => page.locator(`#${text}`).getByTestId('CheckIcon');
         
     }
 
@@ -13,6 +13,11 @@ export class Client {
         await this.fields(locatorField).click()
         await this.fields(locatorField).fill(fieldValue)
         await this.page.getByText(fieldValue).nth(0).click()
-        await expect(this.checkIcon(locatorField)).toBeVisible
+        await expect(this.checkIcon(locatorField)).toBeVisible()
     }
+
+    async verifyDefaultvalues (locatorField, defaultValue){
+        await expect(this.fields(locatorField)).toHaveText(defaultValue)
+  
+     }
 }
