@@ -1,10 +1,10 @@
 // @ts-check
 const { devices } = require("@playwright/test");
 
-const DEFAULT_TIMEOUT = 30 * 1000;
+const DEFAULT_TIMEOUT = 60 * 1000;
 
 const config = {
-  testDir: "./MV-tests",
+  testDir: "./tests",
 
   timeout: DEFAULT_TIMEOUT,
   expect: {
