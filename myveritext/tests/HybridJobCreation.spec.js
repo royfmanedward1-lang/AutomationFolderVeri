@@ -3,16 +3,18 @@ const { PageManager } = require("../managers/PageManager");
 const testData = require("../utils/testData");
 const { chromium } = require("playwright");
 
-test.describe("Job Creation Hybrid Proceeding with Witness, Remote Participants, and Random Time Zone Selection", () => {
+test.describe("Job Creation Hybrid Proceeding with Multiple Location Options", () => {
   let browser, context, page, pageManager;
   let loginPage, calendarPage, proceedingTypePage, caseNamePage, dateAndTimePage, 
       locationPage, proceedingServicesPage, participantsPage, jobCardPage;
 
   test.beforeAll(async () => {
+    // Manually create the browser, context, and page
     browser = await chromium.launch({ headless: false });
     context = await browser.newContext();
     page = await context.newPage();
 
+    // Initialize the PageManager and page objects
     pageManager = new PageManager(page);
     loginPage = pageManager.getLoginPage();
     calendarPage = pageManager.getCalendarPage();
@@ -23,14 +25,12 @@ test.describe("Job Creation Hybrid Proceeding with Witness, Remote Participants,
     proceedingServicesPage = pageManager.getProceedingServicesPage();
     participantsPage = pageManager.getParticipantsPage();
     jobCardPage = pageManager.getJobCardPage();
-  });
 
-  test.beforeEach(async () => {
     await test.step("Navigate to MyVeritext Page", async () => {
       await loginPage.goto();
     });
 
-    await test.step("Log in with valid credentials", async () => {
+    await test.step("Login with Valid Credentials", async () => {
       await loginPage.enterValidCredentials(
         testData.validCredentials.username,
         testData.validCredentials.password
@@ -38,13 +38,14 @@ test.describe("Job Creation Hybrid Proceeding with Witness, Remote Participants,
       await loginPage.clickLoginButton();
     });
 
-    await test.step("Handle Retention Policy Modal", async () => {
+    await test.step("Handle Retention Policy", async () => {
       await page.waitForURL(testData.urls.calendarPage);
       await calendarPage.handleRetentionPolicyModal();
     });
   });
 
-  const hybridJobCreationSteps = async () => {
+  // Common steps for hybrid job creation
+  const commonJobCreationSteps = async () => {
     await test.step("When user clicks Schedule proceeding button", async () => {
       await calendarPage.clickScheduleProceeding();
     });
@@ -76,17 +77,28 @@ test.describe("Job Creation Hybrid Proceeding with Witness, Remote Participants,
 
     await test.step("And selects Hybrid proceeding", async () => {
       await locationPage.selectHybridOption();
-      await locationPage.selectVeritextOfficesOption(testData.jobDetails.veritextOffices[0]);
-      await locationPage.clickNext();
     });
+  };
 
-    await test.step("And moves through services to participants page", async () => {
+  // Common steps after location selection
+  const completeJobCreation = async () => {
+    await test.step("And selects proceeding services", async () => {
       await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(500); // Small delay to ensure stability
       
+      // Select random services
+      const randomServices = testData.proceedingServices.additionalServices
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 2);
+        
+      await proceedingServicesPage.selectRandomServices(randomServices);
+      await proceedingServicesPage.clickNext();
+      
+      // Wait for the participants page to load
       await page.waitForLoadState('networkidle');
-      await expect(page.locator('.MuiTypography-root', { hasText: 'Who Is Attending This Proceeding?' }))
-        .toBeVisible({ timeout: 1000 });
+      await page.waitForSelector('.MuiTypography-root:has-text("Who Is Attending This Proceeding?")', {
+        state: 'visible',
+        timeout: 5000
+      });
     });
 
     await test.step("And setup the participants", async () => {
@@ -127,8 +139,43 @@ test.describe("Job Creation Hybrid Proceeding with Witness, Remote Participants,
     });
   };
 
-  test("Create a hybrid job with witness", async () => {
-    await hybridJobCreationSteps();
+  test("Create a hybrid job using Address Book for in-person location", async () => {
+    await commonJobCreationSteps();
+    
+    await test.step("And selects an address from the address book", async () => {
+      await locationPage.selectAddressBookOption(testData.jobDetails.address);
+      await locationPage.clickNext();
+    });
+
+    await completeJobCreation();
+  });
+
+  test("Create a hybrid job using Veritext Offices for in-person location", async () => {
+    await commonJobCreationSteps();
+    
+    await test.step("And selects a Veritext office", async () => {
+      const randomOffice = testData.jobDetails.veritextOffices[
+        Math.floor(Math.random() * testData.jobDetails.veritextOffices.length)
+      ];
+      await locationPage.selectVeritextOfficesOption(randomOffice);
+    });
+
+    await completeJobCreation();
+  });
+
+  test("Create a hybrid job using Find Me a Location for in-person location", async () => {
+    await commonJobCreationSteps();
+    
+    await test.step("And enters location details", async () => {
+      await locationPage.selectFindMeLocationOption();
+      await locationPage.fillStateAndCity(
+        testData.jobDetails.findLocationDetails.state,
+        testData.jobDetails.findLocationDetails.city
+      );
+      await locationPage.clickNext();
+    });
+
+    await completeJobCreation();
   });
 
   test.afterAll(async () => {
