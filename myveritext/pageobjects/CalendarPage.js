@@ -34,14 +34,17 @@ class CalendarPage {
   }
 
   async clickMonthView() {
+    await this.monthViewButton.waitFor({ state: "visible" });
     await this.monthViewButton.click();
   }
 
   async clickWeekView() {
+    await this.weekViewButton.waitFor({ state: "visible" });
     await this.weekViewButton.click();
   }
 
   async clickDayView() {
+    await this.dayViewButton.waitFor({ state: "visible" });
     await this.dayViewButton.click();
   }
 
@@ -70,6 +73,7 @@ class CalendarPage {
   }
 
   async clickTodayButton() {
+    await this.todayButton.waitFor({ state: "visible" });
     await this.todayButton.click();
   }
 
@@ -78,6 +82,7 @@ class CalendarPage {
   }
 
   async navigateToPrevious() {
+    await this.previousButton.waitFor({ state: "visible" });
     await this.previousButton.click();
   }
 
@@ -86,6 +91,7 @@ class CalendarPage {
   }
 
   async clickScheduleProceeding() {
+    await this.scheduleProceedingButton.waitFor({ state: "visible" });
     await this.scheduleProceedingButton.click();
   }
 }

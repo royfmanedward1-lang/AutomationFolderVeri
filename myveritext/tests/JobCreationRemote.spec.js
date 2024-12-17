@@ -18,7 +18,7 @@ test.describe("Job Remote Creation", () => {
 
   test.beforeAll(async () => {
     // Manually create the browser, context, and page
-    browser = await chromium.launch({ headless: false });
+    browser = await chromium.launch();
     context = await browser.newContext();
     page = await context.newPage();
 

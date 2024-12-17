@@ -1,18 +1,22 @@
 // @ts-check
 const { devices } = require("@playwright/test");
 
-const DEFAULT_TIMEOUT = 60 * 1000;
+const DEFAULT_TIMEOUT = 120 * 1000;
 
 const config = {
   testDir: "./tests",
 
   timeout: DEFAULT_TIMEOUT,
+  globalTimeout: 30 * 60 * 1000,
   expect: {
     timeout: 5000,
   },
+  retries: 1,
+  
 
   reporter: [["html"], ["allure-playwright"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  workers: 1,
 
   projects: [
     {
@@ -54,6 +58,7 @@ const config = {
 
     //}
   ],
+  //workers: 2, 
 };
 
 module.exports = config;

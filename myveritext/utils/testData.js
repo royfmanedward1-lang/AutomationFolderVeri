@@ -19,7 +19,6 @@ const testData = {
   messages: {
     invalidUsername: "User Account is Unknown Please Contact Support",
     invalidPassword: "Incorrect Username or Password Please Try Again",
-    successMessage: "Success! You're All Set.",
   },
   getCurrentFormattedDate: (format) => {
     const today = new Date();
@@ -59,13 +58,22 @@ const testData = {
     ],
     caseName: ["Canada Case", "Krayoxx Lawsuit #123 $100!"],
     country: "Canada",
-   
+
     address: "3225 Pitfield BlvdLaval,",
     participants: {
-      attyLawyer: "Canada Contact", 
-      pointOfContact: "Canada Contact", 
+      attyLawyer: "Canada Contact",
+      pointOfContact: "Canada Contact",
       schedulingOffice: "Pitfield Blvd, Laval QC H7A 0A1",
-      witnesses: ["Markle","Liotta", "Pesci", "Pacino", "Travolta", "De Niro", "Stallone", "Schwarzenegger"] ,
+      witnesses: [
+        "Markle",
+        "Liotta",
+        "Pesci",
+        "Pacino",
+        "Travolta",
+        "De Niro",
+        "Stallone",
+        "Schwarzenegger",
+      ],
       attendees: Math.floor(Math.random() * 12) + 1,
     },
     veritextOffices: [
@@ -78,7 +86,7 @@ const testData = {
     ],
     findLocationDetails: {
       state: "British Columbia",
-      city: "Vancouver", 
+      city: "Vancouver",
       zipCode: "S7K 1W8",
     },
   },
@@ -86,21 +94,32 @@ const testData = {
     getDynamicDate: function (daysAhead = 30) {
       const today = new Date();
       let futureDate;
-    
+  
       do {
-        // Generate a random number of days ahead, starting from 3 days (48 hours + 1 day)
-        const randomDays = Math.floor(Math.random() * (daysAhead - 2)) + 3; 
+        // Generate a random number of days ahead, starting from tomorrow (1 day ahead)
+        const randomDays = Math.floor(Math.random() * daysAhead) + 1;
         futureDate = new Date(today);
         futureDate.setDate(today.getDate() + randomDays);
-      } while (futureDate.getDay() === 6 || futureDate.getDay() === 0); // Avoid weekends (Saturday = 6, Sunday = 0)
-    
+      } while (futureDate.getDay() === 6 || futureDate.getDay() === 0); // Skip weekends
+  
+      // Return dynamic date details
       return {
         day: futureDate.getDate().toString(),
-        month: futureDate.toLocaleString('default', { month: 'long' }), // e.g., "December"
+        month: futureDate.toLocaleString("default", { month: "long" }), // Full month name, e.g., "January"
         year: futureDate.getFullYear().toString(),
+        formatted: futureDate.toISOString().split("T")[0], // ISO formatted date, e.g., "2025-12-19"
       };
+      
     },
-    timeOptions: ["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:30 PM", "4:30 PM"], 
+    timeOptions: [
+      "8:00 AM",
+      "9:00 AM",
+      "10:00 AM",
+      "11:00 AM",
+      "12:00 PM",
+      "1:30 PM",
+      "4:30 PM",
+    ],
     timeZones: {
       EST: "4",
       PST: "1",
@@ -110,7 +129,6 @@ const testData = {
     getTimeZone: function (abbr) {
       return this.timeZones[abbr] || null;
     },
-    
   },
   proceedingServices: {
     additionalServices: [
@@ -122,18 +140,51 @@ const testData = {
       "Live transcription during proceedings",
       "Quick preliminary transcripts",
       "Seamless video conferencing",
-      
     ],
   },
   remoteParticipants: {
-    firstNames: ["Gustavo", "John", "Emily", "Michael", "Sarah", "William", "Sophia", "James", "Oliver", "Emma"],
-    lastNames: ["Landa", "Doe", "Smith", "Johnson", "Brown", "Williams", "Jones", "Garcia", "Martinez", "Davis"],
+    firstNames: [
+      "Gustavo",
+      "John",
+      "Emily",
+      "Michael",
+      "Sarah",
+      "William",
+      "Sophia",
+      "James",
+      "Oliver",
+      "Emma",
+    ],
+    lastNames: [
+      "Landa",
+      "Doe",
+      "Smith",
+      "Johnson",
+      "Brown",
+      "Williams",
+      "Jones",
+      "Garcia",
+      "Martinez",
+      "Davis",
+    ],
     roles: ["Attorney", "Paralegal/Legal Assistant", "Witness", "Other"],
-    emails: ["gustavo.landa@example.com", "john.doe@example.com", "emily.smith@example.com", "michael.johnson@example.com", "sarah.brown@example.com", "william.williams@example.com", "sophia.jones@example.com", "james.garcia@example.com", "oliver.martinez@example.com", "emma.davis@example.com"],
+    emails: [
+      "gustavo.landa@example.com",
+      "john.doe@example.com",
+      "emily.smith@example.com",
+      "michael.johnson@example.com",
+      "sarah.brown@example.com",
+      "william.williams@example.com",
+      "sophia.jones@example.com",
+      "james.garcia@example.com",
+      "oliver.martinez@example.com",
+      "emma.davis@example.com",
+    ],
   },
   jobCardDetails: {
     successMessage: "Success! You're All Set.",
     status: "SCHEDULED",
+    updateJobMessage: "Job updated successfully",
   },
 };
 
