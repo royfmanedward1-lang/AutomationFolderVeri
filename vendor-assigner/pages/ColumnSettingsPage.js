@@ -58,7 +58,10 @@ export class ColumnSettingsPage {
         };
 
         for (const item of columUnckecked.slice(0, number)) {
-            await this.page.getByRole('row', { name: `${item} Select row`, exact: true }).first().getByLabel('Select row').click();
+            const label = await this.page.getByRole('row', { name: `${item} Select row`, exact: true }).first().getByLabel('Select row');
+            if(await label.count() > 0){
+                await this.page.getByRole('row', { name: `${item} Select row`, exact: true }).first().getByLabel('Select row').click();
+            }
         }
     };
 
@@ -143,5 +146,52 @@ export class ColumnSettingsPage {
         await this.deleteButton.click();
         const confirmationDeleted = await this.page.getByText(`Your Column Preset ${name} has successfully been deleted.`);
         return confirmationDeleted;
+    };
+
+    updatePresetDifferentColumnOrder = async () => {
+        const city = this.page.getByRole('rowgroup').locator('div').filter({ hasText: 'Job Date' }).nth(3);
+        const locationType = this.page.getByRole('rowgroup').locator('div').filter({ hasText: 'Start Time' }).nth(3);
+        await locationType.dragTo(city);
+        await this.createEditToggle.click();
+        await this.saveButton.click();
+        await this.updatePresetButton.click();
+        const successSave = await this.page.getByText(`Column preset successfully updated`);
+        await this.closeButton.click()
+        return successSave;
+    };
+
+    updatePresetDifferentColumnActivation = async () => {
+        await this.checkRandomColumn(5);
+        await this.createEditToggle.click();
+        await this.saveButton.click();
+        await this.updatePresetButton.click();
+        const successSave = await this.page.getByText(`Column preset successfully updated`);
+        await this.applyButton.click()
+        return successSave;
+    };
+
+    deleteExistingFilter = async (name) => {
+        await this.settingsButton.click();
+        await this.page.waitForTimeout(timer);
+        await this.page.getByRole('combobox').locator('div').click();
+        await this.page.getByRole('option', { name: name, exact: true }).locator('div').click();
+        await this.createEditToggle.click();
+        await this.deleteButton.click();
+        const confirmationDeleted = await this.page.getByText(`Your Column Preset ${name} has successfully been deleted.`);
+        await this.closeButton.click()
+        return confirmationDeleted;
+    };
+
+    updatePresetName = async () => {
+        const city = this.page.getByRole('rowgroup').locator('div').filter({ hasText: 'Job Date' }).nth(3);
+        const locationType = this.page.getByRole('rowgroup').locator('div').filter({ hasText: 'Start Time' }).nth(3);
+        await locationType.dragTo(city);
+        await this.createEditToggle.click();
+        await this.createColumnTextBox.fill('Test_Different Name');
+        await this.saveButton.click();
+        await this.updatePresetButton.click();
+        const successSave = await this.page.getByText(`Column preset successfully updated`);
+        await this.closeButton.click()
+        return successSave;
     };
 };
