@@ -11,6 +11,7 @@ module.exports = {
     deliveryTypeDefaulValue: 'Normal',
     deliveryDaysDefaulValue: '10',
     defaultValuePartnerService: 'Steno Reporting',
+    methods: ['Phone','Email','MyVeritext','MyVeritext Snap','Mobile'],
     locationTypes: ['Veritext','Client','Remote','Other','TBD'],
     publishSuccesfulText: 'Publishing has updated the job status to “Scheduled”. View the job by searching for the job ID',
     country:'US',

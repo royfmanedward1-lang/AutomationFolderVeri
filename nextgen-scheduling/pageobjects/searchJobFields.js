@@ -41,6 +41,10 @@ export class Job {
 
    }
 
+   async selectMethod (method){
+      await this.page.getByText('Phone').click()
+      await this.page.getByRole('option', { name: method, exact: true }).click()
+   }
    async verifyLocationTypeRadioValues (){
 
       for (const locType in nextgenConfig.locationTypes){
@@ -53,9 +57,10 @@ export class Job {
       const i = 0
       
       await this.page.getByLabel(locationType, { exact: true }).check()
-      await this.fields(locatorField).click()
       
-      if(locationType === "Veritext" || locationType === "Remote" || locationType === 'Other'){
+      
+      if(locationType === "Veritext" || locationType === "Remote"){
+         await this.fields(locatorField).click()
          switch (locationType){
          case "Veritext":
             await this.page.getByText(clientData[i].veritextLocationName, { exact: true }).click()
@@ -63,19 +68,37 @@ export class Job {
          case "Remote":
             await this.page.getByText(clientData[i].remoteLocationName, { exact: true }).click()
                break;
-         case "Other":
-               await this.page.getByText(clientData[i].otherLocationName, { exact: true }).click()
-               break;
          }
          await expect(this.checkIcon(locatorField)).toBeVisible()
          await expect(this.fields('locationAddress')).not.toBeEmpty()
          await expect(this.checkIcon('locationAddress')).toBeVisible()
       } else if(locationType === "Client"){
-         await expect(this.fields('locationClientName')).toHaveText(clientData[i].clientName)
-         } else if(locationType === "TBD"){
-            console.log(locationType)
+         await this.fields(locatorField).click()
+         await expect(this.fields('locationClientName')).toHaveValue(clientData[i].clientName)
+         await expect(this.checkIcon(locatorField)).toBeVisible()
+         await expect(this.fields('locationAddress')).not.toBeEmpty()
+         await expect(this.checkIcon('locationAddress')).toBeVisible()
+      } else if(locationType === 'Other'){
+         await this.fields(locatorField).fill(clientData[i].otherLocationName)
+         await this.page.getByText(clientData[i].otherLocationName).click()
+      } else if(locationType === "TBD"){
+         await expect(this.fields('locationClientName')).not.toBeEnabled()
+         await expect(this.fields('locationAddress')).not.toBeEnabled()
       }
       
+   }
+
+   async selectTimezone(timezone){
+      const timezoneValue = await this.fields('timezone').inputValue()
+      if(timezoneValue === ''){
+         await this.fields('timezone').click()
+         await this.fields('timezone').fill(timezone)
+         await this.page.getByText(timezone).nth(0).click()
+         await expect(this.checkIcon('timezone')).toBeVisible()
+      } else {
+         await expect(this.fields('timezone')).not.toBeEmpty()
+         await expect(this.checkIcon('timezone')).toBeVisible()
+      }
    }
 
    async verifyTimeZoneIsSelected(){
