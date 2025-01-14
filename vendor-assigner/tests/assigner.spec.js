@@ -11,7 +11,9 @@ test('Create job using GDS', async ({ page }) => {
     jobService = new JobService();
     accessToken = await loginService();
     const today = new Date();
+    today.setDate(today.getDate() + 1);
     const formattedDate = today.toISOString().split('T')[0];
+    console.log(formattedDate)
     const job = new JobClass({
         caseId: 301515,
         defendant: "",

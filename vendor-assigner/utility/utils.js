@@ -15,8 +15,8 @@ module.exports = {
     },
 
     waitGridToLoad: async function (page) {
-        await page.locator('button.MuiLoadingButton-loading:has-text("APPLY")').waitFor({ state: 'visible' });
+        await page.locator('button.MuiLoadingButton-loading:has-text("APPLY")').first().waitFor({ state: 'visible' });
         const applyButton = page.locator('button.MuiLoadingButton-loading:has-text("APPLY")');
-        await applyButton.locator('span.MuiLoadingButton-loadingIndicator').waitFor({ state: 'detached' });
+        await applyButton.locator('span.MuiLoadingButton-loadingIndicator').first().waitFor({ state: 'detached' });
     }
 };

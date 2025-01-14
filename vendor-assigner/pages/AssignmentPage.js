@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 
 export class AssignmentPage {
-    constructor(page){
+    constructor(page) {
         this.page = page;
         this.jobDetails;
 
@@ -10,9 +10,9 @@ export class AssignmentPage {
         this.columns = this.page.getByRole('columnheader');
 
         //Job List
-        this.assignPartnerButton = this.page.getByRole('button', {name: 'Assign'});
-        this.addNewButton = this.page.getByRole('button', {name: 'Add New'});
-        
+        this.assignPartnerButton = this.page.getByRole('button', { name: 'Assign' });
+        this.addNewButton = this.page.getByRole('button', { name: 'Add New' });
+
         //Partner Types Dialog
         this.partnerTypesBlankCheckbox = this.page.getByRole('dialog').getByTestId('CheckBoxOutlineBlankIcon');
         this.selectLanguageList = this.page.getByText('Select a Language');
@@ -21,14 +21,14 @@ export class AssignmentPage {
         this.partnerStatusButton = page.locator('//*[@aria-label="Select Partner Status"]');
         this.changeStatusOption = page.getByRole('option', { name: 'Change Status' });
         this.removePartnerOption = page.getByRole('option', { name: 'Remove Partner' });
-        
+
         //Confirmation Modal
         this.confirmationPopup = this.page.getByRole('dialog');
         this.confirmStatusChangeButton = page.getByRole('button', { name: 'Yes, Change' })
         this.removePartnerConfirmationButton = page.getByRole('button', { name: 'Remove' })
         this.cancelButton = page.getByRole('button', { name: 'Cancel' })
     }
-    
+
     async clickOnStatus(status) {
         await status.click()
     }
@@ -56,7 +56,7 @@ export class AssignmentPage {
             await sortButton.click({ force: true });
         };
         await this.page.waitForLoadState('domcontentloaded');
-        
+
         let listLocator;
         let allValues;
 
@@ -82,7 +82,7 @@ export class AssignmentPage {
                     let hours = parseInt(array[0]);
                     const minutes = parseInt(array[1]);
                     if (array[2] === "PM" && hours != 12);
-                        hours = hours + 12;
+                    hours = hours + 12;
                     const total = hours * 60 + minutes;
                     return total;
                 });
@@ -106,9 +106,9 @@ export class AssignmentPage {
         let expectedResult;
         for (let i = 0; i < allValues.length - 1; i++) {
             if (order === "Ascending") {
-                expectedResult = allValues[i] <= allValues[i+1];
+                expectedResult = allValues[i] <= allValues[i + 1];
             } else if (order === "Descending") {
-                expectedResult = allValues[i] >= allValues[i+1];
+                expectedResult = allValues[i] >= allValues[i + 1];
             };
             //toBeGreater only works for int/float, and we are comparing sorting with strings, dates and so on
             expect(expectedResult).toBe(true)
@@ -123,5 +123,15 @@ export class AssignmentPage {
             jobId,
             selectedJob
         };
-    }   
+    }
+
+    async changeVendorStatus(jobId, status) {
+        const everyPartnerStatusAvailable = await this.page.locator(`//*[@data-id="${jobId}"]`).locator('//*[@aria-label="Select Partner Status"]').count()// this.partnerStatusButton.count();
+        console.log(everyPartnerStatusAvailable)
+        const randomNum = Math.floor(Math.random() * everyPartnerStatusAvailable) - 1;
+        await this.page.locator(`//*[@data-id="${jobId}"]`).locator('//*[@aria-label="Select Partner Status"]').nth(randomNum).click();
+        await this.changeStatusOption.hover();
+        await this.page.getByRole('menuitem', { name: status }).click()
+        await this.page.getByRole('button', { name: 'Yes, Change' }).click()
+    }
 }
