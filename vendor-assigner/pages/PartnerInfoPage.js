@@ -15,6 +15,19 @@ export class PartnerInfoPage {
         this.serviceLink = page.getByRole('tab', { name: 'Services' }).nth(1);
         this.serviceLabel =  page.locator('label').filter({ hasText: 'Service' })
         this.successNoResults = page.locator('div').filter({ hasText: 'No Results Found' }).nth(2);
+        this.searchBar = this.page.getByRole('option');
+        this.requiredError = this.page.getByTestId('ErrorIcon');
+        this.firstNameRequiredFieldWarn = this.page.getByText('Enter a partner first name.');
+        this.lastNameRequiredFieldWarn = this.page.getByText('Enter a partner last name.');
+        this.invalidCharacterWarn = this.page.getByText('Remove invalid character');
+        this.exceedingCharactersWarn = this.page.getByText('Enter 50 characters or less.');
+    };
+
+    clearInputField = async (inputField) => {
+        await inputField.click();
+        await inputField.selectText();
+        await inputField.press('Backspace');
+        await this.buttonSave.click({force: true});
     };
 
     getServiceLocator = async () => {
@@ -24,8 +37,8 @@ export class PartnerInfoPage {
     };
 
     selectFirstOption = async () => {
-        const searchBar = await this.page.getByRole('option').first();
-        await searchBar.click();
+        const firstResult = await this.searchBar.first();
+        await firstResult.click();
     };
 
     verifyServiceAlphabeticalOrder = async () =>{

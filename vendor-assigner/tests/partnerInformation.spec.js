@@ -2,6 +2,7 @@ import { LoginPage } from '../pages/LoginPage.js';
 import { HeaderPage } from '../pages/assignement/HeaderPage.js';
 import { PartnerInfoPage } from '../pages/PartnerInfoPage.js';
 const { test, expect } = require('@playwright/test');
+import * as utils from '../utility/utils.js'
 
 test.beforeEach('Logging in', async ({ page }) => {
     const loginPage = new LoginPage(page);
@@ -103,6 +104,209 @@ test('Search agency information', async ({ page }) => {
         await partnerInfoPage.inputEmail.click();
         await partnerInfoPage.page.keyboard.press('Backspace');
         await partnerInfoPage.menu.click();
+    });
+});
+
+test('Name Fields are Editable', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Gail Mascaro"', async () => {
+        await partnerInfoPage.searchText.fill('Mascaro');
+        await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    const firstName = await partnerInfoPage.inputFirstName.inputValue();
+
+    await test.step('Verify last name contains "Mascaro"', async () => {
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Mascaro');
+    });
+
+    await test.step('Typing into last name field', async () => {
+        const inputText = "abcdefg";
+        await partnerInfoPage.inputLastName.fill(inputText);
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain(inputText);
+    });
+
+    await test.step('Typing into first name field', async () => {
+        const inputText = "abcdefg";
+        await partnerInfoPage.inputFirstName.fill( inputText);
+        expect(await partnerInfoPage.inputFirstName.inputValue()).toContain(inputText);
+    });
+});
+
+test('Name Fields are Required', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Gail Mascaro"', async () => {
+        await partnerInfoPage.searchText.fill('Mascaro');
+        await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Mascaro"', async () => {
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Mascaro');
+    });
+
+    await test.step('Erasing last name field completely', async () => {
+        await partnerInfoPage.clearInputField(partnerInfoPage.inputLastName);
+    });
+
+    await test.step('Last Name Field is Required', async () => {
+        await expect(partnerInfoPage.requiredError.first()).toBeVisible();
+        await expect(partnerInfoPage.lastNameRequiredFieldWarn).toBeVisible();
+    });
+
+    await test.step('Erasing first name field completely', async () => {
+        await partnerInfoPage.clearInputField(partnerInfoPage.inputFirstName);
+    });
+
+    await test.step('First Name Field is Required', async () => {
+        await expect(partnerInfoPage.requiredError.first()).toBeVisible();
+        await expect(partnerInfoPage.firstNameRequiredFieldWarn).toBeVisible();
+    });
+});
+
+test('Invalid Characters in Name Fields', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Gail Mascaro"', async () => {
+        await partnerInfoPage.searchText.fill('Mascaro');
+        await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Mascaro"', async () => {
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Mascaro');
+    });
+
+    await test.step('Checking invalid characters into last name field', async () => {
+        for (const list of utils.invalidCharacters) {
+            await partnerInfoPage.inputLastName.fill(list);
+            await partnerInfoPage.inputFirstName.click();
+            await expect(partnerInfoPage.invalidCharacterWarn).toContainText(list);
+        };
+    });
+
+    await test.step('Filling last name back', async () => {
+        await partnerInfoPage.clearInputField(partnerInfoPage.inputLastName);
+        await partnerInfoPage.inputLastName.fill('Mascaro');
+    });
+
+    await test.step('Checking invalid characters into first name field', async () => {
+        for (const list of utils.invalidCharacters) {
+            await partnerInfoPage.inputFirstName.fill( list);
+            await partnerInfoPage.inputLastName.click();
+            await expect(partnerInfoPage.invalidCharacterWarn).toContainText(list);
+        };
+    });
+});
+
+test('Exceeding Characters in Last Name Field', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Gail Mascaro"', async () => {
+        await partnerInfoPage.searchText.fill('Mascaro');
+        await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Mascaro"', async () => {
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Mascaro');
+    });
+
+    await test.step('Checking exceeding characters into last name field', async () => {
+        const randomString = utils.createRandomString(51);
+        await partnerInfoPage.inputLastName.fill(randomString);
+        await expect(partnerInfoPage.exceedingCharactersWarn).toBeVisible();
+    });
+
+    await test.step('Warning disappears if limit is not surpassed', async () => {
+        await partnerInfoPage.inputLastName.press('Backspace');
+        await expect(partnerInfoPage.exceedingCharactersWarn).not.toBeVisible();
+    });
+
+    await test.step('Nothing new can be typed after threshold', async () => {
+        const randomString = utils.createRandomString(80);
+        await partnerInfoPage.inputLastName.fill(randomString);
+        await expect(partnerInfoPage.exceedingCharactersWarn).toBeVisible();
+        await expect(partnerInfoPage.inputLastName).toHaveValue(randomString);
+        await partnerInfoPage.inputLastName.press("A");
+        await expect(partnerInfoPage.inputLastName).toHaveValue(randomString);
+    });
+});
+
+test('Exceeding Characters in First Name Field', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Gail Mascaro"', async () => {
+        await partnerInfoPage.searchText.fill('Mascaro');
+        await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Gail"', async () => {
+        expect(await partnerInfoPage.inputFirstName.inputValue()).toContain('Gail');
+    });
+
+    await test.step('Checking exceeding characters into first name field', async () => {
+        const randomString = utils.createRandomString(51);
+        await partnerInfoPage.inputFirstName.fill(randomString);
+        await expect(partnerInfoPage.exceedingCharactersWarn).toBeVisible();
+    });
+
+    await test.step('Warning disappears if limit is not surpassed', async () => {
+        await partnerInfoPage.inputFirstName.press('Backspace');
+        await expect(partnerInfoPage.exceedingCharactersWarn).not.toBeVisible();
+    });
+
+    await test.step('Nothing new can be typed after threshold', async () => {
+        const randomString = utils.createRandomString(80);
+        await partnerInfoPage.inputFirstName.fill(randomString);
+        await expect(partnerInfoPage.exceedingCharactersWarn).toBeVisible();
+        await expect(partnerInfoPage.inputFirstName).toHaveValue(randomString);
+        await partnerInfoPage.inputFirstName.press("A");
+        await expect(partnerInfoPage.inputFirstName).toHaveValue(randomString);
     });
 });
 
