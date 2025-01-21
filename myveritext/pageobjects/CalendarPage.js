@@ -1,7 +1,6 @@
 class CalendarPage {
   constructor(page) {
     this.page = page;
-
     this.policyDialog = page.locator(".MuiDialog-container");
     this.acknowledgeButton = page.locator("button:has-text('Acknowledged')");
     this.monthViewButton = page.locator("button:has-text('Month')");
@@ -16,19 +15,22 @@ class CalendarPage {
     this.nextButton = page.locator(".fc-next-button.fc-button.fc-button-primary");
     this.scheduleProceedingButton = page.locator("button:has-text('Schedule Proceeding')");
 
+    // New locators for calendar events
+    this.calendarEventsContainer = page.locator('.fc-daygrid-day-events');
+    this.calendarEventFrame = page.locator('.fc-event-main-frame');
+    this.calendarEventTitle = page.locator('.fc-event-title');
+    this.eventHarness = page.locator('.fc-daygrid-event-harness');
   }
 
-  // Handle retention policy modal
+  // Existing methods
   async handleRetentionPolicyModal() {
     if (await this.policyDialog.isVisible()) {
       await this.policyDialog.evaluate((dialog) => {
         dialog.scrollTo(0, dialog.scrollHeight);
       });
-
       await this.acknowledgeButton.waitFor({ state: "visible" });
       await this.acknowledgeButton.click();
     }
-
     // Wait for the modal to disappear
     await this.policyDialog.waitFor({ state: "detached" });
   }
@@ -55,10 +57,7 @@ class CalendarPage {
 
   async getCurrentWeek() {
     await this.currentWeek.first().waitFor({ state: "visible" });
-
-    // Get all the days of the current week
     const days = await this.currentWeek.allTextContents();
-
     return days;
   }
 
@@ -93,6 +92,56 @@ class CalendarPage {
   async clickScheduleProceeding() {
     await this.scheduleProceedingButton.waitFor({ state: "visible" });
     await this.scheduleProceedingButton.click();
+  }
+
+  // New methods for calendar event handling
+  async waitForCalendarEvents() {
+    // Wait for calendar container to be visible
+    await this.calendarEventsContainer.waitFor({ state: 'visible' });
+    
+    // Wait for event content to be loaded
+    await this.page.waitForFunction(() => {
+      const events = document.querySelectorAll('.fc-event-main-frame');
+      const hasEvents = events.length > 0;
+      const hasContent = events[0]?.querySelector('.fc-event-title')?.textContent?.trim().length > 0;
+      return hasEvents && hasContent;
+    }, { timeout: 30000 });
+  }
+
+  async clickEventInDay(dayColumn = 3) { // default to 3rd column (Tuesday)
+    const eventLocator = this.page.locator(
+      `td:nth-child(${dayColumn}) > .fc-daygrid-day-frame > .fc-daygrid-day-events > div > .fc-event`
+    ).first();
+    await eventLocator.waitFor({ state: 'visible' });
+    await eventLocator.click();
+  }
+
+  async getAllEvents() {
+    await this.waitForCalendarEvents();
+    return await this.calendarEventFrame.all();
+  }
+
+  async clickEventByTitle(title) {
+    await this.waitForCalendarEvents();
+    const eventTitle = this.calendarEventTitle.filter({ hasText: title }).first();
+    await eventTitle.waitFor({ state: 'visible' });
+    await eventTitle.click();
+  }
+
+  async clickFirstEvent() {
+    await this.waitForCalendarEvents();
+    const events = await this.getAllEvents();
+    if (events.length > 0) {
+      await events[0].click();
+      return true;
+    }
+    throw new Error('No calendar events found');
+  }
+
+  async getEventCount() {
+    await this.waitForCalendarEvents();
+    const events = await this.getAllEvents();
+    return events.length;
   }
 }
 

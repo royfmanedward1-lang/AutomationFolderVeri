@@ -24,31 +24,12 @@ class JobDetailsPage {
     }
 
     async clickExportToPdf() {
-        await this.page.evaluate(() => {
-          window.waitForPrintDialog = new Promise(f => window.print = f);
-        });
-        
-        await this.exportToPdfButton.waitFor({ state: 'visible' });
-        await this.exportToPdfButton.click();
-        await this.page.waitForFunction('window.waitForPrintDialog');
-      }
-
-    async handlePrintDialog() {
-      try {
-        await this.page.waitForTimeout(3000);
-        await this.page.keyboard.press('Control+s');
-        await this.page.waitForTimeout(1000);
-        await this.page.keyboard.press('Enter');
-        await this.page.waitForTimeout(1000);
-
-      } catch (error) {
-        console.log('First attempt failed, trying alternative method...');
-      
-        await this.page.keyboard.press('Control+p');
-        await this.page.waitForTimeout(1000);
-        await this.page.keyboard.press('Enter');
-      }
+      await this.exportToPdfButton.waitFor({ state: 'visible' });
+      await this.exportToPdfButton.click();
+      // Let the print dialog load without additional logic
+      await this.page.waitForTimeout(3000); // Allow some time for the print dialog
     }
+      
 }
  
 module.exports = { JobDetailsPage };
