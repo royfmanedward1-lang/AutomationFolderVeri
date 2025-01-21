@@ -12,6 +12,7 @@ class PageManager {
     this.jobCardPage = null;
     this.addRemoteParticipants = null;
     this.dateAndTimePage2 = null;
+    this.jobDetailsPage = null;
   }
 
   getLoginPage() {
@@ -100,6 +101,14 @@ class PageManager {
       this.dateAndTimePage2 = new DateAndTimePage2(this.page);
     }
     return this.dateAndTimePage2;
+  }
+
+  getJobDetailsPage() {
+    if (!this.jobDetailsPage) {
+      const { JobDetailsPage } = require("../pageobjects/JobDetailsPage");
+      this.jobDetailsPage = new JobDetailsPage(this.page);
+    }
+    return this.jobDetailsPage;
   }
     
 }
