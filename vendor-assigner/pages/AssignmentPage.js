@@ -126,8 +126,7 @@ export class AssignmentPage {
     }
 
     async changeVendorStatus(jobId, status) {
-        const everyPartnerStatusAvailable = await this.page.locator(`//*[@data-id="${jobId}"]`).locator('//*[@aria-label="Select Partner Status"]').count()// this.partnerStatusButton.count();
-        console.log(everyPartnerStatusAvailable)
+        const everyPartnerStatusAvailable = await this.page.locator(`//*[@data-id="${jobId}"]`).locator('//*[@aria-label="Select Partner Status"]').count()
         const randomNum = Math.floor(Math.random() * everyPartnerStatusAvailable) - 1;
         await this.page.locator(`//*[@data-id="${jobId}"]`).locator('//*[@aria-label="Select Partner Status"]').nth(randomNum).click();
         await this.changeStatusOption.hover();

@@ -17,6 +17,7 @@ export class ColumnSettingsPage {
         this.successSave = page.getByText('Column preset successfully');
         this.successUpdate = page.getByText('Column preset successfully');
         this.succesDelete = page.getByText('Your Filter Preset System');
+        this.buttonUndo = page.getByText('UNDO')
     };
 
     unCheckRandomColumn = async (number) => {
@@ -174,7 +175,7 @@ export class ColumnSettingsPage {
         await this.settingsButton.click();
         await this.page.waitForTimeout(timer);
         await this.page.getByRole('combobox').locator('div').click();
-        await this.page.getByRole('option', { name: name, exact: true }).locator('div').click();
+        await this.page.getByRole('option', { name: name, exact: false }).first().locator('div').click();
         await this.createEditToggle.click();
         await this.deleteButton.click();
         const confirmationDeleted = await this.page.getByText(`Your Column Preset ${name} has successfully been deleted.`);
@@ -192,6 +193,19 @@ export class ColumnSettingsPage {
         await this.updatePresetButton.click();
         const successSave = await this.page.getByText(`Column preset successfully updated`);
         await this.closeButton.click()
+        return successSave;
+    };
+
+    createSettingSetAsDefault = async (name) => {
+        await this.settingsButton.click();
+        await this.unCheckRandomColumn(3);
+        await this.checkRandomColumn(5);
+        await this.createEditToggle.click();
+        await this.defaultCheckbox.click()
+        await this.createColumnTextBox.fill(name);
+        await this.saveButton.click();
+        await this.saveAsNewButton.click('Save as new');
+        const successSave = await this.page.getByText(`Column preset successfully`);
         return successSave;
     };
 };

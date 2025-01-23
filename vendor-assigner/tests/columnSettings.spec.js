@@ -130,16 +130,16 @@ test('Creating a new Preset with the columns in a configuration already in use',
 
 test('Updating a Preset with a different column order', async ({ page }) => {
   const columnSettings = new ColumnSettingsPage(page);
-  
+
   await test.step('Create a new preset named "Test3"', async () => {
     await columnSettings.createSetting('Test3');
   });
-  
+
   await test.step('Update the preset with a different column order', async () => {
     const successSave = await columnSettings.updatePresetDifferentColumnOrder();
     await expect(successSave).toHaveText('Column preset successfully updated.');
   });
-  
+
   await test.step('Delete the preset "Test3"', async () => {
     const successDelete = await columnSettings.deleteExistingFilter('Test3');
     await expect(successDelete).toHaveText('Your Column Preset Test3 has successfully been deleted.');
@@ -170,7 +170,7 @@ test('Updating a Preset with a different name', async ({ page }) => {
   await test.step('Create a new preset named "Test5"', async () => {
     await columnSettings.createSetting('Test5');
   });
-  
+
   await test.step('Update the preset name', async () => {
     const successSave = await columnSettings.updatePresetName();
     await expect(successSave).toHaveText('Column preset successfully updated.');
@@ -222,3 +222,81 @@ test('Selecting another Preset', async ({ page }) => {
     await expect(successDelete).toHaveText('Your Column Preset Test6 has successfully been deleted.');
   });
 });
+
+
+test('Deleting a Default Preset', async ({ page }) => {
+  const columnSettings = new ColumnSettingsPage(page);
+
+  let successSave;
+  await test.step('Create a column preset with the name "Test7"', async () => {
+    successSave = await columnSettings.createSettingSetAsDefault('Test7');
+  });
+
+  await test.step('Verify that the preset was successfully created', async () => {
+    await expect(successSave).toHaveText('Column preset successfully created.');
+    await successSave.waitFor({ state: 'detached' });
+  });
+
+  await test.step('Click on the apply button', async () => {
+    await columnSettings.applyButton.click();
+  });
+
+
+  let confirmationDeleted;
+  await test.step('Delete the preset "Test7"', async () => {
+    confirmationDeleted = await columnSettings.deleteFilter('Test7');
+  });
+
+  await test.step('Verify that the preset was successfully deleted', async () => {
+    await expect(confirmationDeleted).toHaveText('Your Column Preset Test7 has successfully been deleted.');
+  });
+});
+
+test('Undoing a Preset Deletion', async ({ page }) => {
+  const columnSettings = new ColumnSettingsPage(page);
+
+  let successSave;
+  await test.step('Create a column preset with the name "Test8"', async () => {
+    successSave = await columnSettings.createSettingSetAsDefault('Test8');
+  });
+
+  await test.step('Verify that the preset was successfully created', async () => {
+    await expect(successSave).toHaveText('Column preset successfully created.');
+    await successSave.waitFor({ state: 'detached' });
+  });
+
+  await test.step('Click on the apply button', async () => {
+    await columnSettings.applyButton.click();
+  });
+
+  let confirmationDeleted;
+  await test.step('Delete the preset "Test8"', async () => {
+    confirmationDeleted = await columnSettings.deleteFilter('Test8');
+  });
+
+  await test.step('Verify that the preset was successfully deleted', async () => {
+    await expect(confirmationDeleted).toHaveText('Your Column Preset Test8 has successfully been deleted.');
+  });
+
+  await test.step('Undoing preset deletion"', async () => {
+    await columnSettings.buttonUndo.click();
+  });
+
+  await test.step('Verify that undoing deletion succeded', async () => {
+    const confirmUndoDeleition = page.getByText('Column preset updated.');
+    await expect(confirmUndoDeleition).toHaveText('Column preset updated.');
+    await page.getByText('Column preset updated.').waitFor({ state: 'detached' });
+  });
+
+  await test.step('Delete the preset "Test"', async () => {
+    await columnSettings.applyButton.click();
+    confirmationDeleted = await columnSettings.deleteExistingFilter('Test8');
+  });
+
+  await test.step('Verify that the preset was successfully deleted', async () => {
+    await expect(confirmationDeleted).toHaveText('Your Column Preset Test8 has successfully been deleted.');
+  });
+});
+
+
+
