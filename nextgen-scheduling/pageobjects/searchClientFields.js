@@ -16,6 +16,11 @@ export class Client {
         await expect(this.checkIcon(locatorField)).toBeVisible()
     }
 
+    async selectComboboxValue(locatorField, fieldValue){
+        await this.fields(locatorField).click()
+        await this.page.getByRole('option', { name: fieldValue }).locator('span').first().click()
+    }
+
     async verifyDefaultvalues (locatorField, defaultValue){
         await expect(this.fields(locatorField)).toHaveText(defaultValue)
   

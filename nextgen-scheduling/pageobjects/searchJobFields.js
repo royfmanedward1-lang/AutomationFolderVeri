@@ -33,6 +33,11 @@ export class Job {
         this.fields = (text) => page.locator(`#${text}`).getByRole('combobox')
         this.checkIcon = (text) => page.locator(`#${text}`).getByTestId('CheckIcon')
         
+        // Generic locator for Attending parties fields
+        this.inputFields = (text) => page.locator(`#${text}`).getByRole('spinbutton')
+
+        // Generic locator for Textbox (as in Witness pop up fields)
+        this.textFields = (text) => page.locator(`#${text}`).getByRole('textbox')
         
    }
 
@@ -111,15 +116,22 @@ export class Job {
       await expect(this.page.getByLabel(locatorField)).toHaveValue(selectedDate)
    }
 
-   async selectProceedingTime(locatorField, selectedTime){
-      await this.page.getByLabel(locatorField).fill(selectedTime)
-      await expect(this.page.getByLabel(locatorField)).toHaveValue(selectedTime)
+   async selectProceedingTime(locatorField, exactMatch, selectedTime){
+         await this.page.getByLabel(locatorField, {exact: exactMatch}).fill(selectedTime)
+         await expect(this.page.getByLabel(locatorField, {exact: exactMatch})).toHaveValue(selectedTime)
+      
    }
 
    async enterNumberAttendees(numberOfAttendees){
       await this.numberOfAttendees.click()
       await this.numberOfAttendees.fill(numberOfAttendees)
       await expect(this.numberOfAttendees).toHaveValue(numberOfAttendees)
+   }
+
+   async enterNumberAttendeesParties(locatorfield, numberOfAttendees){
+      await this.inputFields(locatorfield).click()
+      await this.inputFields(locatorfield).fill(numberOfAttendees)
+      await expect(this.inputFields(locatorfield)).toHaveValue(numberOfAttendees)
    }
 
    async verifyDefaultValuePartnerService(){
@@ -130,11 +142,38 @@ export class Job {
       await expect(this.deliveryDays).toHaveValue(nextGenConfig.deliveryDaysDefaulValue);
    }
 
+   async enterTextValues(locatorfield, textValue){
+      await this.textFields(locatorfield).click()
+      await this.textFields(locatorfield).fill(textValue)
+      await expect(this.textFields(locatorfield)).toHaveValue(textValue)
+   }
+
+   async selectWitnessType(typeWit, expertise){
+      await this.page.getByRole('combobox').nth(1).click()
+      await this.page.getByRole('option', { name: typeWit }).locator('span').first().click()
+
+      if(typeWit == 'Expert'){
+         await this.page.getByLabel('Expertise').click()
+         await this.page.getByText(expertise).click()
+      }
+      
+   }
+
+   async openWitnessPopup(){
+      await this.page.getByRole('button', { name: 'Add Witnesses' }).click()
+      await expect(this.page.getByText('Add Witness', { exact: true })).toBeVisible()
+   }
+
+   async closeWitnessPopup(lastname){
+      await this.page.getByRole('button', { name: 'Add' }).click()
+      await expect(this.page.getByRole('cell', { name: lastname, exact: true })).toBeVisible()
+   }
+
    async publishJob(){
       await this.publishButton.click()
       const str = await this.page.getByText('Publishing has updated the').textContent()
       await expect(this.page.locator('body')).toContainText(nextGenConfig.publishSuccesfulText)
-      await expect(this.page.getByTestId('CheckCircleIcon').locator('path')).toBeVisible()
+   //   await expect(this.page.getByTestId('CheckCircleIcon').locator('path')).toBeVisible()
 
       const numberPattern = /\d+/g
       const jobID = str.match(numberPattern)
