@@ -43,6 +43,9 @@ test.describe('Search and select required fields to schedule a new job by differ
                 await test.step('Search and select a Caller', async() =>{
                     await clientPage.searchField('caller', clientData[i].caller)
                 })
+                await test.step('Search and select a Litigation type', async() =>{
+                    await clientPage.selectComboboxValue('litigationType', clientData[i].litigationType)
+                })
                 await test.step('Verify default value for Proceeding type', async() => {
                     await clientPage.verifyDefaultvalues('proceedingType', nextGenConfig.proceedinfTypeDefault)
                 })
@@ -57,11 +60,11 @@ test.describe('Search and select required fields to schedule a new job by differ
                     
                 })
                 await test.step('Select proceeding Start time', async() =>{
-                    await jobPage.selectProceedingTime('Start time *', clientData[i].startProceedingTime)
+                    await jobPage.selectProceedingTime('Start time *', false, clientData[i].startProceedingTime)
                     await jobPage.endTimeCheck.check()
                 })
-                await test.step('Enter number of atendees', async() =>{
-                    await jobPage.enterNumberAttendees(clientData[i].numberOfAtendees)
+                await test.step('Enter number of Attendees', async() =>{
+                    await jobPage.enterNumberAttendeesParties('numberOfAttendees',clientData[i].numberOfAtendees)
                 })
                 await test.step('Verify default value for Partner Services', async() =>{
                     await jobPage.verifyDefaultValuePartnerService()
