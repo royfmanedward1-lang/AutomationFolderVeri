@@ -1,37 +1,30 @@
 class DateAndTimePage2 {
   constructor(page) {
     this.page = page;
-
     this.nextMonthButton = page.getByLabel("Next month");
     this.previousMonthButton = page.getByLabel("Previous month");
     this.yearHeader = page.locator(".MuiPickersCalendarHeader-label");
     this.timeDropdown = page.getByRole("combobox").first();
     this.timeZoneDropdown = page.getByRole("combobox").nth(1);
     this.nextButton = page.getByRole("button", { name: "NEXT", exact: true });
-
     this.dateField = page.locator("img").first(); // Locator for Date Field
     this.timeField = page.locator("img").nth(1); // Locator for Time Field
     this.clockFace = page.locator(".MuiClock-squareMask");
     this.amPmButton = (amPm) => page.getByRole("button", { name: amPm });
-
-    // Date Grid Cell
     this.dateGridCell = (day) =>
       this.page.locator(`button[role="gridcell"]:not([disabled])`, {
         hasText: day.toString(),
       });
   }
 
-  // Navigate to the correct month and year
   async navigateToMonthAndYear(targetMonth, targetYear) {
     while (true) {
       const headerText = await this.yearHeader.textContent();
       const [displayedMonth, displayedYear] = headerText.split(" ");
-
       // Break loop if correct month and year are displayed
       if (displayedMonth === targetMonth && displayedYear === targetYear) {
         break; // Stop when the correct month and year are displayed
       }
-
       if (
         parseInt(displayedYear) < parseInt(targetYear) ||
         displayedMonth !== targetMonth
@@ -40,9 +33,6 @@ class DateAndTimePage2 {
       } else {
         await this.previousMonthButton.click();
       }
-
-      // Add wait for the header to reflect the new state
-      await this.page.waitForTimeout(500); // Small delay to allow UI to update
       await this.yearHeader.waitFor({ state: "visible" });
     }
   }

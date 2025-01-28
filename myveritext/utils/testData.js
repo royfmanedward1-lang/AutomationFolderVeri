@@ -1,6 +1,7 @@
 const testData = {
   validCredentials: {
-    username: "canadacontact@email.com",
+    username: "newyorkcontact@email.com",
+    // username: "canadacontact@email.com",
     password: "12345",
   },
   invalidUsername: {
@@ -59,11 +60,15 @@ const testData = {
     caseName: ["Canada Case", "Krayoxx Lawsuit #123 $100!"],
     country: "Canada",
 
-    address: "3225 Pitfield BlvdLaval,",
+    // address: "3225 Pitfield BlvdLaval,",
+    address: "4817 Longview Avenue",
     participants: {
-      attyLawyer: "Canada Contact",
-      pointOfContact: "Canada Contact",
-      schedulingOffice: "Pitfield Blvd, Laval QC H7A 0A1",
+      // attyLawyer: "Canada Contact",
+      // pointOfContact: "Canada Contact",
+      attyLawyer: "New York Contact",
+      pointOfContact: "New York Contact",
+      schedulingOffice: "4817 Longview Avenue, Jamaica NY 11432",
+      // schedulingOffice: "Pitfield Blvd, Laval QC H7A 0A1",
       witnesses: [
         "Markle",
         "Liotta",

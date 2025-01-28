@@ -21,6 +21,11 @@ class JobCardPage {
       .locator("div")
       .filter({ hasText: "Job updated successfully" })
       .nth(2);
+    this.attorneyInfoSection = page.locator('text=Attorney/Caller Information');
+    this.attorneyName = page.locator('text=Attorney Name:').locator('xpath=following-sibling::*');
+    this.attorneyEmail = page.locator('text=Contact Email:').first();
+    this.contactName = page.locator('text=Contact Name:').locator('xpath=following-sibling::*');
+    this.contactEmail = page.locator('text=Contact Email:').last();
   }
 
   async getSuccessMessage() {
@@ -61,6 +66,20 @@ class JobCardPage {
   async getSuccessAlert() {
     await this.successAlert.waitFor({ state: "visible"});
     return await this.successAlert.textContent();
+  }
+
+  async getAttorneyInfo() {
+    return {
+      name: await this.attorneyName.textContent(),
+      email: await this.attorneyEmail.textContent()
+    };
+  }
+
+  async getContactInfo() {
+    return {
+      name: await this.contactName.textContent(),
+      email: await this.contactEmail.textContent()
+    };
   }
 }
 

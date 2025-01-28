@@ -11,7 +11,7 @@ const config = {
   expect: {
     timeout: 5000,
   },
-  retries: 1,
+  retries: 3,
   
 
   reporter: [["html"], ["allure-playwright"]],

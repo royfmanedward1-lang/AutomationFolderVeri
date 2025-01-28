@@ -1,3 +1,5 @@
+const SMALL_WAIT = 3000;
+
 class JobDetailsPage {
     constructor(page) {
         this.page = page;
@@ -26,8 +28,7 @@ class JobDetailsPage {
     async clickExportToPdf() {
       await this.exportToPdfButton.waitFor({ state: 'visible' });
       await this.exportToPdfButton.click();
-      // Let the print dialog load without additional logic
-      await this.page.waitForTimeout(3000); // Allow some time for the print dialog
+      await this.page.waitForTimeout(SMALL_WAIT); 
     }
       
 }

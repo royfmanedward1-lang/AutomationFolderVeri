@@ -154,7 +154,7 @@ test.describe("Rescheduling a Proceeding", () => {
       let attempts = 0;
       let success = false;
 
-      while (attempts < 5 && !success) {
+      while (attempts < 2 && !success) {
         const randomDate = testData.dateAndTime.getDynamicDate(60); // Generate date 60 days ahead
 
         // Attempt to select the date

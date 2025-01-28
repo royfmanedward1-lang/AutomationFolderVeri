@@ -26,7 +26,6 @@ class DateAndTimePage {
   async selectDate() {
     //Wait for the suggested date to be available
     await this.datePicker.waitFor({ state: "visible" });
-
     // Click the suggested date
     await this.datePicker.waitFor({ state: "visible" });
     await this.datePicker.click();
@@ -53,19 +52,15 @@ class DateAndTimePage {
   async selectNewDate(day) {
     await this.nextMonthButton.waitFor({ state: "visible" });
     await this.nextMonthButton.click();
-    // Target the correct gridcell in the updated calendar
   const targetDate = this.page
   .locator('button[role="gridcell"]:not([disabled])')
   .filter({ hasText: day.toString() })
-  .first(); // Use `first()` to select the first matching gridcell
-
-// Wait for the target date and click
-await targetDate.waitFor({ state: "visible" });
-await targetDate.click();
+  .first(); 
+  await targetDate.waitFor({ state: "visible" });
+  await targetDate.click();
   }
 
   async clickTimeField() {
-    await this.timeField.waitFor({ state: "visible" });
     await this.timeField.click();
   }
 
@@ -76,7 +71,6 @@ await targetDate.click();
     await this.clockFace.click();
     await this.amPmButton(amPm).waitFor({ state: "visible" });
     await this.amPmButton(amPm).click();
-    
   }
  
 }

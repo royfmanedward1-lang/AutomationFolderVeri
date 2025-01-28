@@ -53,17 +53,11 @@ class LocationPage {
 
   // Methods to select in-person options
   async selectAddressBookOption(address) {
-    await this.addressBookOption.click(); // Click to open the Address Book options
-
-    // Dynamically find the checkbox by address label
+    await this.addressBookOption.click(); 
     const addressLocator = this.page.locator(
       `label:has-text("${address}") >> input[type="checkbox"]`
     );
-
-    // Wait for the checkbox to be visible
     await addressLocator.waitFor({ state: "visible" });
-
-    // Check the checkbox
     await addressLocator.check();
   }
 
