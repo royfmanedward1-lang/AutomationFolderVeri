@@ -1,5 +1,13 @@
 
-vendor-assigner/package-lock.json
-common-services/*-lock.json
-common-services/api-tests/*-lock.json
-common-services/node_modules/*
+/vendor-assigner/allure-results
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+../allure-results/
+allure-results/
+../test-results/
+nextgen-scheduling/.allure/
+nextgen-scheduling/allure-results/

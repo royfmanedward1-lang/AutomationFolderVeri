@@ -1,0 +1,38 @@
+class LoginPage {
+  constructor(page) {
+    this.page = page;
+    this.userName = page.getByLabel("Username");
+    this.password = page.getByLabel("Password");
+    this.signInButton = page.getByRole("button", { name: "Log In" });
+    this.errorMessage = page.getByRole("alert");
+    this.forgotPasswordLink = page.locator("text=Forgot Password?");
+  }
+
+  async goto() {
+    await this.page.goto("https://myqa.veritext.com/");
+  }
+
+  async enterValidCredentials(username, password) {
+    await this.userName.waitFor({ state: "visible" });
+    await this.password.waitFor({ state: "visible" });
+    await this.userName.fill(username);
+    await this.password.fill(password);
+  }
+
+  async clickLoginButton() {
+    await this.signInButton.waitFor({ state: "visible" });
+    await this.signInButton.click();
+  }
+
+  async getErrorMessage() {
+    await this.errorMessage.waitFor({ state: "visible" });
+    return await this.errorMessage.textContent();
+  }
+
+  async clickForgotPassword() {
+    await this.forgotPasswordLink.waitFor({ state: "visible" });
+    await this.forgotPasswordLink.click();
+  }
+}
+
+module.exports = { LoginPage };

@@ -1,42 +1,40 @@
-import { expect } from "@playwright/test"
+import { expect } from "@playwright/test";
+
 export class BulkActionPage {
     constructor(page) {
-        this.page = page
-        this.selectAllIdCheckbox = page.getByLabel('Select all rows')
-        this.bulkActionComboBox = page.locator('#bulk-action').first()
-        this.updatePartnerStatusOption = page.getByRole('option', { name: 'Update Partner Statuses' })
-        this.changeStatusFromCombobox = page.getByRole('combobox').nth(1)
-        this.chageStatustoComboBox = page.getByLabel('Select Status To')
-        this.selectParterTypesComboBox = page.getByRole('combobox').nth(3)
-        this.menuOption = page.locator('#menu- > .MuiBackdrop-root')
-        this.pendingOption = page.getByRole('option', { name: 'Pending' })
-        this.assignedOption = page.getByRole('option', { name: 'Assigned' })
-        this.confirmedOption = page.getByRole('option', { name: 'Confirmed' })
-        this.waitForCallOption = page.getByRole('option', { name: 'Wait for call' })
-        this.allPartnerTypesOption = page.getByRole('option', { name: 'All Partner Types' })
-        this.stenoReporterOption = page.getByRole('option', { name: 'Steno Reporter' })
-        this.interpreterOption = page.getByRole('option', { name: 'Interpreter' })
-        this.videographerOption = page.getByRole('option', { name: 'Videographer' })
-        this.proofreaderOption  = page.getByRole('option', { name: 'Proofreader' })
-        this.otherOption  = page.getByRole('option', { name: 'Other' })
-        this.scopistOption = page.getByRole('option', { name: 'Scopist' })
-        this.transcriberOption  = page.getByRole('option', { name: 'Transcriber' })
-        this.digitalReporteOption = page.getByRole('option', { name: 'Digital Reporter' })
-        this.processServerOption = page.getByRole('option', { name: 'Process Server' })
-        this.correctorOption  = page.getByRole('option', { name: 'Corrector' })
-        this.conciergeTechOption = page.getByRole('option', { name: 'Concierge-Tech' })
-        this.mediatorOption = page.getByRole('option', { name: 'Mediator' })
-        this.trialTechOption = page.getByRole('option', { name: 'Trial Tech' })
-        this.partnerSelected = page.getByRole('heading', { name: 'Partner Selected' })
-        this.closeButton = page.getByRole('button', { name: 'Close' })
-        this.updateStatusButton = page.getByRole('button', { name: 'Update Status' })
-        this.cancelButton = page.getByRole('button', { name: 'Cancel' })
-        this.confirmButton = page.getByRole('button', { name: 'Confirm' })
-       
-    }
- 
-   
-   
+        this.page = page;
+        this.selectAllIdCheckbox = page.getByLabel('Select all rows');
+        this.bulkActionComboBox = page.locator('#bulk-action').first();
+        this.updatePartnerStatusOption = page.getByRole('option', { name: 'Update Partner Statuses' });
+        this.changeStatusFromCombobox = page.getByRole('combobox').nth(1);
+        this.chageStatustoComboBox = page.getByLabel('Select Status To');
+        this.selectParterTypesComboBox = page.getByRole('combobox').nth(3);
+        this.menuOption = page.locator('#menu- > .MuiBackdrop-root');
+        this.pendingOption = page.getByRole('option', { name: 'Pending' });
+        this.assignedOption = page.getByRole('option', { name: 'Assigned' });
+        this.confirmedOption = page.getByRole('option', { name: 'Confirmed' });
+        this.waitForCallOption = page.getByRole('option', { name: 'Wait for call' });
+        this.allPartnerTypesOption = page.getByRole('option', { name: 'All Partner Types' });
+        this.stenoReporterOption = page.getByRole('option', { name: 'Steno Reporter' });
+        this.interpreterOption = page.getByRole('option', { name: 'Interpreter' });
+        this.videographerOption = page.getByRole('option', { name: 'Videographer' });
+        this.proofreaderOption  = page.getByRole('option', { name: 'Proofreader' });
+        this.otherOption  = page.getByRole('option', { name: 'Other' });
+        this.scopistOption = page.getByRole('option', { name: 'Scopist' });
+        this.transcriberOption  = page.getByRole('option', { name: 'Transcriber' });
+        this.digitalReporteOption = page.getByRole('option', { name: 'Digital Reporter' });
+        this.processServerOption = page.getByRole('option', { name: 'Process Server' });
+        this.correctorOption  = page.getByRole('option', { name: 'Corrector' });
+        this.conciergeTechOption = page.getByRole('option', { name: 'Concierge-Tech' });
+        this.mediatorOption = page.getByRole('option', { name: 'Mediator' });
+        this.trialTechOption = page.getByRole('option', { name: 'Trial Tech' });
+        this.partnerSelected = page.getByRole('heading', { name: /Partners? Selected/ });
+        this.closeButton = page.getByRole('button', { name: 'Close' });
+        this.updateStatusButton = page.getByRole('button', { name: 'Update Status' });
+        this.cancelButton = page.getByRole('button', { name: 'Cancel' });
+        this.confirmButton = page.getByRole('button', { name: 'Confirm' });
+    };
+
     selectStatusFrom = async () => {
         if (await this.waitForCallOption.isVisible()) {
             await this.waitForCallOption.click();
@@ -48,8 +46,8 @@ export class BulkActionPage {
             await this.confirmedOption.click();
         } else {
             throw new Error('No status option is visible.');
-        }
-    }
+        };
+    };
 
     selectStatusTo = async () => {
         if (await this.waitForCallOption.isVisible()) {
@@ -66,7 +64,7 @@ export class BulkActionPage {
             return 'Confirmed';
         } else {
             throw new Error('No status option is visible.');
-        }
+        };
     };
     
     selectPartnerType = async (status) => {
@@ -112,7 +110,7 @@ export class BulkActionPage {
                 await this.processServerOption.click(); 
                 break;
                 case 'Corrector':
-                 await expect(this.correctorOption).toBeVisible();
+                await expect(this.correctorOption).toBeVisible();
                 await this.correctorOption.click(); 
                 break;
                 case 'Concierge-Tech':
@@ -127,6 +125,6 @@ export class BulkActionPage {
                 await expect(this.trialTechOption).toBeVisible();
                 await this.trialTechOption.click(); 
                 break;
-        }
-    }
-}
+        };
+    };
+};

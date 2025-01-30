@@ -1,0 +1,16 @@
+{
+  "name": "test-automation-modules",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^22.10.1"
+  },
+  "dependencies": {
+    "date-holidays": "^3.23.13"
+  },
+  "description": ""
+}
