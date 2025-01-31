@@ -189,6 +189,7 @@ const testData = {
   jobCardDetails: {
     successMessage: "Success! You're All Set.",
     status: "SCHEDULED",
+    cancelledStatus: "CANCELLED",
     updateJobMessage: "Job updated successfully",
   },
 };

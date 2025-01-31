@@ -12,6 +12,10 @@ class JobCardPage {
       .locator("div")
       .filter({ hasText: /^SCHEDULED/ })
       .first();
+    this.cancelledStatusLocator = page
+      .locator("div")
+      .filter({ hasText: /^CANCELLED/ })
+      .first();
     this.optionsButton = page.getByRole("button", { name: "OPTIONS +" });
     this.editScheduleButton = page.getByRole("button", {
       name: "EDIT SCHEDULE",
@@ -20,6 +24,10 @@ class JobCardPage {
     this.successAlert = this.page
       .locator("div")
       .filter({ hasText: "Job updated successfully" })
+      .nth(2);
+    this.cancelledAlert = this.page
+      .locator("div")
+      .filter({ hasText: "Job cancelled successfully" })
       .nth(2);
     this.attorneyInfoSection = page.locator('text=Attorney/Caller Information');
     this.attorneyName = page.locator('text=Attorney Name:').locator('xpath=following-sibling::*');
@@ -44,6 +52,12 @@ class JobCardPage {
     return "SCHEDULED";
   }
 
+  async verifyCancelledStatus() {
+    await this.cancelledStatusLocator.waitFor({ state: "visible" });
+    const fullStatus = await this.cancelledStatusLocator.textContent();
+    return "CANCELLED";
+  }
+
   async getFullStatus() {
     await this.statusLocator.waitFor({ state: "visible" });
     return await this.statusLocator.textContent();
@@ -66,6 +80,11 @@ class JobCardPage {
   async getSuccessAlert() {
     await this.successAlert.waitFor({ state: "visible"});
     return await this.successAlert.textContent();
+  }
+
+  async getSuccessfulCancelAlert() {
+    await this.cancelledAlert.waitFor({ state: "visible" });
+    return await this.cancelledAlert.textContent();
   }
 
   async getAttorneyInfo() {
