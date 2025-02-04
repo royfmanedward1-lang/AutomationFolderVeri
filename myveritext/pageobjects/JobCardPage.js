@@ -34,6 +34,13 @@ class JobCardPage {
     this.attorneyEmail = page.locator('text=Contact Email:').first();
     this.contactName = page.locator('text=Contact Name:').locator('xpath=following-sibling::*');
     this.contactEmail = page.locator('text=Contact Email:').last();
+    this.confirmNowButton = page.locator('button:has-text("CONFIRM NOW")');
+    this.confirmYesButton = page.getByRole('button', { name: 'Yes' });
+    this.confirmationBanner = page.locator('div[role="alert"]');
+    this.confirmedStatus = page.locator('h6:has-text("CONFIRMED")');
+    this.confirmationBanner = page.locator('.MuiSnackbarContent-message:has-text("Job confirmed successfully")');
+    this.noButton = page.locator('button.MuiButton-root:has-text("No")').first();
+    this.scheduledStatus = page.locator('h6.MuiTypography-subtitle1:has-text("SCHEDULED")');
   }
 
   async getSuccessMessage() {
@@ -100,6 +107,55 @@ class JobCardPage {
       email: await this.contactEmail.textContent()
     };
   }
+
+  async clickConfirmNow() {
+    await this.confirmNowButton.click();
+  }
+
+  async confirmJob() {
+    await this.confirmYesButton.click();
+  }
+
+  async getConfirmationBannerText() {
+    await this.page.waitForLoadState('networkidle');
+    await this.confirmationBanner.waitFor({ 
+      state: 'visible',
+      timeout: 10000
+    });
+    return await this.confirmationBanner.textContent();
+  }
+
+  async verifyConfirmedStatus() {
+    await this.confirmedStatus.waitFor({ state: 'visible' });
+    return await this.confirmedStatus.isVisible();
+  }
+
+  async clickNoOnConfirm() {
+    await this.page.waitForLoadState('networkidle');
+    await this.noButton.waitFor({ state: 'visible' });
+    await this.noButton.click();
+  }
+
+  async getScheduledStatus() {
+    await this.scheduledStatus.waitFor({ state: 'visible' });
+    return await this.scheduledStatus.textContent();
+  }
+
+  async verifyScheduledStatus() {
+    await this.scheduledStatus.waitFor({ state: 'visible' });
+    const fullText = await this.scheduledStatus.textContent();
+    const scheduledText = fullText.split('(')[0].trim();
+    
+    const color = await this.scheduledStatus.evaluate(el => 
+      window.getComputedStyle(el).getPropertyValue('color')
+    );
+    
+    return {
+      text: scheduledText,
+      isBlue: color === 'rgb(21, 136, 204)' 
+    };
+  }
+
 }
 
 module.exports = { JobCardPage };
