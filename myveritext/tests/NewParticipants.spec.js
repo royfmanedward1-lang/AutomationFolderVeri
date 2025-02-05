@@ -116,21 +116,21 @@ test.describe('Create New Proceeding with New Participants', () => {
         email: newAttorneyData.email,
         phone: newAttorneyData.phone
       }, true);  // true for attorney
-      console.log("the atty info has been filled");
+      // the atty info has been filled
       await participantsPage.clickAddContactConfirmButton();
-      console.log("the atty info has been added");
+      // the atty info has been added
     });
 
     
     await test.step('Add new point of contact', async () => {
-      console.log("new contact started");
+      // new contact started
       await participantsPage.selectPointOfContact("Ariana Grande");
-      console.log("Contact added and selected");
+      // Contact added and selected
     });
 
     await test.step('Add Scheduling Office', async () => {
       await participantsPage.selectSchedulingOffice("");
-      console.log("Scheduling Office added and selected");
+      // Scheduling Office added and selected
     });
 
     await test.step('Add witness', async () => {
@@ -138,17 +138,17 @@ test.describe('Create New Proceeding with New Participants', () => {
         Math.floor(Math.random() * testData.jobDetails.participants.witnesses.length)
       ];
       await participantsPage.addWitness(randomWitness);
-      console.log("Witness added");
+      // Witness added
     });
 
     await test.step('Complete proceeding scheduling', async () => {
       await participantsPage.clickNext();
-      console.log("Proceeding completed");
+      // Proceeding completed
     });
 
     await test.step('Add Remote participants', async () => {
       await participantsPage.addRemoteParticipants();
-      console.log("Remote participants added");
+      // Remote participants added
       await participantsPage.clickScheduleProceeding();
       await participantsPage.confirmScheduleProceeding();
     });
