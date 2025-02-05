@@ -13,6 +13,7 @@ test.describe("Job Creation Remote Proceeding", () => {
     locationPage,
     proceedingServicesPage,
     participantsPage,
+    addressPage,
     jobCardPage;
 
   test.beforeAll(async () => {
@@ -31,6 +32,7 @@ test.describe("Job Creation Remote Proceeding", () => {
     locationPage = pageManager.getLocationPage();
     proceedingServicesPage = pageManager.getProceedingServicesPage();
     participantsPage = pageManager.getParticipantsPage();
+    addressPage = pageManager.getAddressPage();
     jobCardPage = pageManager.getJobCardPage();
 
     await test.step("Navigate to MyVeritext Page", async () => {
@@ -134,7 +136,7 @@ test.describe("Job Creation Remote Proceeding", () => {
       await participantsPage.clickScheduleProceeding();
       await participantsPage.confirmScheduleProceeding();
     });
-
+    
     await test.step("Then the Proceeding has been scheduled", async () => {
       const successMessage = await jobCardPage.getSuccessMessage();
       expect(successMessage).toContain(testData.jobCardDetails.successMessage);
@@ -150,7 +152,7 @@ test.describe("Job Creation Remote Proceeding", () => {
   test("Create an In-Person job using Address Book option", async () => {
     await test.step("And selects an address from the address book", async () => {
       await commonJobCreationSteps(async () => {
-        await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        await locationPage.selectAddressBookOptionAndLocator(testData.jobDetails.address);
         await locationPage.clickNext();
       });
     });
@@ -181,6 +183,24 @@ test.describe("Job Creation Remote Proceeding", () => {
         );
         await locationPage.clickNext();
       });
+    });
+  });
+
+  test("Add a new location and validate address is not saved", async () => {
+    await test.step("And selects an address from the address book", async () => {
+      await commonJobCreationSteps(async () => {
+        await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        await addressPage.fillAddressFormWihoutSave();
+        await locationPage.clickNext();
+      });
+    });
+
+    await test.step("Then the Proceeding has been scheduled", async () => {
+      const locatorScheduled = await jobCardPage.getLocator();
+      expect(locatorScheduled).toContain(testData.jobDetails.caseName[0]);
+
+      const addressScheduled = await jobCardPage.getAddress();
+      expect(addressScheduled).toContain(testData.jobDetails.address);
     });
   });
 });
