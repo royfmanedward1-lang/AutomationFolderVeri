@@ -143,7 +143,7 @@ test.describe("Job Creation Hybrid Proceeding with Multiple Location Options", (
     await commonJobCreationSteps();
     
     await test.step("And selects an address from the address book", async () => {
-      await locationPage.selectAddressBookOption(testData.jobDetails.address);
+      await locationPage.selectAddressBookOptionAndLocator(testData.jobDetails.address);
       await locationPage.clickNext();
     });
 
