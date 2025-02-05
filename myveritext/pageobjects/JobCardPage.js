@@ -34,6 +34,8 @@ class JobCardPage {
     this.attorneyEmail = page.locator('text=Contact Email:').first();
     this.contactName = page.locator('text=Contact Name:').locator('xpath=following-sibling::*');
     this.contactEmail = page.locator('text=Contact Email:').last();
+    this.locator = page.locator('p').filter({ hasText: 'Canada Case' }).first();
+    this.address = page.locator('p').filter({ hasText: '4817 Longview Avenue Canada,' }).first();
     this.confirmNowButton = page.locator('button:has-text("CONFIRM NOW")');
     this.confirmYesButton = page.getByRole('button', { name: 'Yes' });
     this.confirmationBanner = page.locator('div[role="alert"]');
@@ -51,6 +53,16 @@ class JobCardPage {
   async getJobNumber() {
     await this.jobNumberLocator.waitFor({ state: "visible" });
     return await this.jobNumberLocator.textContent();
+  }
+
+  async getLocator() {
+    await this.locator.waitFor({ state: "visible" });
+    return await this.locator.textContent();
+  }
+
+  async getAddress() {
+    await this.address.waitFor({ state: "visible" });
+    return await this.address.textContent();
   }
 
   async verifyStatus() {

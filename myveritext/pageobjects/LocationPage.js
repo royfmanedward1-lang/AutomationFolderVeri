@@ -52,13 +52,17 @@ class LocationPage {
   }
 
   // Methods to select in-person options
-  async selectAddressBookOption(address) {
+  async selectAddressBookOptionAndLocator(address) {
     await this.addressBookOption.click(); 
     const addressLocator = this.page.locator(
       `label:has-text("${address}") >> input[type="checkbox"]`
     );
     await addressLocator.waitFor({ state: "visible" });
     await addressLocator.check();
+  }
+
+  async selectAddressBookOption() {
+    await this.addressBookOption.click(); 
   }
 
   async selectVeritextOfficesOption(officeName) {
