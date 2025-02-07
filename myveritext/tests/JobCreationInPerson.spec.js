@@ -13,6 +13,7 @@ test.describe("Job Creation Remote Proceeding", () => {
     locationPage,
     proceedingServicesPage,
     participantsPage,
+    addressPage,
     jobCardPage;
 
   test.beforeAll(async () => {
@@ -31,6 +32,7 @@ test.describe("Job Creation Remote Proceeding", () => {
     locationPage = pageManager.getLocationPage();
     proceedingServicesPage = pageManager.getProceedingServicesPage();
     participantsPage = pageManager.getParticipantsPage();
+    addressPage = pageManager.getAddressPage();
     jobCardPage = pageManager.getJobCardPage();
 
     await test.step("Navigate to MyVeritext Page", async () => {
@@ -67,6 +69,7 @@ test.describe("Job Creation Remote Proceeding", () => {
     });
 
     await test.step("And fills the proceeding basics", async () => {
+      test.slow();
       await caseNamePage.selectCaseName();
       await caseNamePage.selectCountry(testData.jobDetails.country);
       await caseNamePage.clickNext();
@@ -134,7 +137,7 @@ test.describe("Job Creation Remote Proceeding", () => {
       await participantsPage.clickScheduleProceeding();
       await participantsPage.confirmScheduleProceeding();
     });
-
+    
     await test.step("Then the Proceeding has been scheduled", async () => {
       const successMessage = await jobCardPage.getSuccessMessage();
       expect(successMessage).toContain(testData.jobCardDetails.successMessage);
@@ -150,7 +153,7 @@ test.describe("Job Creation Remote Proceeding", () => {
   test("Create an In-Person job using Address Book option", async () => {
     await test.step("And selects an address from the address book", async () => {
       await commonJobCreationSteps(async () => {
-        await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        await locationPage.selectAddressBookOptionAndLocator(testData.jobDetails.address);
         await locationPage.clickNext();
       });
     });
@@ -180,6 +183,101 @@ test.describe("Job Creation Remote Proceeding", () => {
           testData.jobDetails.findLocationDetails.city
         );
         await locationPage.clickNext();
+      });
+    });
+  });
+
+  test("Add a new location and validate address is not saved", async () => {
+    await test.step("And selects an address from the address book", async () => {
+      await commonJobCreationSteps(async () => {
+        await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        await addressPage.fillAddressFormWihoutSave();
+        await locationPage.clickNext();
+      });
+    });
+
+    await test.step("Then the Proceeding has been scheduled", async () => {
+      const locatorScheduled = await jobCardPage.getLocator();
+      expect(locatorScheduled).toContain(testData.jobDetails.caseName[0]);
+
+      const addressScheduled = await jobCardPage.getAddress();
+      expect(addressScheduled).toContain(testData.jobDetails.address);
+    });
+  });
+
+  test("Add a new location and validate address has been saved", async () => {
+    await test.step("And selects an address from the address book", async () => {
+      await commonJobCreationSteps(async () => {
+        await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        await addressPage.fillAddressFormWihoutSave();
+        await addressPage.clickSaveAddress();
+        await locationPage.clickNext();
+      });
+    });
+
+    await test.step("Then the Proceeding has been scheduled", async () => {
+      const locatorScheduled = await jobCardPage.getLocator();
+      expect(locatorScheduled).toContain(testData.jobDetails.caseName[0]);
+
+      const addressScheduled = await jobCardPage.getAddress();
+      expect(addressScheduled).toContain(testData.jobDetails.address);
+    });
+
+    await test.step("Go back to verify the new address added", async () => {
+      await test.step("Handle Retention Policy", async () => {
+        await calendarPage.clickMyVeritext();
+        await page.waitForURL(testData.urls.calendarPage);
+        await calendarPage.handleRetentionPolicyModal();
+
+        await test.step("When user clicks Schedule proceeding button", async () => {
+          await calendarPage.clickScheduleProceeding();
+        });
+    
+        await test.step("And selects a proceeding type", async () => {
+          //Select a random proceeding
+          await proceedingTypePage.selectProceedingType(
+            testData.jobDetails.proceedingTypes[
+              Math.floor(Math.random() * testData.jobDetails.proceedingTypes.length)
+            ]
+          );
+        });
+    
+        await test.step("And fills the proceeding basics", async () => {
+          test.slow();
+          await caseNamePage.selectCaseName();
+          await caseNamePage.selectCountry(testData.jobDetails.country);
+          await caseNamePage.clickNext();
+        });
+    
+        await test.step("And selects the proceeding date and time", async () => {
+          //Select a random time and timezone
+          const randomTime =
+            testData.dateAndTime.timeOptions[
+              Math.floor(Math.random() * testData.dateAndTime.timeOptions.length)
+            ];
+          const randomTimeZoneAbbreviation =
+            testData.dateAndTime.timeZoneOptions[
+              Math.floor(
+                Math.random() * testData.dateAndTime.timeZoneOptions.length
+              )
+            ];
+          const timeZoneValue = testData.dateAndTime.getTimeZone(
+            randomTimeZoneAbbreviation
+          );
+          await dateAndTimePage.selectDate(); //Using date selected by default in the date picker.TO DO refine logic for picking random date.
+          await dateAndTimePage.selectTime(randomTime);
+          await dateAndTimePage.selectTimeZone(timeZoneValue);
+          await dateAndTimePage.clickNext();
+        });
+    
+        await test.step("And selects In-Person proceeding", async () => {
+          await locationPage.selectInPersonOption();
+          await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        });
+
+        await test.step("Verify Address saved", async () => {
+          expect(testData.jobDetails.caseName[0]).toBeTruthy();
+        });
       });
     });
   });

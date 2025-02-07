@@ -12,6 +12,7 @@ class PageManager {
     this.jobCardPage = null;
     this.addRemoteParticipants = null;
     this.dateAndTimePage2 = null;
+    this.addressPage = null;
     this.jobDetailsPage = null;
   }
 
@@ -95,12 +96,21 @@ class PageManager {
     }
     return this.addRemoteParticipantsPage;
   }
+
   getDateAndTimePage2() {
     if (!this.dateAndTimePage2) {
       const { DateAndTimePage2 } = require("../pageobjects/DateAndTimePage2");
       this.dateAndTimePage2 = new DateAndTimePage2(this.page);
     }
     return this.dateAndTimePage2;
+  }
+
+  getAddressPage() {
+    if (!this.addressPage) {
+      const { AddressPage } = require("../pageobjects/AddressPage");
+      this.addressPage = new AddressPage(this.page);
+    }
+    return this.addressPage;
   }
 
   getJobDetailsPage() {

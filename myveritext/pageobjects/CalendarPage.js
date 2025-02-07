@@ -14,6 +14,7 @@ class CalendarPage {
     this.previousButton = page.locator(".fc-prev-button.fc-button.fc-button-primary");
     this.nextButton = page.locator(".fc-next-button.fc-button.fc-button-primary");
     this.scheduleProceedingButton = page.locator("button:has-text('Schedule Proceeding')");
+    this.myVeritextButton =page.getByRole('button', { name: 'MyVeritext' });
 
     // New locators for calendar events
     this.calendarEventsContainer = page.locator('.fc-daygrid-day-events');
@@ -87,6 +88,10 @@ class CalendarPage {
 
   async navigateToNext() {
     await this.nextButton.click();
+  }
+
+  async clickMyVeritext() {
+    await this.myVeritextButton.click();
   }
 
   async clickScheduleProceeding() {

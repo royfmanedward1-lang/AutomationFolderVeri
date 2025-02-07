@@ -152,7 +152,7 @@ test.describe("Cancel Scheduled Jobs", () => {
   test("Successful Cancel future scheduled job", async () => {
     await test.step("And try to cancel the job scheduled", async () => {
       await commonJobCreationSteps(async () => {
-        await locationPage.selectAddressBookOption(testData.jobDetails.address);
+        await locationPage.selectAddressBookOptionAndLocator(testData.jobDetails.address);
         await locationPage.clickNext();
       });
 
@@ -172,7 +172,7 @@ test.describe("Cancel Scheduled Jobs", () => {
     test("Unsuccessful Cancel future scheduled job", async () => {
       await test.step("And try to cancel the job scheduled", async () => {
         await commonJobCreationSteps(async () => {
-          await locationPage.selectAddressBookOption(testData.jobDetails.address);
+          await locationPage.selectAddressBookOptionAndLocator(testData.jobDetails.address);
           await locationPage.clickNext();
         });
 
