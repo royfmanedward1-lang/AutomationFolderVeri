@@ -31,6 +31,10 @@ class AddressPage {
     await this.stateDropdown.click();
     await this.stateOption.click();
   }
+
+  async clickSaveAddress() {
+    await this.saveAddressCheckbox.check();
+  }
 }
 
 module.exports = { AddressPage };
