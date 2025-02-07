@@ -199,7 +199,7 @@ test.describe("Partner Assignament", () => {
         });
 
         await test.step('Partner Page loads', async () => {
-            //await expect(assignPartnerPage.showJobDetails).toBeVisible();
+            await expect(assignPartnerPage.showJobDetails).toBeVisible();
             await expect(assignPartnerPage.partnerTab).toBeVisible();
         });
     });
@@ -239,7 +239,7 @@ test.describe("Partner Assignament", () => {
         });
 
         await test.step('Partner Page loads', async () => {
-            //await expect(assignPartnerPage.showJobDetails).toBeVisible();
+            await expect(assignPartnerPage.showJobDetails).toBeVisible();
             await expect(assignPartnerPage.partnerTab).toBeVisible();
         });
     });
