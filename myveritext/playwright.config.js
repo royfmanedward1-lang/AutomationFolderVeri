@@ -11,11 +11,10 @@ const config = {
   expect: {
     timeout: 5000,
   },
-  retries: 3,
+  retries: 1,
   
 
   reporter: [["html"], ["allure-playwright"]],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   workers: 1,
 
   projects: [
@@ -26,6 +25,7 @@ const config = {
         headless: false,
         viewport: null,
         screenshot: "on",
+        acceptDownloads: true,
         ignoreHttpsErrors: false,
         launchOptions: {
           args: [
