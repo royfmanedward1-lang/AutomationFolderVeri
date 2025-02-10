@@ -4,6 +4,7 @@ export class AssignPartnerPage {
     this.page = page;
 
     this.showJobDetails = this.page.getByRole('button', { name: 'Show Job Details' });
+    this.hideJobDetails = this.page.getByRole('button', { name: 'Hide Job Details' });
     this.jobId = this.page.locator("id=jobId");
     this.partnerTab = this.page.getByRole('tab', { name: 'Partners' });
     this.addButton = this.page.getByRole('button', { name: 'Add' });
