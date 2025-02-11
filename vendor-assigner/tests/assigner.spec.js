@@ -1,16 +1,10 @@
 import { test } from '@playwright/test';
 import { loginService } from '../services/loginService';
 import { JobService } from '../services/jobService';
-import { PartnerInfoService } from '../services/partnerInfoService';
-import { LoginPage } from '../pages/LoginPage.js';
-import { AssignPartnerPage } from '../pages/assignement/AssignPartnerPage.js';
 import JobClass from '../utility/jobClass'
-import PartnerInfoClass from '../utility/partnerInfoClass.js'
-import * as utils from '../utility/utils.js';
 
 let accessToken;
 let jobService;
-let partnerInfoService;
 let jobId;
 
 test('Create job using GDS', async ({ page }) => {
@@ -57,33 +51,4 @@ test('Create job using GDS', async ({ page }) => {
         clientId: 268252,
     });
     jobId = await jobService.createNewJob(accessToken, job.generateQuery());
-});
-
-test('Get Partner Information In GDS', async ({ page }) => {
-    partnerInfoService = new PartnerInfoService();
-    
-    let allJobs
-    await test.step('Get job`s list', async() => {
-        const loginPage = new LoginPage(page);
-        await loginPage.login();
-        
-        await utils.waitGridToLoad(page);
-        const assignPartnerPage = new AssignPartnerPage(page);
-        allJobs = await assignPartnerPage.jobNumber.allInnerTexts();
-    })
-    
-    await test.step('Logging into GDS', async() => {
-        accessToken = await loginService();
-    })
-
-    await test.step('Getting the info', async() => {
-        const partner = new PartnerInfoClass({
-            jobId: allJobs[1],
-            serviceTypeIds: 1,
-            VPZIds: 936
-        });
-    
-        const partnerInfo = await partnerInfoService.getPartnerAvailability(accessToken, partner.generateQuery());
-        console.log(partnerInfo);
-    })
 });

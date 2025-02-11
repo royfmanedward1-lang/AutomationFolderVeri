@@ -1,12 +1,46 @@
+const { test, expect } = require('@playwright/test');
 import { LoginPage } from '../pages/LoginPage.js';
 import { HeaderPage } from '../pages/assignement/HeaderPage.js';
 import { PartnerInfoPage } from '../pages/PartnerInfoPage.js';
-const { test, expect } = require('@playwright/test');
-import * as utils from '../utility/utils.js'
+import { AssignPartnerPage } from '../pages/assignement/AssignPartnerPage.js';
+import { PartnerInfoService } from '../services/partnerInfoService';
+import { loginService } from '../services/loginService';
+import PartnerInfoClass from '../utility/partnerInfoClass.js';
+import * as utils from '../utility/utils.js';
 
 test.beforeEach('Logging in', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login();
+});
+
+test('Get Partner Information In GDS', async ({ page }) => {
+    let accessToken;
+    let partnerInfoService = new PartnerInfoService();
+    
+    let allJobs
+    await test.step('Get job`s list', async() => {
+        const loginPage = new LoginPage(page);
+        await loginPage.login();
+        
+        await utils.waitGridToLoad(page);
+        const assignPartnerPage = new AssignPartnerPage(page);
+        allJobs = await assignPartnerPage.jobNumber.allInnerTexts();
+    })
+    
+    await test.step('Logging into GDS', async() => {
+        accessToken = await loginService();
+    })
+
+    await test.step('Getting the info', async() => {
+        const partner = new PartnerInfoClass({
+            jobId: allJobs[1],
+            serviceTypeIds: 1,
+            VPZIds: 936
+        });
+    
+        const partnerInfo = await partnerInfoService.getPartnerAvailability(accessToken, partner.generateQuery());
+        console.log(partnerInfo);
+    })
 });
 
 test('Search invalid partner information', async ({ page }) => {
