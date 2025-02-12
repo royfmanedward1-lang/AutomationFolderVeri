@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^10.8.0",
-    "allure-commandline": "^2.32.0"
+    "allure-commandline": "^2.32.0",
+    "robotjs": "^0.6.0"
   },
   "directories": {
     "test": "tests"
