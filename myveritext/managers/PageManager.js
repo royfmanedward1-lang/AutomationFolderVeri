@@ -13,6 +13,7 @@ class PageManager {
     this.addRemoteParticipants = null;
     this.dateAndTimePage2 = null;
     this.addressPage = null;
+    this.snapJobPage = null;
     this.jobDetailsPage = null;
   }
 
@@ -111,6 +112,14 @@ class PageManager {
       this.addressPage = new AddressPage(this.page);
     }
     return this.addressPage;
+  }
+
+  getSnapJobPage() {
+    if (!this.snapJobPage) {
+      const { SnapJobPage } = require("../pageobjects/SnapJobPage");
+      this.snapJobPage = new SnapJobPage(this.page);
+    }
+    return this.snapJobPage;
   }
 
   getJobDetailsPage() {
