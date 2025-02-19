@@ -15,6 +15,7 @@ class PageManager {
     this.addressPage = null;
     this.snapJobPage = null;
     this.jobDetailsPage = null;
+    this.proceedingSearchPage = null;
   }
 
   getLoginPage() {
@@ -120,6 +121,14 @@ class PageManager {
       this.snapJobPage = new SnapJobPage(this.page);
     }
     return this.snapJobPage;
+  }
+
+  getProceedingSearchPage() {
+    if (!this.proceedingSearchPage) {
+      const { ProceedingSearchPage } = require("../pageobjects/ProceedingSearchPage");
+      this.proceedingSearchPage = new ProceedingSearchPage(this.page);
+    }
+    return this.proceedingSearchPage;
   }
 
   getJobDetailsPage() {
