@@ -75,4 +75,21 @@ test.describe("Calendar Page Functionality", () => {
       await proceedingSearchPage.validateMenus();
     });
   });
+  
+  test("Validate the past jobs with Files Ready status", async () => {
+    await test.step("Access Proceeding Search page", async () => {
+      await proceedingSearchPage.selectProceedingTab();
+    });
+
+    await test.step("And fill out the required fields", async () => {
+      await proceedingSearchPage.selectFilter(testData.assignmentNumber.filesReady);
+      const successPopupMessage = await proceedingSearchPage.getFilterMessage();
+      expect(successPopupMessage).toContain("Your filters have been successfully applied");
+    });
+
+    await test.step("Then verify the menu", async () => {
+      await proceedingSearchPage.clickOnKebabMenu();
+      await proceedingSearchPage.validateMenus();
+    });
+  });
 });
