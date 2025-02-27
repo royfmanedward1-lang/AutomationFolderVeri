@@ -512,3 +512,224 @@ test.describe("VPZ not required for Partner Types", () => {
       })
     }
   })
+
+test.describe("Assignment Conflict - Selecting Partners to be assigned", () => {
+  test.beforeEach('Logging in and set jobs', async ({ page }) => {
+    jobService = new JobService();
+    accessToken = await loginService();
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    const formattedDate = today.toISOString().split('T')[0];
+    const jobObject = new JobClass({
+      caseId: 301515,
+      defendant: "",
+      plaintiff: "",
+      proceedingTypeId: 5,
+      thirdPartyId: 123914,
+      divisionId: 50,
+      deliveryDays: 0,
+      timeZoneId: 7,
+      deliveryMethod: "Daily",
+      depositionDate: formattedDate + "T07:00:00.000-04:00",
+      depositionEnd: formattedDate + "T16:00:00.000-04:00",
+      locationId: null,
+      locationTypeId: 1,
+      locationNotes: "",
+      locationAddress1: "1000 Virginia Center Pkwy",
+      locationAddress2: "",
+      locationCity: "New York",
+      locationName: "The Virginia Crossing Hotel and Conference Center",
+      locationState: "VA",
+      locationZip: "23059",
+      locationContactPhone: "",
+      locationContact: "",
+      hasDigitalReporter: true,
+      hasTranscriber: false,
+      hasCourtReporter: false,
+      hasInterpreter: false,
+      hasVideographer: false,
+      notes: "",
+      numberOfAttorneys: "2",
+      numberOfWitnesses: "1",
+      attorneyContactId: 1079987,
+      callerContactId: 1080009,
+      clientAddressId: 427947,
+      clientId: 268252,
+    });
+    jobId = await jobService.createNewJob(accessToken, jobObject.generateQuery());
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+  });
+
+  test(`Select Partner, No Tab Change`, async ({ page }) => {
+    const assignmentPage = new AssignmentPage(page);
+    const assignPartnerPage = new AssignPartnerPage(page);
+    let partnerName = '';
+
+    await test.step('Wait for grid to load', async () => {
+      await utils.waitGridToLoad(page);
+    });
+
+    const job = await page.locator(`//*[@data-id="${jobId}"]`);
+    await test.step(`Check Digital Reporter status appears on job list`, async () => {
+      await expect(job.getByText('DIGITAL REPORTER').first()).toBeVisible();
+    });
+
+    await test.step(`Assign Digilat Reporter partner`, async () => {
+      await job.getByText('DIGITAL REPORTER').first().click();
+    });
+
+    await test.step('Wait for partner`s list loading', async () => {
+      await utils.waitLoadToFinish(page);
+    });
+
+    await test.step('Selecting an available partner', async () => {
+      const enabledAddButton = await assignPartnerPage.findAvailablePartner();
+      await enabledAddButton.click()
+      await page.mouse.move(0, 0);
+    });
+
+    await test.step('Getting job and partner info', async () => {
+      jobId = await assignPartnerPage.jobId.textContent();
+      const selectedRow = assignPartnerPage.partnerSelected.locator('//ancestor::*[@data-rowindex]').first();
+      const firstName = await selectedRow.locator('//descendant::*[@data-field="firstName"]').textContent();
+      const lastName = await selectedRow.locator('//descendant::*[@data-field="lastName"]').textContent();
+      partnerName = firstName.concat(' ', lastName);
+    });
+
+    await test.step('Check if partner was added to cart', async () => {
+      const cart = page.getByText(partnerName);
+      await expect(cart).toBeVisible();
+    });
+  });
+
+  test(`Select Partner, Tab is Changed`, async ({ page }) => {
+    const assignmentPage = new AssignmentPage(page);
+    const assignPartnerPage = new AssignPartnerPage(page);
+    let partnerName = '';
+
+    await test.step('Wait for grid to load', async () => {
+      await utils.waitGridToLoad(page);
+    });
+
+    const job = await page.locator(`//*[@data-id="${jobId}"]`);
+    await test.step(`Check Digital Reporter status appears on job list`, async () => {
+      await expect(job.getByText('DIGITAL REPORTER').first()).toBeVisible();
+    });
+
+    await test.step(`Assign Digilat Reporter partner`, async () => {
+      await job.getByText('DIGITAL REPORTER').first().click();
+    });
+
+    await test.step('Wait for partner`s list loading', async () => {
+      await utils.waitLoadToFinish(page);
+    });
+
+    await test.step('Selecting an available partner', async () => {
+      const enabledAddButton = await assignPartnerPage.findAvailablePartner();
+      await enabledAddButton.click()
+      await page.mouse.move(0, 0);
+    });
+
+    await test.step('Getting job and partner info', async () => {
+      jobId = await assignPartnerPage.jobId.textContent();
+      const selectedRow = assignPartnerPage.partnerSelected.locator('//ancestor::*[@data-rowindex]').first();
+      const firstName = await selectedRow.locator('//descendant::*[@data-field="firstName"]').textContent();
+      const lastName = await selectedRow.locator('//descendant::*[@data-field="lastName"]').textContent();
+      partnerName = firstName.concat(' ', lastName);
+    });
+
+    await test.step('Check if partner was added to cart', async () => {
+      const cart = page.getByText(partnerName);
+      await expect(cart).toBeVisible();
+    });
+
+    await test.step('Click on Notes Cart', async () => {
+      await page.getByRole('tab', { name: 'NOTES' }).click();
+    });
+
+    await test.step('Click back to the partner type to be assigned', async () => {
+      await page.getByRole('tab', { name: 'COURT REPORTER' }).click();
+    });
+
+    await test.step('the previously selected partner should be moved to the top of the list', async () => {
+      const baseXPathButton = '//html/body/div[4]/div[3]/div/div/div/div[2]/div/div[2]/div/div[3]/div[2]/div[1]/div[2]/div/div[1]/div[14]/button';
+      const locator = page.locator(`xpath=${baseXPathButton}`);
+      await locator.waitFor({ state: 'visible' });
+      const buttonText = await locator.textContent();
+      await expect(buttonText).toEqual('Selected');
+    });
+  });
+
+  test(`Entering Partner Assignment Modal with Applied partner`, async ({ page }) => {
+    const assignmentPage = new AssignmentPage(page);
+    const assignPartnerPage = new AssignPartnerPage(page);
+    let partnerName = '';
+
+    await test.step('Wait for grid to load', async () => {
+      await utils.waitGridToLoad(page);
+    });
+
+    const job = await page.locator(`//*[@data-id="${jobId}"]`);
+    await test.step(`Check Digital Reporter status appears on job list`, async () => {
+      await expect(job.getByText('DIGITAL REPORTER').first()).toBeVisible();
+    });
+
+    await test.step(`Assign Digilat Reporter partner`, async () => {
+      await job.getByText('DIGITAL REPORTER').first().click();
+    });
+
+    await test.step('Wait for partner`s list loading', async () => {
+      await utils.waitLoadToFinish(page);
+    });
+
+    await test.step('Selecting an available partner', async () => {
+      const enabledAddButton = await assignPartnerPage.findAvailablePartner();
+      await enabledAddButton.click()
+      await page.mouse.move(0, 0);
+    });
+
+    await test.step('Getting job and partner info', async () => {
+      jobId = await assignPartnerPage.jobId.textContent();
+      const selectedRow = assignPartnerPage.partnerSelected.locator('//ancestor::*[@data-rowindex]').first();
+      const firstName = await selectedRow.locator('//descendant::*[@data-field="firstName"]').textContent();
+      const lastName = await selectedRow.locator('//descendant::*[@data-field="lastName"]').textContent();
+      partnerName = firstName.concat(' ', lastName);
+    });
+
+    await test.step('Check if partner was added to cart', async () => {
+      const cart = page.getByText(partnerName);
+      await expect(cart).toBeVisible();
+    });
+
+
+    await test.step('Applying partner', async () => {
+      await expect(assignPartnerPage.applyButton.first()).toBeEnabled();
+      await assignPartnerPage.applyButton.first().click();
+    });
+
+    await test.step('Wait for job`s list loading', async () => {
+      await utils.waitGridToLoad(page);
+    });
+
+    await test.step(`Click on its Notes`, async () => {
+      await job.getByText('NOTES').first().click();
+    });
+
+    await test.step('Wait for partner`s list loading', async () => {
+      await utils.waitLoadToFinish(page);
+    });
+
+    await test.step('Click back to the partner type to be assigned', async () => {
+      await page.getByRole('tab', { name: 'COURT REPORTER' }).click();
+    });
+
+    await test.step('the previously selected partner should be moved to the top of the list', async () => {
+      const baseXPathButton = '//html/body/div[4]/div[3]/div/div/div/div[2]/div/div[2]/div/div[3]/div[2]/div[1]/div[2]/div/div[1]/div[14]/button';
+      const locator = page.locator(`xpath=${baseXPathButton}`);
+      await locator.waitFor({ state: 'visible' });
+      const buttonText = await locator.textContent();
+      await expect(buttonText).toEqual('Selected');
+    });
+  });
+});
