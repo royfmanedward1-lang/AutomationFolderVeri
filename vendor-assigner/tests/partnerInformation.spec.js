@@ -5,6 +5,7 @@ import { PartnerInfoPage } from '../pages/PartnerInfoPage.js';
 import { AssignPartnerPage } from '../pages/assignement/AssignPartnerPage.js';
 import { PartnerInfoService } from '../services/partnerInfoService';
 import { loginService } from '../services/loginService';
+import { JobService } from '../services/jobService.js';
 import PartnerInfoClass from '../utility/partnerInfoClass.js';
 import * as utils from '../utility/utils.js';
 
@@ -14,32 +15,37 @@ test.beforeEach('Logging in', async ({ page }) => {
 });
 
 test('Get Partner Information In GDS', async ({ page }) => {
-    let accessToken;
+    let accessToken; 
+    let jobId;
+    let vpzId;
     let partnerInfoService = new PartnerInfoService();
+    let jobService = new JobService();
     
     let allJobs
-    await test.step('Get job`s list', async() => {
-        const loginPage = new LoginPage(page);
-        await loginPage.login();
-        
+    await test.step('Get job`s list', async() => {        
         await utils.waitGridToLoad(page);
         const assignPartnerPage = new AssignPartnerPage(page);
         allJobs = await assignPartnerPage.jobNumber.allInnerTexts();
+        jobId = parseInt(allJobs[1]);
     })
     
     await test.step('Logging into GDS', async() => {
         accessToken = await loginService();
     })
 
+    await test.step('Get job VPZ', async() => {
+        const jobResponse = await jobService.getJob(accessToken, jobId);
+        vpzId = jobResponse.data.job.vpz.id;
+    })
+
     await test.step('Getting the info', async() => {
         const partner = new PartnerInfoClass({
-            jobId: allJobs[1],
+            jobId: jobId,
             serviceTypeIds: 1,
-            VPZIds: 936
+            VPZIds: vpzId
         });
     
-        const partnerInfo = await partnerInfoService.getPartnerAvailability(accessToken, partner.generateQuery());
-        console.log(partnerInfo);
+        const partnerInfo = await partnerInfoService.getPartnerAvailability(accessToken, partner.generateQueryByJob());
     })
 });
 
@@ -365,7 +371,7 @@ test('Service type is selectable ', async ({ page }) => {
     });
 
     await test.step('And I should see partner type count to have length 1', async () => {
-        const partnerTypeCount = page.locator('.mui-1wmkppu');
+        const partnerTypeCount = page.locator('.mui-17gdpmz');
         const lengthValue = await partnerTypeCount.getAttribute('length');
         expect(lengthValue).toBe('1');
     });
@@ -527,7 +533,7 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
     });
 
     await test.step('Verify partner type count is 1', async () => {
-        const partnerTypeCount = page.locator('.mui-1wmkppu');
+        const partnerTypeCount = page.locator('.mui-17gdpmz');
         const lengthValue = await partnerTypeCount.getAttribute('length');
         expect(lengthValue).toBe('1');
     });

@@ -28,7 +28,7 @@ export class PartnerInfoService {
         const status = response.status();
         console.log('status is', status);
         const testRes = JSON.parse(await response.text());
-        console.log('partners are', testRes.data.vendorsByJobId);
+        testRes.data.vendorsByJobId.forEach(item => console.log(item));
         return testRes.data.vendorsByJobId;
     };
 }

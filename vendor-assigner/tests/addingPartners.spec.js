@@ -5,8 +5,10 @@ import { AssignmentPage } from '../pages/AssignmentPage.js';
 import { AssignPartnerPage } from '../pages/assignement/AssignPartnerPage.js';
 import { loginService } from '../services/loginService';
 import { JobService } from '../services/jobService';
+import { PartnerInfoService } from '../services/partnerInfoService';
 import * as utils from "../utility/utils.js";
 import JobClass from '../utility/jobClass';
+import PartnerInfoClass from '../utility/partnerInfoClass.js';
 import { VendorService } from '../services/vendorService';
 
 let accessToken;
@@ -15,22 +17,7 @@ let jobId;
 let jobResponse;
 let vendorService;
 
-const partnerTypeList = [
-    { name: 'Interpreter', id: [2], includesVpz: true },
-    { name: 'Videographer', id: [3], includesVpz: true },
-    { name: 'Proofreader', id: [4], includesVpz: true },
-    { name: 'Other', id: [5], includesVpz: true },
-    { name: 'Scopist', id: [6], includesVpz: true },
-    { name: 'Transcriber', id: [8], includesVpz: false },
-    { name: 'Digital Reporter', id: [1, 9], includesVpz: true },
-    { name: 'Steno Reporter', id: [1, 9], includesVpz: true },
-    { name: 'Process Server', id: [10], includesVpz: true },
-    { name: 'Corrector', id: [11], includesVpz: true },
-    { name: 'Concierge-Tech', id: [12], includesVpz: true },
-    { name: 'Mediator', id: [14], includesVpz: false },
-    { name: 'Trial Tech', id: [15], includesVpz: false }
-];
-
+const partnerTypeList = utils.partnerTypeList;
 const multiplePartnerTypeList = [
     [
         { name: 'Steno Reporter', id: [1, 9], includesVpz: true },
@@ -119,8 +106,7 @@ test.describe("Assigning Partner for Big 5 existing", () => {
         await loginPage.login();
     });
 
-    const partnerTypeList = ['Steno Reporter', 'Digital Reporter', 'Transcriber', 'Interpreter', 'Videographer'];
-    for (const partnerType of partnerTypeList) {
+    for (const partnerType in partnerTypeList.name) {
         test(`Assigning Partner for Big 5 (${partnerType}) exists`, { partnerType: partnerType }, async ({ page }) => {
             await test.step('Wait for grid to load', async () => {
                 await utils.waitGridToLoad(page);
@@ -136,7 +122,7 @@ test.describe("Assigning Partner for Big 5 existing", () => {
 
 });
 
-test.describe("Partner Assignament", () => {
+test.describe("Partner Assignement", () => {
     test.beforeEach('Logging in and set jobs', async ({ page }) => {
         jobService = new JobService();
         accessToken = await loginService();
@@ -261,9 +247,8 @@ test.describe("Partner Assignament", () => {
         });
 
         await test.step('Selecting a random available partner', async () => {
-            await expect(assignPartnerPage.addButton.first()).toBeEnabled();
             const enabledAddButton = await assignPartnerPage.findAvailablePartner();
-            await enabledAddButton.click()
+            await enabledAddButton.click();
         });
 
         await test.step('Add button is enabled and partner is selected', async () => {
@@ -273,8 +258,8 @@ test.describe("Partner Assignament", () => {
             await expect(assignPartnerPage.applyButton).toBeEnabled();
         });
     });
-
-    test(`Assing a partner to a job`, async ({ page }) => {
+    
+    test(`Assign a partner to a job`, async ({ page }) => {
         const assignmentPage = new AssignmentPage(page);
         const assignPartnerPage = new AssignPartnerPage(page);
         let jobId;
@@ -299,7 +284,7 @@ test.describe("Partner Assignament", () => {
 
         await test.step('Selecting an available partner', async () => {
             const enabledAddButton = await assignPartnerPage.findAvailablePartner();
-            await enabledAddButton.click()
+            await enabledAddButton.click();
             await page.mouse.move(0, 0);
         });
 
@@ -371,7 +356,6 @@ test.describe("VPZ not required for Partner Types", () => {
       });
       jobId = await jobService.createNewJob(accessToken, jobObject.generateQuery());
       jobResponse = await jobService.getJob(accessToken, jobId);
-      console.log('Job VPZ ID:', jobResponse.data.job.vpz.id);
     });
   
     test.beforeEach('Logging in', async ({ page }) => {
@@ -423,12 +407,10 @@ test.describe("VPZ not required for Partner Types", () => {
             'xpath=/html/body/div[4]/div[3]/div/div/div/div[2]/div/div[2]/div/div[3]/div[2]/div[1]/div[2]/div/div[1]'
           );
           vendorId = await vendorLocator.getAttribute('data-id');
-          console.log('Vendor Id:', vendorId);
         });
   
         await test.step(`Get Vendor's ${vendorId} Id VPZ list `, async () => {
           let responseVpz = await vendorService.getVPZByVendorsId(accessToken, parseInt(vendorId, 10));
-          console.log('Vendor VPZ:', responseVpz.data.vendor);
           vpzExists = responseVpz.data.vendor.vpzs.some(
             item => item.id === jobResponse.data.job.vpz.id
           );
@@ -494,12 +476,10 @@ test.describe("VPZ not required for Partner Types", () => {
             await utils.waitLoadToFinish(page);
             const vendorLocator = page.locator('xpath=/html/body/div[4]/div[3]/div/div/div/div[2]/div/div[2]/div/div[3]/div[2]/div[1]/div[2]/div/div[1]');
             vendorId = await vendorLocator.getAttribute('data-id');
-            console.log('Vendor Id for first partner:', vendorId);
           });
   
           await test.step(`Get Vendor's ${vendorId} Id VPZ list for first partner type (${partnerType.name})`, async () => {
             const responseVpz = await vendorService.getVPZByVendorsId(accessToken, parseInt(vendorId, 10));
-            console.log('Vendor VPZ:', responseVpz.data.vendor);
             vpzExists = responseVpz.data.vendor.vpzs.some(
               item => item.id === jobResponse.data.job.vpz.id
             );
@@ -560,6 +540,62 @@ test.describe("Assignment Conflict - Selecting Partners to be assigned", () => {
     const loginPage = new LoginPage(page);
     await loginPage.login();
   });
+
+  test(`Comparing available partners`, async ({ page }) => {
+    let jobId;
+    let vpzId;
+    let serviceTypeId;
+
+    const jobService = new JobService();
+    const partnerInfoService = new PartnerInfoService();
+    const assignmentPage = new AssignmentPage(page);
+    const assignPartnerPage = new AssignPartnerPage(page);
+
+    await test.step('Wait for grid to load', async () => {
+        await utils.waitGridToLoad(page);
+    })
+
+    await test.step('Open page through ASSIGN PARTNER button and get partner type data', async () => {
+        const availableJob = await assignmentPage.assignPartnerButton.first();
+        jobId = parseInt(await availableJob.locator('//ancestor::*[@role="row"]').getAttribute("data-id"));
+        const assignButton = await availableJob.textContent();
+        const requiredPartner = assignButton.replace("Assign ", "");
+        serviceTypeId = utils.getPartnerTypeId(requiredPartner);
+        await availableJob.click();
+    })
+
+    await test.step('Wait for partner`s list loading', async () => {
+      await utils.waitLoadToFinish(page);
+    })
+
+    await test.step('Getting VPZ data from selected job', async() => {
+        const jobResponse = await jobService.getJob(accessToken, jobId);
+        vpzId = jobResponse.data.job.vpz.id;
+    })
+
+    let partnerInfo;
+    await test.step('Get available partner`s from GDS', async() => {
+        const partner = new PartnerInfoClass({
+            jobId: jobId,
+            serviceTypeIds: serviceTypeId,
+            VPZIds: vpzId
+        });
+    
+        partnerInfo = await partnerInfoService.getPartnerAvailability(accessToken, partner.generateQueryByJob());
+    })
+
+    let partnerId;
+    await test.step('Selecting a random available partner', async () => {
+        const enabledAddButton = await assignPartnerPage.findAvailablePartner();
+        partnerId = await enabledAddButton.locator('//ancestor::*[@role="row"]').getAttribute("data-id");
+        partnerId = parseInt(partnerId);
+    });
+
+    await test.step('Compare selected partner info with GDS', async () => {
+      const isPartnerOnTheList = utils.containsProperty(partnerInfo, 'id', partnerId);
+      expect(isPartnerOnTheList).toBe(true);
+    })
+})
 
   test(`Select Partner, No Tab Change`, async ({ page }) => {
     const assignmentPage = new AssignmentPage(page);
