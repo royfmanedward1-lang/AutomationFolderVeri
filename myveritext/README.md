@@ -10,7 +10,7 @@ Here you can find automated regression scenarios for MyVeritext, let's check it 
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.veritextcorp.com/Veritext/test-automation-modules
 ```
 
 Go to the project directory "test-automation-modules"
