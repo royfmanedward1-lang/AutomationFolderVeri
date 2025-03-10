@@ -7,10 +7,10 @@ test.beforeEach('Login to nextgen and go to job with extractions', async ({page}
     const poManager = new PageManager(page)
     const browser = await chromium.launch()
     const context = await browser.newContext()
-    await context.clearCookies()
+    await context.clearCookies();
     await test.step('Login to nextgen page', async() => {
-        await poManager.LoginPage.goToLogin()
-        await poManager.LoginPage.submitCredentials(nextGenConfig.user_name,nextGenConfig.password)
+        await poManager.LoginPage.goToLogin();
+        await poManager.LoginPage.submitCredentials(nextGenConfig.user_name,nextGenConfig.password);
     })
     
 })
@@ -63,7 +63,7 @@ test.describe('Schedule new a job with Custom Fields', () => {
                     await jobPage.enterNumberAttendeesParties('numberOfAttendees',clientData[i].numberOfAtendees);
                 })
                 await test.step('Publish job', async() => {
-                    await jobPage.publishJob()
+                    await jobPage.publishJob();
                 })
               
     })
@@ -118,7 +118,7 @@ test.describe('Schedule new a job with Custom Fields', () => {
                     await jobPage.enterNumberAttendeesParties('numberOfAttendees',clientData[i].numberOfAtendees);
                 })
                 await test.step('Publish job', async() => {
-                    await jobPage.publishJob()
+                    await jobPage.publishJob();
                 })
     })
 })
