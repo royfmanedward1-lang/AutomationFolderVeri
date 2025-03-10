@@ -29,7 +29,7 @@ export class JobService {
         console.log('create job status is', status);
         console.log('body is', response);
         const testRes = JSON.parse(await response.text());
-        console.log('create job resposne body is', testRes);
+        console.log('create job response body is', testRes);
         console.log('job id is', testRes.data.jobCreate.id);
         return testRes.data.jobCreate.id;
 

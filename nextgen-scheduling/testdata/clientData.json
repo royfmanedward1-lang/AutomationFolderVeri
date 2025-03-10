@@ -1,6 +1,7 @@
  
   [
     {
+        "id":"0",
         "clientName": "Goldstein & Company",
         "clientAddress": "1805 Ponce de Leon, Suite 400",
         "division": "Corp Services",
@@ -47,6 +48,7 @@
       },
     
     {
+       "id":"1", 
        "clientName": "MCS Group",
        "clientAddress": "1601 Market Street, Suite 800 ",
        "division": "Michigan",
@@ -94,6 +96,7 @@
      },
 
      {
+      "id":"2",
       "clientName": "Baker & Harris",
       "clientAddress": "266 West Bridge Street ",
       "division": "Boise",
@@ -162,5 +165,198 @@
         "expertise": ""
       }]
       
+    },
+
+    {
+      "id":"3",
+      "clientName": "Cole Scott & Kissane PA",
+      "clientAddress": "1900 Summit Tower Boulevard Suite 400",
+      "division": "Chicago",
+      "caller": "Ariel Lett",
+      "attorney": "Ariel Lett",
+      "caseNbr": "",
+      "caseName": "",
+      "plaintiff": "",
+      "defendant": "",
+      "litigationType": "Insurance Defense",
+      "veritextLocationName": "Veritext -  Bakersfield, CA",
+      "remoteLocationName": "Client Managed Remote - CA",
+      "otherLocationName": "4520 California Ave.",
+      "timezone": "Eastern Time (US & Canada)",
+      "numberOfAtendees": "1",
+      "numberOfWitness": "2",
+      "numberOfAttorneys": "1",
+      "proceedingDate": "05/27/2025",
+      "dueDate": "06/10/2025",
+      "startProceedingTime": "02:25 PM",
+      "endProceedingTime": "04:45 PM",
+      "witness":[{
+        "lastname": "Rojas",
+        "firstname": "",
+        "middlename": "",
+        "title": "Mrs.",
+        "suffix": "",
+        "email": "lili@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      },
+      {
+        "lastname": "Milan",
+        "firstname": "Justin",
+        "middlename": "",
+        "title": "Mr.",
+        "suffix": "",
+        "email": "mialn@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      }],
+      
+      "customFields":[{
+        "name": "Cole Scott File No.",
+        "value": "3228.7805-00"
+        },
+        {"name": "Claim No:",
+        "value": "001-00-405517 CLAI.146808"
+        },
+        {"name": "Hearing",
+        "value": "HearingCustom"
+        },
+        {"name": "Ins. Com:",
+        "value": "Communication"
+        },
+        {"name": "ADJ/LOCATION:",
+        "value": "Ohio"
+        }],
+
+        "thirdParty": "ASI/Progressive Home",
+        "thirdPartyCustomFields":[{
+          "name": "Claim #:",
+          "value": "34567"
+        },
+        {"name": "Litigation Handler",
+        "value": "John Smith"},
+        {"name": "Date of Loss",
+         "value": "May 4, 2002"},
+        {"name": "Matter #",
+        "value": "234567890"
+        }]
+              
+    },
+    {
+      "id":"4",
+      "clientName": "Brennan & Sponder",
+      "clientAddress": "13 Roszel Road Suite C207",
+      "division": "Corp Services",
+      "caller": "Parker Givens-Scott",
+      "attorney": "Damian A. Scialabba Esq",
+      "caseNbr": "",
+      "caseName": "",
+      "plaintiff": "",
+      "defendant": "",
+      "litigationType": "Insurance Defense",
+      "veritextLocationName": "Veritext -  Bakersfield, CA",
+      "remoteLocationName": "Client Managed Remote - CA",
+      "otherLocationName": "4520 California Ave.",
+      "timezone": "Eastern Time (US & Canada)",
+      "numberOfAtendees": "1",
+      "numberOfWitness": "2",
+      "numberOfAttorneys": "1",
+      "proceedingDate": "08/12/2024",
+      "dueDate": "08/26/2024",
+      "startProceedingTime": "10:25 AM",
+      "endProceedingTime": "02:25 PM",
+      "witness":[{
+        "lastname": "Sanchez",
+        "firstname": "Gabriel",
+        "middlename": "",
+        "title": "Mrs.",
+        "suffix": "",
+        "email": "lili@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      },
+      {
+        "lastname": "Milan",
+        "firstname": "Justin",
+        "middlename": "",
+        "title": "Mr.",
+        "suffix": "",
+        "email": "mialn@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      }] ,  
+      "similarJob": [{
+        "jobID": "6749310",
+        "status": "Scheduled",
+        "attorney": "Stephen D Williams Esq",
+        "childDivision": "New Jersey",
+        "locationType": "Remote",
+        "locationState": "NJ",
+        "locationCity": "Livingston"
+      }
+      ]      
+    },
+    {
+      "id":"5",
+      "clientName": "Derrick Law Firm (SC)",
+      "clientAddress": "1831 West Evans Street, Suite 200",
+      "division": "South Carolina",
+      "caller": "Kathi Cuff Tedesco",
+      "attorney": "Mr. S. Taylor Hooven",
+      "caseNbr": "",
+      "caseName": "",
+      "plaintiff": "",
+      "defendant": "",
+      "litigationType": "Insurance Defense",
+      "veritextLocationName": "Veritext -  Bakersfield, CA",
+      "remoteLocationName": "Client Managed Remote - CA",
+      "otherLocationName": "4520 California Ave.",
+      "timezone": "Eastern Time (US & Canada)",
+      "numberOfAtendees": "1",
+      "numberOfWitness": "2",
+      "numberOfAttorneys": "1",
+      "proceedingDate": "10/17/2024",
+      "dueDate": "10/31/2024",
+      "startProceedingTime": "10:25 AM",
+      "endProceedingTime": "02:25 PM",
+      "witness":[{
+        "lastname": "Ramos",
+        "firstname": "Susan",
+        "middlename": "",
+        "title": "Mrs.",
+        "suffix": "",
+        "email": "lili@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      },
+      {
+        "lastname": "Milan",
+        "firstname": "Justin",
+        "middlename": "",
+        "title": "Mr.",
+        "suffix": "",
+        "email": "mialn@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      }] ,  
+      "similarJob": [{
+        "jobID": "6769091",
+        "status": "Scheduled",
+        "attorney": "Mr. S. Taylor Hooven",
+        "division": "South Carolina",
+        "childDivision": "",
+        "locationType": "Remote",
+        "locationState": "SC",
+        "locationCity": "Charleston"
+      }
+      ]      
     }
+  
+  
 ]
