@@ -1,0 +1,6 @@
+{
+    "pageTitle": "Test Report",
+    "outputPath": "./test-report.html",
+    "includeFailureMsg": true,
+    "includeSuiteFailure": true
+  }  

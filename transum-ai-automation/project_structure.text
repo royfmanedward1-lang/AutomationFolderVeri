@@ -1,0 +1,17 @@
+- customReporter.js
+- jest-html-reporter.config.json
+- jest.config.js
+- package-lock.json
+- package.json
+- post-process-html.js
+- reports
+  - test-report.html
+- src
+  - readDocx.ts
+  - testConfig.ts
+  - __tests__
+    - invalidSmartSummary.test.ts
+    - jsonMetadata.test.ts
+    - proceedings.test.ts
+    - transcriptType.test.ts
+- tsconfig.json
