@@ -21,6 +21,7 @@ class CalendarPage {
     this.calendarEventFrame = page.locator('.fc-event-main-frame');
     this.calendarEventTitle = page.locator('.fc-event-title');
     this.eventHarness = page.locator('.fc-daygrid-event-harness');
+    this.jobId = page.getByRole('gridcell', { name: 'March 28,' }).locator('a').nth(1);
   }
 
   // Existing methods
@@ -60,6 +61,10 @@ class CalendarPage {
     await this.currentWeek.first().waitFor({ state: "visible" });
     const days = await this.currentWeek.allTextContents();
     return days;
+  }
+
+  async clickFutureJob() {
+    await this.jobId.click();
   }
 
   async getCurrentHeaderDate() {

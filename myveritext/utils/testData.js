@@ -17,6 +17,10 @@ const testData = {
     username: "canadacontact@email.com",
     password: "123456",
   },
+  nonOrderingPartiers: {
+    username: "externaluser@email.com",
+    password: "#$shreK%",
+  },
   urls: {
     loginPage: "https://myqa.veritext.com/",
     calendarPage: "https://myqa.veritext.com/home/calendar",
