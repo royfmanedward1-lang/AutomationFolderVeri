@@ -1,3 +1,5 @@
+const { expect } = require("@playwright/test");
+
 class JobCardPage {
   constructor(page) {
     this.page = page;
@@ -17,9 +19,7 @@ class JobCardPage {
       .filter({ hasText: /^CANCELLED/ })
       .first();
     this.optionsButton = page.getByRole("button", { name: "OPTIONS +" });
-    this.editScheduleButton = page.getByRole("button", {
-      name: "EDIT SCHEDULE",
-    });
+    this.editScheduleButton = page.getByRole("button", {name: "EDIT SCHEDULE",});
     this.saveScheduleButton = page.getByRole("button", { name: "Save" });
     this.successAlert = this.page
       .locator("div")
@@ -89,6 +89,10 @@ class JobCardPage {
   async clickEditSchedule() {
     await this.editScheduleButton.waitFor({ state: "visible" });
     await this.editScheduleButton.click();
+  }
+
+  async verifyEditScheduleIsDisable() {
+    expect(this.editScheduleButton).toBeDisabled();
   }
 
   async clickSaveSchedule() {
