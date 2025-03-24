@@ -803,10 +803,6 @@ test('Removing a Language', async ({ page }) => {
         expect(await partnerInfoPage.inputFirstName.inputValue()).toContain('Melinda');
     });
 
-    await test.step('Check if selected languages exist in dropdown', async () => {
-
-    })
-
     const languagesBox = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[2]/div[2]/div');
     let languagesAdded;
     let availableLanguages;
