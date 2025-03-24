@@ -20,6 +20,7 @@ class JobCardPage {
       .first();
     this.optionsButton = page.getByRole("button", { name: "OPTIONS +" });
     this.editScheduleButton = page.getByRole("button", {name: "EDIT SCHEDULE",});
+    this.cancelScheduleButton = page.getByRole('button', { name: 'CANCEL' });
     this.saveScheduleButton = page.getByRole("button", { name: "Save" });
     this.successAlert = this.page
       .locator("div")
@@ -93,6 +94,10 @@ class JobCardPage {
 
   async verifyEditScheduleIsDisable() {
     expect(this.editScheduleButton).toBeDisabled();
+  }
+
+  async verifyCancelScheduleIsDisable() {
+    expect(this.cancelScheduleButton).toBeDisabled();
   }
 
   async clickSaveSchedule() {
