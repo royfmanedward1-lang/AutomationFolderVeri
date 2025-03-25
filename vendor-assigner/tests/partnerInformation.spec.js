@@ -90,7 +90,7 @@ test('Search partner information', async ({ page }) => {
 
     await test.step('Clear search and re-search with first name', async () => {
         await partnerInfoPage.searchText.fill('');
-        await partnerInfoPage.searchText.fill(firstName); 
+        await partnerInfoPage.searchText.fill(firstName);
     });
 
     await test.step('Verify "No Partner or Agency Found" message appears', async () => {
@@ -178,7 +178,7 @@ test('Name Fields are Editable', async ({ page }) => {
 
     await test.step('Typing into first name field', async () => {
         const inputText = "abcdefg";
-        await partnerInfoPage.inputFirstName.fill( inputText);
+        await partnerInfoPage.inputFirstName.fill(inputText);
         expect(await partnerInfoPage.inputFirstName.inputValue()).toContain(inputText);
     });
 });
@@ -259,7 +259,7 @@ test('Invalid Characters in Name Fields', async ({ page }) => {
 
     await test.step('Checking invalid characters into first name field', async () => {
         for (const list of utils.invalidCharacters) {
-            await partnerInfoPage.inputFirstName.fill( list);
+            await partnerInfoPage.inputFirstName.fill(list);
             await partnerInfoPage.inputLastName.click();
             await expect(partnerInfoPage.invalidCharacterWarn).toContainText(list);
         };
@@ -371,7 +371,7 @@ test('Service type is selectable ', async ({ page }) => {
     });
 
     await test.step('And I should see partner type count to have length 1', async () => {
-        const partnerTypeCount = page.locator('.mui-17gdpmz');
+        const partnerTypeCount = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[1]/div[2]/div/div[1]');
         const lengthValue = await partnerTypeCount.getAttribute('length');
         expect(lengthValue).toBe('1');
     });
@@ -533,7 +533,7 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
     });
 
     await test.step('Verify partner type count is 1', async () => {
-        const partnerTypeCount = page.locator('.mui-17gdpmz');
+        const partnerTypeCount = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[1]/div[2]/div/div[1]');
         const lengthValue = await partnerTypeCount.getAttribute('length');
         expect(lengthValue).toBe('1');
     });
@@ -595,5 +595,302 @@ test('Confirmation of Service Addition to the Profile', async ({ page }) => {
     await test.step('Verify service dropdown has expanded class', async () => {
         const dropDownServiceOptions = await partnerInfoPage.isServiceFieldFocused();
         await expect(dropDownServiceOptions).toHaveClass(/Mui-expanded/);
+    });
+
+});
+
+test('Interpreter Partner page displays the basic sections', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Granados"', async () => {
+        await partnerInfoPage.searchText.fill('Granados');
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Click on the "Languages" link', async () => {
+        await partnerInfoPage.languageLink.click();
+    });
+
+    await test.step('Validate the page scrolls the section into view', async () => {
+        let dropDownLanguages = await partnerInfoPage.getLanguageLocator();
+        await expect(dropDownLanguages).toBeVisible();
+    });
+});
+
+test('Language Field is a required one', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Barbe"', async () => {
+        await partnerInfoPage.searchText.fill('Barbe');
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Barbe"', async () => {
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Barbe');
+    });
+
+    await test.step('Click Partner Type and verify placeholder', async () => {
+        const dropDownPartnerType = await partnerInfoPage.getParterTypeLocator();
+        let partnerTypePlaceholder = await dropDownPartnerType.getAttribute('placeholder');
+
+        await test.step('Verify placeholder shows "Select Partner Type"', async () => {
+            await partnerInfoPage.partnerTypeLink.click({ force: true });
+            await dropDownPartnerType.waitFor({ state: 'visible' });
+            expect(partnerTypePlaceholder).toEqual('Select Partner Type');
+        });
+
+        await test.step('Click on Partner Type dropdown', async () => {
+            await dropDownPartnerType.click();
+        });
+
+        await test.step('Verify Partner Type placeholder is cleared', async () => {
+            let updatedPlaceholder = await dropDownPartnerType.getAttribute('placeholder');
+            expect(updatedPlaceholder).toEqual('');
+        });
+
+        await test.step('Filter and select "Interpreter" as Partner Type', async () => {
+            await dropDownPartnerType.fill('Interpreter');
+            await partnerInfoPage.selectFirstOption();
+            await dropDownPartnerType.click();
+        });
+
+        await test.step('Verify Languages section appears', async () => {
+            await page.getByText('Languages *').waitFor();
+            await expect(page.getByText('Languages *')).toHaveText('Languages *');
+        });
+
+        await test.step('Click Partner Type and verify placeholder', async () => {
+            const dropDownlanguage = await partnerInfoPage.getLanguageLocator();
+            let languagePlaceholder = await dropDownlanguage.getAttribute('placeholder');
+
+            await test.step('Verify placeholder shows "Select Partner Type"', async () => {
+                await partnerInfoPage.languageLink.click({ force: true });
+                await dropDownlanguage.waitFor({ state: 'visible' });
+                expect(languagePlaceholder).toEqual('Select Language');
+            });
+
+            await test.step('Click on language dropdown', async () => {
+                await dropDownlanguage.click();
+                await page.keyboard.press('Tab');
+                const textLocator = page.locator('div').filter({ hasText: /^At least one language is required$/ });
+                await expect(textLocator).toBeVisible();
+            });
+        });
+    });
+});
+
+test('Add a Language to a Partner Profile', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Barbe"', async () => {
+        await partnerInfoPage.searchText.fill('Barbe');
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Barbe"', async () => {
+        expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Barbe');
+    });
+
+    await test.step('Click Partner Type and verify placeholder', async () => {
+        const dropDownPartnerType = await partnerInfoPage.getParterTypeLocator();
+        let partnerTypePlaceholder = await dropDownPartnerType.getAttribute('placeholder');
+
+        await test.step('Verify placeholder shows "Select Partner Type"', async () => {
+            await partnerInfoPage.partnerTypeLink.click({ force: true });
+            await dropDownPartnerType.waitFor({ state: 'visible' });
+            expect(partnerTypePlaceholder).toEqual('Select Partner Type');
+        });
+
+        await test.step('Click on Partner Type dropdown', async () => {
+            await dropDownPartnerType.click();
+        });
+
+        await test.step('Verify Partner Type placeholder is cleared', async () => {
+            let updatedPlaceholder = await dropDownPartnerType.getAttribute('placeholder');
+            expect(updatedPlaceholder).toEqual('');
+        });
+
+        await test.step('Filter and select "Interpreter" as Partner Type', async () => {
+            await dropDownPartnerType.fill('Interpreter');
+            await partnerInfoPage.selectFirstOption();
+            await dropDownPartnerType.click();
+        });
+
+        await test.step('Verify Languages section appears', async () => {
+            await page.getByText('Languages *').waitFor();
+            await expect(page.getByText('Languages *')).toHaveText('Languages *');
+        });
+
+        await test.step('Click Partner Type and verify placeholder', async () => {
+            const dropDownlanguage = await partnerInfoPage.getLanguageLocator();
+            let languagePlaceholder = await dropDownlanguage.getAttribute('placeholder');
+
+            await test.step('Verify placeholder shows "Select Partner Type"', async () => {
+                await partnerInfoPage.languageLink.click({ force: true });
+                await dropDownlanguage.waitFor({ state: 'visible' });
+                expect(languagePlaceholder).toEqual('Select Language');
+            });
+
+            await test.step('Click on language dropdown', async () => {
+                await dropDownlanguage.click();
+            });
+
+            await test.step('Verify language placeholder is cleared', async () => {
+                let updatedPlaceholder = await dropDownlanguage.getAttribute('placeholder');
+                expect(updatedPlaceholder).toEqual('');
+            });
+
+            await test.step('Filter and select "Albanian" as language', async () => {
+                await dropDownlanguage.fill('Albanian');
+                await partnerInfoPage.selectFirstOption();
+                await dropDownlanguage.click();
+            });
+
+            await test.step('Validate language list is in alphabetical order', async () => {
+                let dropDownLanguages = await partnerInfoPage.getLanguageLocator();
+                await dropDownLanguages.click();
+
+                let languages = await partnerInfoPage.getLanguages();
+                let filteredLanguages = languages.slice(1);
+
+                const areLanguagesAlphabeticalOrder = partnerInfoPage.verifyAlphabeticalOrder(filteredLanguages);
+                expect(areLanguagesAlphabeticalOrder).toBeTruthy();
+            });
+        });
+    });
+});
+
+test('Removing a Language', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Barre"', async () => {
+        await partnerInfoPage.searchText.fill('Barre');
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Melinda"', async () => {
+        expect(await partnerInfoPage.inputFirstName.inputValue()).toContain('Melinda');
+    });
+
+    const languagesBox = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[2]/div[2]/div');
+    let languagesAdded;
+    let availableLanguages;
+    await test.step('Get added Languages in the Language container', async () => {
+        languagesAdded = await languagesBox.locator('//div').evaluateAll(nodes =>
+            nodes.map(n => n.innerText.trim())
+        );
+    });
+    await test.step('Get Available Languages in List', async () => {
+        let dropDownLanguages = await partnerInfoPage.getLanguageLocator();
+        await dropDownLanguages.click();
+        availableLanguages = await partnerInfoPage.getLanguages();
+    });
+    await test.step('VaLidate added languages are not available in the list', async () => {
+        let existInLanguages = languagesAdded.some(lang => availableLanguages.includes(lang));
+        expect(existInLanguages).toBeFalsy();
+    });
+
+    await test.step('Remove the first selected language', async () => {
+        const languagesBox = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[2]/div[2]/div');
+        const buttonsLocators = await languagesBox.locator('//div/button');
+        await buttonsLocators.first().click();
+    });
+
+    await test.step('Verify the language removed is back on the available language list', async () => {
+        let dropDownLanguages = await partnerInfoPage.getLanguageLocator();
+        await dropDownLanguages.click();
+
+        let languages = await partnerInfoPage.getLanguages();
+        expect(languages).toContain(languagesAdded[0]);
+    });
+});
+
+test('Clear All Languages', async ({ page }) => {
+    const headerPage = new HeaderPage(page);
+    const partnerInfoPage = new PartnerInfoPage(page);
+
+    await test.step('Navigate to Partner Information Tab', async () => {
+        await headerPage.partnerInformationTab.click();
+    });
+
+    await test.step('Search for partner "Barre"', async () => {
+        await partnerInfoPage.searchText.fill('Barre');
+    });
+
+    await test.step('Select the first option in search results', async () => {
+        await partnerInfoPage.selectFirstOption();
+    });
+
+    await test.step('Verify last name contains "Melinda"', async () => {
+        expect(await partnerInfoPage.inputFirstName.inputValue()).toContain('Melinda');
+    });
+
+    const languagesBox = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[2]/div[2]/div');
+    let languagesAdded;
+    let availableLanguages;
+    await test.step('Get added Languages in the Language container', async () => {
+        languagesAdded = await languagesBox.locator('//div').evaluateAll(nodes =>
+            nodes.map(n => n.innerText.trim())
+        );
+    });
+    await test.step('Get Available Languages in List', async () => {
+        let dropDownLanguages = await partnerInfoPage.getLanguageLocator();
+        await dropDownLanguages.click();
+        availableLanguages = await partnerInfoPage.getLanguages();
+    });
+    await test.step('VaLidate added languages are not available in the list', async () => {
+        let existInLanguages = languagesAdded.some(lang => availableLanguages.includes(lang));
+        expect(existInLanguages).toBeFalsy();
+    });
+
+    await test.step('Clear all selected languages', async () => {
+        await partnerInfoPage.buttonClearAll.click();
+        await partnerInfoPage.buttonClearAllConfirmation.click();
+    });
+
+    await test.step('Verify languages are cleared', async () => {
+        const languagesBoxAfterClear = page.locator('//html/body/div[1]/main/div/div/form/div[1]/div[3]/div[4]/div/div[2]/div[2]/div');
+        const numberOfLanguagesAdded = await languagesBoxAfterClear.getAttribute('length');
+        expect(numberOfLanguagesAdded).toBeNull();
+    });
+
+    await test.step('Verify all languages are back in the list', async () => {
+        let dropDownLanguages = await partnerInfoPage.getLanguageLocator();
+        await dropDownLanguages.click();
+        availableLanguages = await partnerInfoPage.getLanguages();
+        for (const lang of languagesAdded) {
+            expect(availableLanguages).toContain(lang);
+        }
     });
 });

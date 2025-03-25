@@ -11,9 +11,15 @@ export class PartnerInfoPage {
         this.menu = page.locator('#profile-form');
         this.inputAgencyName = page.locator(`[name='name']`).first();
         this.buttonSave = page.getByRole('button', { name: 'Save' });
+        this.buttonClearAll = page.getByRole('button', { name: 'Clear All' }).nth(1)
+        this.buttonClearAllConfirmation = page.getByRole('button', { name: 'Clear All' })
         this.inputIndependentContractor = page.getByLabel('Independent Contractor');
         this.serviceLink = page.getByRole('tab', { name: 'Services' }).nth(1);
+        this.languageLink = page.getByRole('tab', { name: 'Languages' })
+        this.partnerTypeLink = page.getByRole('tab', { name: 'Partner Types' })
         this.serviceLabel =  page.locator('label').filter({ hasText: 'Service' })
+        this.parterTypeLabel = page.locator('label').filter({ hasText: 'Partner Type' })
+        this.languageLabel= page.locator('label').filter({ hasText: 'language' })
         this.successNoResults = page.locator('div').filter({ hasText: 'No Results Found' }).nth(2);
         this.searchBar = this.page.getByRole('option');
         this.requiredError = this.page.getByTestId('ErrorIcon');
@@ -34,6 +40,18 @@ export class PartnerInfoPage {
         const attributeFor = await this.serviceLabel.getAttribute('for');
         const serviceSelector = `[id='${attributeFor}']`;
         return this.page.locator(serviceSelector);
+    };
+
+    getParterTypeLocator = async () => {
+    const attributeFor = await this.parterTypeLabel.getAttribute('for');
+    const partnertypeSelector =  `[id='${attributeFor}']`;
+    return this.page.locator(partnertypeSelector);
+    };
+
+    getLanguageLocator = async () => {
+        const attributeFor = await this.languageLabel.getAttribute('for');
+        const languageSelector =  `[id='${attributeFor}']`;
+        return this.page.locator(languageSelector);
     };
 
     selectFirstOption = async () => {
@@ -68,6 +86,26 @@ export class PartnerInfoPage {
             index++;
         }
         return serviceArray;
+    };
+
+    getLanguages = async () => {
+        const attributeFor = await this.languageLabel.getAttribute('for');
+        console.log(attributeFor, 'attributeFor')
+        const languageArray = [];
+        let index = 0;
+        while (true) {
+            const languageSelector = `[id='${attributeFor}-option-${index}']`;
+            const languageItem = await this.page.locator(languageSelector);
+            
+            if (await languageItem.count() === 0) {
+                break;
+            };
+            
+            const span = await languageItem.textContent();
+            languageArray.push(span.trim());
+            index++;
+        }
+        return languageArray;
     };
 
     isServiceFieldFocused= async () => {
