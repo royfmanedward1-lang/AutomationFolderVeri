@@ -11,6 +11,7 @@ module.exports = {
     deliveryTypeDefaulValue: 'Normal',
     deliveryDaysDefaulValue: '10',
     defaultValuePartnerService: 'Steno Reporting',
+    partnerServices: ['Digital Reporting', 'Videography', 'Transcript', 'Interpreting'],
     methods: ['Phone','Email','MyVeritext','MyVeritext Snap','Mobile'],
     locationTypes: ['Veritext','Client','Remote','Other','TBD'],
     similarJobColumnsSet1: ['Job ID', 'Scheduled Date', 'Proceeding Date', 'Proceeding Time', 'Job Status', 'Caller',

@@ -11,23 +11,26 @@ export class Job {
         this.page = page
         //    LOCATORS
         // Proceeding Date
-        this.proceedingDateField =  page.locator('#proceedingDate')
-        this.proceedingDateInput =  page.getByLabel('Proceeding Date *')
-        this.proceedingDateSelect =  page.getByLabel('Choose date, selected date is')
+        this.proceedingDateField =  page.locator('#proceedingDate');
+        this.proceedingDateInput =  page.getByLabel('Proceeding Date *');
+        this.proceedingDateSelect =  page.getByLabel('Choose date, selected date is');
         // Proceeding Time
-        this.proceedingStartTime = page.getByLabel('Start Time')
-        this.proceedingEndTime = page.getByLabel('End time', { exact: true })
-        this.proceedingEndTimeCheckbox = page.getByLabel('End time N/A')
+        this.proceedingStartTime = page.getByLabel('Start Time');
+        this.proceedingEndTime = page.getByLabel('End time', { exact: true });
+        this.proceedingEndTimeCheckbox = page.getByLabel('End time N/A');
         // Due date
-        this.dueDate = page.getByLabel('Due Date *')
+        this.dueDate = page.getByLabel('Due Date *');
         // Number of Attendees
-        this.numberOfAttendees = page.locator('#numberOfAttendees').getByRole('spinbutton')
+        this.numberOfAttendees = page.locator('#numberOfAttendees').getByRole('spinbutton');
         // Delivery Days
-        this.deliveryDays = page.locator('#deliveryDays').getByRole('spinbutton')
+        this.deliveryDays = page.locator('#deliveryDays').getByRole('spinbutton');
         // End time checkbox
-        this.endTimeCheck = this.page.getByLabel('End time N/A')
+        this.endTimeCheck = this.page.getByLabel('End time N/A');
+        // Languaje combo box
+        this.languajeText = this.page.getByTestId('language-textField').locator('div');
+        this.languajeInput = this.page.getByTestId('language-textField-input');
         // Publish job button
-        this.publishButton = this.page.getByRole('button', { name: 'PUBLISH JOB' })
+        this.publishButton = this.page.getByRole('button', { name: 'PUBLISH JOB' });
 
 
         // Generic locator for combobox and checkicon fields
@@ -203,5 +206,19 @@ export class Job {
    async verifySimilarJobResults(expectedValue, row){
      await expect(this.page.getByText(expectedValue, {exact: true}).first()).toBeVisible();
 
+   }
+
+   async selectPartnerServices(expectedValue, languaje){
+      await this.page.getByText(expectedValue).click();
+      await expect(this.page.getByLabel(expectedValue)).toBeChecked();
+      if(expectedValue == 'Interpreting'){
+          await expect(this.languajeText).toBeVisible();
+          await this.languajeInput.click();
+          await this.languajeInput.fill(languaje);
+          await this.page.getByText(languaje).click();
+          await expect(this.page.getByTestId('language-textField').getByTestId('CheckIcon')).toBeVisible();
+      } else if(expectedValue == 'Digital Reporting'){
+         await expect(this.page.getByLabel('Transcription')).toBeChecked(); 
+      }
    }
 }
