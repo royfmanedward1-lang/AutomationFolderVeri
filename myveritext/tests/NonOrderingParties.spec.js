@@ -65,5 +65,17 @@ test.describe("Non Ordering Parties", () => {
       await jobCardPage.verifyCancelScheduleIsDisable();
     });
   });
+  
+  test("Validate user cannot edit a job", async () => {
+    await test.step("Click on a future job", async () => {
+      await calendarPage.clickMonthView();
+      await calendarPage.clickFutureJob();
+    });
+
+    await test.step("Validate user cannot edit a job", async () => {
+      await jobCardPage.clickOptions();
+      await jobCardPage.verifyEditScheduleIsDisable();
+    });
+  });
    
 });
