@@ -1,0 +1,19 @@
+{
+  "name": "partnerportal",
+  "version": "1.0.0",
+  "description": "This is the automation suite for PartnerPortal",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chromium": "^3.0.3",
+    "playwright": "^1.50.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "allure-playwright": "^3.2.0"
+  }
+}
