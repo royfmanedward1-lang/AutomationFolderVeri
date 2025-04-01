@@ -1,6 +1,10 @@
 import { ColumnSettingsPage } from '../pages/ColumnSettingsPage.js';
 import { LoginPage } from '../pages/LoginPage.js';
 import { expect } from "@playwright/test";
+import { createWitness } from '../services/witnessService.js';
+import { loginService } from '../services/loginService';
+import JobClass from '../utility/jobClass';
+import { JobService } from '../services/jobService';
 const { test } = require('@playwright/test');
 import * as utils from "../utility/utils.js";
 
@@ -298,5 +302,248 @@ test('Undoing a Preset Deletion', async ({ page }) => {
   });
 });
 
+test('Adding Witness to the columns view', async ({ page }) => {
+  const columnSettings = new ColumnSettingsPage(page);
+
+  await test.step('Open column settings', async () => {
+    await columnSettings.settingsButton.click();
+  });
+
+  await test.step('Uncheck a random column', async () => {
+    await columnSettings.unCheckRandomColumn(3);
+  });
+
+  await test.step('Check "Witness Type(s)" column', async () => {
+    await columnSettings.checkColumn('Witness Type(s)');
+  });
+
+  await test.step('Apply the filter', async () => {
+    await columnSettings.applyButton.click();
+  });
+
+  await test.step('Verify "Witness Type(s)" column is visible', async () => {
+    await expect(page.getByRole('columnheader', { name: 'Witness Type(s)' })).toBeVisible();
+  });
+});
+
+test('Checking for a job with no Witness', async ({ page }) => {
+  const columnSettings = new ColumnSettingsPage(page);
+  const jobService = new JobService();
+  const accessToken = await loginService();
+  const today = new Date();
+  let jobId;
+
+  today.setDate(today.getDate() + 1);
+  const formattedDate = today.toISOString().split('T')[0];
+
+  const jobObject = new JobClass({
+    caseId: 301515,
+    defendant: "",
+    plaintiff: "",
+    proceedingTypeId: 5,
+    thirdPartyId: 123914,
+    divisionId: 50,
+    deliveryDays: 0,
+    timeZoneId: 7,
+    deliveryMethod: "Daily",
+    depositionDate: formattedDate + "T07:00:00.000-04:00",
+    depositionEnd: formattedDate + "T16:00:00.000-04:00",
+    locationId: null,
+    locationTypeId: 1,
+    locationNotes: "",
+    locationAddress1: "1000 Virginia Center Pkwy",
+    locationAddress2: "",
+    locationCity: "New York",
+    locationName: "The Virginia Crossing Hotel and Conference Center",
+    locationState: "VA",
+    locationZip: "23059",
+    locationContactPhone: "",
+    locationContact: "",
+    hasDigitalReporter: true,
+    hasTranscriber: false,
+    hasCourtReporter: false,
+    hasInterpreter: false,
+    hasVideographer: false,
+    notes: "",
+    numberOfAttorneys: "2",
+    numberOfWitnesses: "1",
+    attorneyContactId: 1079987,
+    callerContactId: 1080009,
+    clientAddressId: 427947,
+    clientId: 268252,
+  });
+
+  jobId = await jobService.createNewJob(accessToken, jobObject.generateQuery());
+
+  await test.step('Open column settings and add "Witness Type(s)" column', async () => {
+    await columnSettings.settingsButton.click();
+    await columnSettings.unCheckRandomColumn(3);
+    await columnSettings.checkColumn('Witness Type(s)');
+    await columnSettings.applyButton.click();
+  });
+
+  await test.step('Verify "Witness Type(s)" column is visible', async () => {
+    await expect(page.getByRole('columnheader', { name: 'Witness Type(s)' })).toBeVisible();
+  });
+
+  await test.step('Verify that job without witnesses display a "-" indicator', async () => {
+    const jobRow = await page.locator(`//*[@data-id="${jobId}"]`);
+    await expect(jobRow).toBeVisible();
+
+    const witnessTypeColumn = await jobRow.locator('//*[@data-field="witnessType"]');
+    const witnessTypeText = await witnessTypeColumn.innerText();
+    await expect(witnessTypeText).toBe('-');
+  });
+});
+
+test('Checking for a job with a single Witness', async ({ page }) => {
+  const jobService = new JobService();
+  const columnSettings = new ColumnSettingsPage(page);
+  const accessToken = await loginService();
+  const today = new Date();
+  let jobId;
+
+  today.setDate(today.getDate() + 1);
+  const formattedDate = today.toISOString().split('T')[0];
+
+  const jobObject = new JobClass({
+    caseId: 301515,
+    defendant: "",
+    plaintiff: "",
+    proceedingTypeId: 5,
+    thirdPartyId: 123914,
+    divisionId: 50,
+    deliveryDays: 0,
+    timeZoneId: 7,
+    deliveryMethod: "Daily",
+    depositionDate: formattedDate + "T07:00:00.000-04:00",
+    depositionEnd: formattedDate + "T16:00:00.000-04:00",
+    locationId: null,
+    locationTypeId: 1,
+    locationNotes: "",
+    locationAddress1: "1000 Virginia Center Pkwy",
+    locationAddress2: "",
+    locationCity: "New York",
+    locationName: "The Virginia Crossing Hotel and Conference Center",
+    locationState: "VA",
+    locationZip: "23059",
+    locationContactPhone: "",
+    locationContact: "",
+    hasDigitalReporter: true,
+    hasTranscriber: false,
+    hasCourtReporter: false,
+    hasInterpreter: false,
+    hasVideographer: false,
+    notes: "",
+    numberOfAttorneys: "2",
+    numberOfWitnesses: "1",
+    attorneyContactId: 1079987,
+    callerContactId: 1080009,
+    clientAddressId: 427947,
+    clientId: 268252,
+  });
+
+  jobId = await jobService.createNewJob(accessToken, jobObject.generateQuery());
+
+  await test.step('Add Plaintiff witnesses to the job', async () => {
+    await createWitness(accessToken, 'automation', jobId, 1);
+  });
+
+  await test.step('Open column settings and add "Witness Type(s)" column', async () => {
+    await columnSettings.settingsButton.click();
+    await columnSettings.unCheckRandomColumn(3);
+    await columnSettings.checkColumn('Witness Type(s)');
+    await columnSettings.applyButton.click();
+  });
+
+  await test.step('Verify the "Witness Type(s)" column is visible', async () => {
+    await expect(page.getByRole('columnheader', { name: 'Witness Type(s)' })).toBeVisible();
+  });
+
+  await test.step('Verifying a job with a single Witness Plaintiff assigned', async () => {
+    const jobRow = await page.locator(`//*[@data-id="${jobId}"]`);
+    const witnessTypeColumn = await jobRow.locator('//*[@data-field="witnessType"]');
+    const witnessTypeText = await witnessTypeColumn.innerText();
+    await expect(witnessTypeText).toBe('Plaintiff');
+  });
+});
+
+test('Verifying a job with multiple Witness Types', async ({ page }) => {
+  const jobService = new JobService();
+  const columnSettings = new ColumnSettingsPage(page);
+  const accessToken = await loginService();
+  const today = new Date();
+  let jobId;
+  today.setDate(today.getDate() + 1);
+  const formattedDate = today.toISOString().split('T')[0];
+
+  const jobObject = new JobClass({
+    caseId: 301515,
+    defendant: "",
+    plaintiff: "",
+    proceedingTypeId: 5,
+    thirdPartyId: 123914,
+    divisionId: 50,
+    deliveryDays: 0,
+    timeZoneId: 7,
+    deliveryMethod: "Daily",
+    depositionDate: formattedDate + "T07:00:00.000-04:00",
+    depositionEnd: formattedDate + "T16:00:00.000-04:00",
+    locationId: null,
+    locationTypeId: 1,
+    locationNotes: "",
+    locationAddress1: "1000 Virginia Center Pkwy",
+    locationAddress2: "",
+    locationCity: "New York",
+    locationName: "The Virginia Crossing Hotel and Conference Center",
+    locationState: "VA",
+    locationZip: "23059",
+    locationContactPhone: "",
+    locationContact: "",
+    hasDigitalReporter: true,
+    hasTranscriber: false,
+    hasCourtReporter: false,
+    hasInterpreter: false,
+    hasVideographer: false,
+    notes: "",
+    numberOfAttorneys: "2",
+    numberOfWitnesses: "1",
+    attorneyContactId: 1079987,
+    callerContactId: 1080009,
+    clientAddressId: 427947,
+    clientId: 268252,
+  });
+
+  jobId = await jobService.createNewJob(accessToken, jobObject.generateQuery());
+
+  await test.step('Add multiple witnesses to the job, Unknown and Plaintiff', async () => {
+    await createWitness(accessToken, 'automation', jobId, 0);
+    await createWitness(accessToken, 'automation', jobId, 1);
+  });
+
+  await test.step('Open column settings and add "Witness Type(s)" column', async () => {
+    await columnSettings.settingsButton.click();
+    await columnSettings.unCheckRandomColumn(3);
+    await columnSettings.checkColumn('Witness Type(s)');
+    await columnSettings.applyButton.click();
+  });
+
+  await test.step('Verify that the "Witness Type(s)" column is visible', async () => {
+    await expect(page.getByRole('columnheader', { name: 'Witness Type(s)' })).toBeVisible();
+  });
+
+  await test.step('Verify the job has multiple Witness Types', async () => {
+    const jobRow = page.locator(`//*[@data-id="${jobId}"]`).locator('//*[@data-field="witnessType"]').getByRole('button');
+    await jobRow.click();
+
+    const witnessPopover = page.locator('//*[@id="see-names-popover"]/div[3]/div');
+    const witnessPopoverText = await witnessPopover.innerText();
+    const witnessTypeList = witnessPopoverText.split('\n');
+
+    await expect(witnessTypeList).toContain('Plaintiff');
+    await expect(witnessTypeList).toContain('Unknown');
+  });
+
+});
 
 
