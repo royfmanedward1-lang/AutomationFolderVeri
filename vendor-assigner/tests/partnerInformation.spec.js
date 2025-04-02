@@ -49,9 +49,9 @@ test('Get Partner Information In GDS', async ({ page }) => {
     })
 });
 
-test.describe('Search functionality and search bar'), () => {
+test.describe("Search functionality and search bar", () => {
 
-    test('Search partner information', async ({ page }) => {
+    test("Search partner information", async ({ page }) => {
         const headerPage = new HeaderPage(page);
         const partnerInfoPage = new PartnerInfoPage(page);
     
@@ -148,9 +148,9 @@ test.describe('Search functionality and search bar'), () => {
             await expect(partnerInfoPage.NoFoundOption).toHaveText('No Partner or Agency Found');
         });
     });
-}
+})
 
-test.describe('Partner information inside profile'), () => {
+test.describe('Partner information inside profile', () => {
 
     test('Partner has a type and an email filled', async ({ page }) => {
         const headerPage = new HeaderPage(page);
@@ -176,9 +176,9 @@ test.describe('Partner information inside profile'), () => {
             await expect(partnerInfoPage.inputEmail).toHaveValue(/.+/);
         });
     });
-}
+})
 
-test.describe('Name Field inside partner profile'), () => {
+test.describe('Name Field inside partner profile', () => {
 
     test('Name Fields are Editable', async ({ page }) => {
         const headerPage = new HeaderPage(page);
@@ -382,9 +382,9 @@ test.describe('Name Field inside partner profile'), () => {
             await expect(partnerInfoPage.inputFirstName).toHaveValue(randomString);
         });
     });
-}
+})
 
-test.describe('Service Type inside partner profile'), () => {
+test.describe('Service Type inside partner profile', () => {
 
     test('Service type is selectable ', async ({ page }) => {
         const headerPage = new HeaderPage(page);
@@ -609,9 +609,9 @@ test.describe('Service Type inside partner profile'), () => {
         });
     
     });
-}
+})
 
-test.describe('Interpreter and Language inside partner profile'), () => {
+test.describe('Interpreter and Language inside partner profile', () => {
     
     test('Interpreter Partner page displays the basic sections', async ({ page }) => {
         const headerPage = new HeaderPage(page);
@@ -908,4 +908,4 @@ test.describe('Interpreter and Language inside partner profile'), () => {
             }
         });
     });
-}
+})
