@@ -1,7 +1,8 @@
 class CaseNamePage {
   constructor(page) {
     this.page = page;
-    this.caseDropdown = page.getByLabel('Select the Case *'); 
+    this.caseDropdown = page.getByLabel('Select the Case *');
+    this.entityDropdown = page.getByLabel('Select Entity');
     this.countryDropdown = page.locator('select[name="country"]'); 
     this.nextButton = page.getByRole('button', { name: 'NEXT' });
     this.addCaseButton = page.locator('button:has-text("+")');
@@ -15,6 +16,12 @@ class CaseNamePage {
     await this.caseDropdown.waitFor({ state: 'visible' }); 
     await this.caseDropdown.click(); 
     await this.page.getByRole('listbox', { name: 'Select the Case' }).click();
+  }
+
+  async selectEntityForCustomFields() {
+    await this.entityDropdown.waitFor({ state: 'visible' }); 
+    await this.entityDropdown.click(); 
+    await this.page.getByRole('option', { name: 'Zell and Pottter' }).click();
   }
 
   async selectNewCaseName() {
