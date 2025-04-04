@@ -21,6 +21,11 @@ class DateAndTimePage {
     this.clockFace = page.locator(".MuiClock-squareMask");
     this.amPmButton = (amPm) => page.getByRole("button", { name: amPm });
     this.closeTimeButton = page.getByRole("button", { name: "x", exact: true });
+
+    // New Locators
+    this.startTimeField = page.getByLabel('Choose time').first();
+    this.hour = page.getByLabel('12 hours');
+    this.okButtton = page.getByRole('button', { name: 'OK' });
   }
 
   async selectDate() {
@@ -32,6 +37,18 @@ class DateAndTimePage {
   }
 
   async selectTime(time) {
+    await this.timeDropdown.waitFor({ state: "visible" });
+    await this.timeDropdown.selectOption(time);
+  }
+
+  async selectTime2() {
+    await this.startTimeField.waitFor({ state: "visible" });
+    await this.startTimeField.click();
+    await this.hour.click();
+    await this.okButtton.click();
+  }
+
+  async selectTimeZone2(time) {
     await this.timeDropdown.waitFor({ state: "visible" });
     await this.timeDropdown.selectOption(time);
   }

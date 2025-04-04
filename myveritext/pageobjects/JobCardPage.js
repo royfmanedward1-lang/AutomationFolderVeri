@@ -19,6 +19,8 @@ class JobCardPage {
       .filter({ hasText: /^CANCELLED/ })
       .first();
     this.optionsButton = page.getByRole("button", { name: "OPTIONS +" });
+    this.eventManagementButton = page.getByRole('button', { name: 'Event Management' });
+        this.editEventDetails = page.getByRole('menuitem', { name: 'Edit Event Details' });
     this.editScheduleButton = page.getByRole("button", {name: "EDIT SCHEDULE",});
     this.cancelScheduleButton = page.getByRole('button', { name: 'CANCEL' });
     this.saveScheduleButton = page.getByRole("button", { name: "Save" });
@@ -44,6 +46,7 @@ class JobCardPage {
     this.confirmationBanner = page.locator('.MuiSnackbarContent-message:has-text("Job confirmed successfully")');
     this.noButton = page.locator('button.MuiButton-root:has-text("No")').first();
     this.scheduledStatus = page.locator('h6.MuiTypography-subtitle1:has-text("SCHEDULED")');
+    this.claimCustomField = page.getByText('Claim #: Test input');
   }
 
   async getSuccessMessage() {
@@ -78,6 +81,10 @@ class JobCardPage {
     return "CANCELLED";
   }
 
+  async verifyEditCustomField() {
+    return await this.claimCustomField.textContent();
+  }
+
   async getFullStatus() {
     await this.statusLocator.waitFor({ state: "visible" });
     return await this.statusLocator.textContent();
@@ -85,6 +92,16 @@ class JobCardPage {
   async clickOptions() {
     await this.optionsButton.waitFor({ state: "visible" });
     await this.optionsButton.click();
+  }
+
+  async clickEventManagementButton() {
+    await this.eventManagementButton.waitFor({ state: 'visible' });
+    await this.eventManagementButton.click();
+  }
+
+  async clickEditEventDetails() {
+    await this.editEventDetails.waitFor({ state: 'visible' });
+    await this.editEventDetails.click();
   }
 
   async clickEditSchedule() {

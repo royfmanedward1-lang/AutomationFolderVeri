@@ -11,6 +11,7 @@ class LocationPage {
 
     //In-person options
     this.addressBookOption = page.getByRole("button", { name: "ADDRESS BOOK" });
+    this.addressBookOption2 = page.getByLabel('4791 Henry Ford AvenueHenry');
     this.veritextOfficesOption = page.getByRole("button", {
       name: "VERITEXT OFFICES",
     });
@@ -63,6 +64,10 @@ class LocationPage {
 
   async selectAddressBookOption() {
     await this.addressBookOption.click(); 
+  }
+
+  async selectAddressBookOption2() {
+    await this.addressBookOption2.click(); 
   }
 
   async selectVeritextOfficesOption(officeName) {
