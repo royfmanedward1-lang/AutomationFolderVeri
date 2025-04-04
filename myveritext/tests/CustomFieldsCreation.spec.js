@@ -155,7 +155,7 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
     });
   };
 
-  test("Create a hybrid job using Custom Fields - @teste", async () => {
+  test("Create a hybrid job using Custom Fields", async () => {
     await commonJobCreationSteps();
     await completeJobCreation();
 
