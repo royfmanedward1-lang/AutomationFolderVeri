@@ -48,7 +48,7 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
   });
 
   // Common steps for hybrid job creation
-  const commonJobCreationSteps = async () => {
+  const commonJobCreationSteps = async (locationOption) => {
     await test.step("When user clicks Schedule proceeding button", async () => {
       await calendarPage.clickScheduleProceeding();
     });
@@ -79,12 +79,11 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
       await dateAndTimePage.clickNext();
     });
 
-    await test.step("And selects Hybrid proceeding", async () => {
-      await locationPage.selectHybridOption();
-      await locationPage.selectAddressBookOption();
-      await locationPage.selectAddressBookOption2();
-      await locationPage.clickNext();
+    await test.step("And selects In-Person proceeding", async () => {
+      await locationPage.selectInPersonOption();
+      await locationOption();
     });
+
   };
 
   // Common steps after location selection
@@ -135,7 +134,6 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
         Math.floor(Math.random() * testData.jobDetails.participants.witnesses.length)
       ];
       await participantsPage.addWitness(randomWitness);
-      await participantsPage.clickNext();
     });
 
     await test.step("And schedule the proceeding", async () => {
@@ -155,8 +153,12 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
     });
   };
 
-  test("Create a hybrid job using Custom Fields", async () => {
-    await commonJobCreationSteps();
+  test("Create an in person job using Custom Fields", async () => {
+    await commonJobCreationSteps(async () => {
+      await locationPage.selectAddressBookOption();
+      await locationPage.selectAddressBookOption2();
+      await locationPage.clickNext();
+    });
     await completeJobCreation();
 
     await test.step("Validate max characteres", async () => {
@@ -186,6 +188,29 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
       await jobCardPage.clickEventManagementButton();
       await jobCardPage.clickEditEventDetails();
       await customFieldsPage.fillClaimField(" ");
+      await jobCardPage.clickSaveSchedule();
+
+      const updateMessage = await jobCardPage.getSuccessAlert();
+      expect(updateMessage).toContain(testData.jobCardDetails.updateJobMessage);
+    });
+  });
+
+  test("Create an in person job adding a witness - @teste", async () => {
+    await commonJobCreationSteps(async () => {
+      await locationPage.selectAddressBookOption();
+      await locationPage.selectAddressBookOption2();
+      await locationPage.clickNext();
+    });
+    await completeJobCreation();
+
+    await test.step("Add a new witness", async () => {
+      await jobCardPage.clickEventManagementButton();
+      await jobCardPage.clickEditEventDetails();
+      const randomWitness = testData.jobDetails.participants.witnesses[
+        Math.floor(Math.random() * testData.jobDetails.participants.witnesses.length)
+      ];
+      await participantsPage.addWitness(randomWitness);
+
       await jobCardPage.clickSaveSchedule();
 
       const updateMessage = await jobCardPage.getSuccessAlert();
