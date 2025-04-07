@@ -195,7 +195,7 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
     });
   });
 
-  test("Create an in person job adding a witness - @teste", async () => {
+  test("Create an in person job adding a witness", async () => {
     await commonJobCreationSteps(async () => {
       await locationPage.selectAddressBookOption();
       await locationPage.selectAddressBookOption2();
