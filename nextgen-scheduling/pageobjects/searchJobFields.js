@@ -221,4 +221,23 @@ export class Job {
          await expect(this.page.getByLabel('Transcription')).toBeChecked(); 
       }
    }
+
+   async selectDeliveryType(selectedValue){
+      await this.fields('deliveryType').click();
+      await this.page.getByText(selectedValue).click();
+      if(selectedValue == 'Expedited'){
+         await expect(this.deliveryDays).toHaveValue(nextGenConfig.deliveryDaysExpedited);
+      } else if(selectedValue == 'Daily'){
+         await expect(this.deliveryDays).toHaveValue(nextGenConfig.deliveryDaysDaily);
+
+      } else {
+         console.log(selectedValue);
+         await expect(this.deliveryDays).toBeEmpty();
+      }
+   }
+
+   async enterDeliveryDays(days){
+      await this.deliveryDays.click();
+      await this.deliveryDays.fill(days);
+   }
 }
