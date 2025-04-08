@@ -22,7 +22,10 @@ export class PartnerInfoPage {
         this.languageLabel= page.locator('label').filter({ hasText: 'language' })
         this.successNoResults = page.locator('div').filter({ hasText: 'No Results Found' }).nth(2);
         this.searchBar = this.page.getByRole('option');
+        this.partnerList = this.page.getByRole('listbox');
+        this.searchError = this.page.getByText('Select an existing Partner or Agency.');
         this.requiredError = this.page.getByTestId('ErrorIcon');
+        this.searchFieldErrorIcon = this.page.getByTestId('ErrorOutlinedIcon')
         this.firstNameRequiredFieldWarn = this.page.getByText('Enter a partner first name.');
         this.lastNameRequiredFieldWarn = this.page.getByText('Enter a partner last name.');
         this.invalidCharacterWarn = this.page.getByText('Remove invalid character');
