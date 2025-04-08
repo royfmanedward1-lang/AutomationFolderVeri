@@ -50,6 +50,115 @@ test('Get Partner Information In GDS', async ({ page }) => {
 });
 
 test.describe("Search functionality and search bar", () => {
+    
+    test("List doesn't appear when 2 or less characters are input", async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+
+        await test.step('No list on two characters', async () => {
+            const randomString = utils.createRandomString(2);
+            await partnerInfoPage.searchText.fill(randomString);
+            await expect(partnerInfoPage.searchBar).not.toBeVisible();
+            await expect(partnerInfoPage.partnerList).not.toBeVisible();
+        });
+    });
+
+    test("List appears when 3+ characters are input", async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+
+        await test.step('Write three characters', async () => {
+            const randomString = utils.createRandomString(3);
+            await partnerInfoPage.searchText.fill(randomString);
+            await expect(partnerInfoPage.partnerList).toBeVisible();
+        });
+    });
+
+    test("Character removal", async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+
+        await test.step('Write three characters', async () => {
+            const randomString = utils.createRandomString(3);
+            await partnerInfoPage.searchText.fill(randomString);
+            await expect(partnerInfoPage.partnerList).toBeVisible();
+        });
+
+        await test.step('List disappears when characters are deleted for less than 3', async () => {
+            await partnerInfoPage.searchText.press('Backspace');
+            await expect(partnerInfoPage.partnerList).not.toBeVisible();
+        });
+    });
+
+    test("Errored search field", async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+
+        await test.step('Write three characters', async () => {
+            const randomString = utils.createRandomString(3);
+            await partnerInfoPage.searchText.fill(randomString);
+            await expect(partnerInfoPage.partnerList).toBeVisible();
+        });
+
+        await test.step('Clicking Enter without selecting ', async () => {
+            await partnerInfoPage.searchText.press('Enter');
+            await expect(partnerInfoPage.partnerList).not.toBeVisible();
+            await expect(partnerInfoPage.searchError).toBeVisible();
+        });
+    });
+
+    test("Characters limit on search", async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+        let completeString;
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+
+        await test.step('Write 50 characters', async () => {
+            const randomString = utils.createRandomString(50);
+            await partnerInfoPage.searchText.fill(randomString);
+            await expect(partnerInfoPage.exceedingCharactersWarn).not.toBeVisible();
+            completeString = randomString;
+        });
+
+        await test.step('Getting warning on 51 characters', async () => {
+            const randomString = utils.createRandomString(1);
+            await partnerInfoPage.searchText.press(randomString);
+            await expect(partnerInfoPage.searchFieldErrorIcon).toBeVisible();
+            completeString = completeString + randomString;
+            await expect(partnerInfoPage.searchText).toHaveValue(completeString);
+        });
+
+        await test.step('Truncating at 80 characters', async () => {
+            const randomString1 = utils.createRandomString(29);
+            await partnerInfoPage.searchText.pressSequentially(randomString1);
+            completeString = completeString + randomString1;
+            await expect(partnerInfoPage.searchText).toHaveValue(completeString);
+
+            const randomString2 = utils.createRandomString(1);
+            await partnerInfoPage.searchText.press(randomString2);
+            completeString = completeString + randomString2;
+            await expect(partnerInfoPage.searchText).not.toHaveValue(completeString);
+        });
+    });
 
     test("Search partner information", async ({ page }) => {
         const headerPage = new HeaderPage(page);
@@ -146,6 +255,93 @@ test.describe("Search functionality and search bar", () => {
     
         await test.step('Verify "No Partner or Agency Found" message appears', async () => {
             await expect(partnerInfoPage.NoFoundOption).toHaveText('No Partner or Agency Found');
+        });
+    });
+
+    
+    
+    test('Invalid Characters in Search', async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+    
+        await test.step('Search for partner "Gail Mascaro"', async () => {
+            await partnerInfoPage.searchText.fill('Mascaro');
+            await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+        });
+    
+        await test.step('Select the first option in search results', async () => {
+            await partnerInfoPage.selectFirstOption();
+        });
+    
+        await test.step('Verify last name contains "Mascaro"', async () => {
+            expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Mascaro');
+        });
+    
+        await test.step('Checking invalid characters into last name field', async () => {
+            for (const list of utils.invalidCharacters) {
+                await partnerInfoPage.inputLastName.fill(list);
+                await partnerInfoPage.inputFirstName.click();
+                await expect(partnerInfoPage.invalidCharacterWarn).toContainText(list);
+            };
+        });
+    
+        await test.step('Filling last name back', async () => {
+            await partnerInfoPage.clearInputField(partnerInfoPage.inputLastName);
+            await partnerInfoPage.inputLastName.fill('Mascaro');
+        });
+    
+        await test.step('Checking invalid characters into first name field', async () => {
+            for (const list of utils.invalidCharacters) {
+                await partnerInfoPage.inputFirstName.fill(list);
+                await partnerInfoPage.inputLastName.click();
+                await expect(partnerInfoPage.invalidCharacterWarn).toContainText(list);
+            };
+        });
+    });
+    
+    test('Exceeding Characters in Last Name Field', async ({ page }) => {
+        const headerPage = new HeaderPage(page);
+        const partnerInfoPage = new PartnerInfoPage(page);
+    
+        await test.step('Navigate to Partner Information Tab', async () => {
+            await headerPage.partnerInformationTab.click();
+        });
+    
+        await test.step('Search for partner "Gail Mascaro"', async () => {
+            await partnerInfoPage.searchText.fill('Mascaro');
+            await expect(partnerInfoPage.searchBar.first()).toContainText("Gail Mascaro");
+        });
+    
+        await test.step('Select the first option in search results', async () => {
+            await partnerInfoPage.selectFirstOption();
+        });
+    
+        await test.step('Verify last name contains "Mascaro"', async () => {
+            expect(await partnerInfoPage.inputLastName.inputValue()).toContain('Mascaro');
+        });
+    
+        await test.step('Checking exceeding characters into last name field', async () => {
+            const randomString = utils.createRandomString(51);
+            await partnerInfoPage.inputLastName.fill(randomString);
+            await expect(partnerInfoPage.exceedingCharactersWarn).toBeVisible();
+        });
+    
+        await test.step('Warning disappears if limit is not surpassed', async () => {
+            await partnerInfoPage.inputLastName.press('Backspace');
+            await expect(partnerInfoPage.exceedingCharactersWarn).not.toBeVisible();
+        });
+    
+        await test.step('Nothing new can be typed after threshold', async () => {
+            const randomString = utils.createRandomString(80);
+            await partnerInfoPage.inputLastName.fill(randomString);
+            await expect(partnerInfoPage.exceedingCharactersWarn).toBeVisible();
+            await expect(partnerInfoPage.inputLastName).toHaveValue(randomString);
+            await partnerInfoPage.inputLastName.press("A");
+            await expect(partnerInfoPage.inputLastName).toHaveValue(randomString);
         });
     });
 })
