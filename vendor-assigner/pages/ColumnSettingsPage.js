@@ -60,11 +60,18 @@ export class ColumnSettingsPage {
 
         for (const item of columUnckecked.slice(0, number)) {
             const label = await this.page.getByRole('row', { name: `${item} Select row`, exact: true }).first().getByLabel('Select row');
-            if(await label.count() > 0){
+            if (await label.count() > 0) {
                 await this.page.getByRole('row', { name: `${item} Select row`, exact: true }).first().getByLabel('Select row').click();
             }
         }
     };
+
+    checkColumn = async (columnName) => {
+        const label = await this.page.getByRole('row', { name: `${columnName} Select row`, exact: true }).first().getByLabel('Select row');
+        if (await label.count() > 0) {
+            await this.page.getByRole('row', { name: `${columnName} Select row`, exact: true }).first().getByLabel('Select row').click();
+        }
+    }
 
     validateExistingConfigurations = async () => {
         await this.settingsButton.click();

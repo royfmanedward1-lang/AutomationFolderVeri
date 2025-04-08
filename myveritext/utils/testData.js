@@ -200,6 +200,7 @@ const testData = {
     status: "SCHEDULED",
     cancelledStatus: "CANCELLED",
     updateJobMessage: "Job updated successfully",
+    claimCustomFieldMax: "Claim #: Test input validation containing more than 50 char"
   },
 };
 

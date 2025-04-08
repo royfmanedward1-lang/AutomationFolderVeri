@@ -30,6 +30,7 @@ class CalendarPage {
       await this.policyDialog.evaluate((dialog) => {
         dialog.scrollTo(0, dialog.scrollHeight);
       });
+      
       await this.acknowledgeButton.waitFor({ state: "visible" });
       await this.acknowledgeButton.click();
     }

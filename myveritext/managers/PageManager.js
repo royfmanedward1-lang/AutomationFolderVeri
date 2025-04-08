@@ -16,6 +16,7 @@ class PageManager {
     this.snapJobPage = null;
     this.jobDetailsPage = null;
     this.proceedingSearchPage = null;
+    this.customFieldsPage = null;
   }
 
   getLoginPage() {
@@ -137,6 +138,14 @@ class PageManager {
       this.jobDetailsPage = new JobDetailsPage(this.page);
     }
     return this.jobDetailsPage;
+  }
+
+  getCustomFieldsPage() {
+    if (!this.customFieldsPage) {
+      const { CustomFieldsPage } = require("../pageobjects/CustomFieldsPage");
+      this.customFieldsPage = new CustomFieldsPage(this.page);
+    }
+    return this.customFieldsPage;
   }
     
 }
