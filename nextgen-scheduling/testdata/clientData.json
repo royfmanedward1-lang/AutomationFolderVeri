@@ -357,6 +357,56 @@
         "locationCity": "Charleston"
       }
       ]      
+    },
+    {
+      "id":"6",
+      "clientName": "Law Office of Jeffrey Esser",
+      "clientAddress": "161 N Clark #1600",
+      "division": "Chicago",
+      "caller": "Jeffrey Esser",
+      "attorney": "Jeffrey Esser",
+      "caseNbr": "",
+      "caseName": "",
+      "plaintiff": "",
+      "defendant": "",
+      "litigationType": "Misc/Unknown",
+      "veritextLocationName": "Veritext -  Chicago, IL",
+      "remoteLocationName": "Client Managed Remote - CA",
+      "otherLocationName": "4520 California Ave.",
+      "timezone": "Central Time (US & Canada)",
+      "numberOfAtendees": "1",
+      "numberOfWitness": "2",
+      "numberOfAttorneys": "1",
+      "proceedingDate": "05/27/2025",
+      "dueDate": "06/10/2025",
+      "startProceedingTime": "10:25 AM",
+      "endProceedingTime": "02:25 PM",
+      "dueDateExpedited": "06/03/2025",
+      "dueDateDaily": "05/28/2025",
+      "deliveryDaysUpdated": "15",
+      "dueDateUpdated": "06/17/2025",
+      "witness":[{
+        "lastname": "Rojas",
+        "firstname": "",
+        "middlename": "",
+        "title": "Mrs.",
+        "suffix": "",
+        "email": "lili@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      },
+      {
+        "lastname": "Milan",
+        "firstname": "Justin",
+        "middlename": "",
+        "title": "Mr.",
+        "suffix": "",
+        "email": "mialn@mail.com",
+        "phonenumber": "",
+        "type": "",
+        "expertise": ""
+      }]         
     }
   
   
