@@ -47,6 +47,14 @@ class JobCardPage {
     this.noButton = page.locator('button.MuiButton-root:has-text("No")').first();
     this.scheduledStatus = page.locator('h6.MuiTypography-subtitle1:has-text("SCHEDULED")');
     this.claimCustomField = page.getByText('Claim #: Test input');
+
+  //Proceeding Services
+    this.transcriverCheckBox = page.getByText('Transcriber');
+    this.realtimeCheckBox = page.getByText('Realtime');
+    this.exhibitShareCheckBox = page.getByText('Exhibit Share', { exact: true });
+    this.conferenceRoomCheckBox = page.getByText('Conference Room');
+    this.loanerLaptopsCheckBox = page.getByText('Loaner Laptops');
+    this.conciergeTechnicianCheckBox = page.getByText('Concierge Technician');
   }
 
   async getSuccessMessage() {
@@ -172,6 +180,16 @@ class JobCardPage {
     await this.page.waitForLoadState('networkidle');
     await this.noButton.waitFor({ state: 'visible' });
     await this.noButton.click();
+  }
+
+  async clickOnProceedingServices() {
+    await this.transcriverCheckBox.waitFor({ state: 'visible' });
+    await this.transcriverCheckBox.click();
+    await this.realtimeCheckBox.click();
+    await this.exhibitShareCheckBox.click();
+    await this.conferenceRoomCheckBox.click();
+    await this.loanerLaptopsCheckBox.click();
+    await this.conciergeTechnicianCheckBox.click();
   }
 
   async getScheduledStatus() {

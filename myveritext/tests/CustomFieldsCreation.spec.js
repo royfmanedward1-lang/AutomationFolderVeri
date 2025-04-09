@@ -217,6 +217,26 @@ test.describe("Job Creation Hybrid Proceeding with Custom Fields", () => {
       expect(updateMessage).toContain(testData.jobCardDetails.updateJobMessage);
     });
   });
+
+  test("Create an in person job adding a proceeding service", async () => {
+    await commonJobCreationSteps(async () => {
+      await locationPage.selectAddressBookOption();
+      await locationPage.selectAddressBookOption2();
+      await locationPage.clickNext();
+    });
+    await completeJobCreation();
+
+    await test.step("Add a new proceeding service", async () => {
+      await jobCardPage.clickEventManagementButton();
+      await jobCardPage.clickEditEventDetails();
+
+      await jobCardPage.clickOnProceedingServices();
+      await jobCardPage.clickSaveSchedule();
+
+      const updateMessage = await jobCardPage.getSuccessAlert();
+      expect(updateMessage).toContain(testData.jobCardDetails.updateJobMessage);
+    });
+  });
   
   test.afterAll(async () => {
     await browser.close();
