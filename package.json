@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "test-automation-modules",
   "version": "1.0.0",
   "main": "index.js",
@@ -13,4 +14,23 @@
     "date-holidays": "^3.23.13"
   },
   "description": ""
+=======
+  "name": "automationfolders",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "playwright": "^1.58.2"
+  },
+  "dependencies": {
+    "playwright-core": "^1.58.2"
+  }
+>>>>>>> b00a82102dc3d57bc47bc0ff5be667943eb4600e
 }
